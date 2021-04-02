@@ -242,6 +242,7 @@ class SaleShop(models.Model):
 						self.env.cr.commit()
 						logger.info('Value ===> %s', v_id.name)
 		except Exception as e:
+			self.env.cr.rollback()
 			if self.env.context.get('log_id'):
 				log_id =  self.env.context.get('log_id')
 				self.env['log.error'].create({'log_description': "New error",'log_id':log_id,'prestashop_id':att_id.id})
