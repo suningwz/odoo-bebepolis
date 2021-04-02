@@ -7,7 +7,7 @@ class prestashop_log(models.Model):
     # @api.model
     def create(self,vals):
         if not vals.get('log_name'):
-            name = self.env['ir.sequence'].next_by_code('log.error')
+            name = self.env['ir.sequence'].sudo().next_by_code('log.error')
             vals.update({
                 'log_name': name
             })
