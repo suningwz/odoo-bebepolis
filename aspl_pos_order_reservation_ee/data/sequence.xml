@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<odoo>
+    <data noupdate="1">
+       <record id="seq_aspl_coupon" model="ir.sequence">
+           <field name="name">Pos Order</field>
+           <field name="code">aspl.pos.order</field>
+           <field name="prefix"></field>
+           <field name="padding">6</field>
+           <field name="company_id" eval="False"/>
+       </record>
+   </data>
+</odoo>
