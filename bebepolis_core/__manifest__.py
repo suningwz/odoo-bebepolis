@@ -19,8 +19,8 @@
         'stock', 'website_sale', 'purchase',
         'point_of_sale', 'stock_barcode', 'maintenance',
         'sale_enterprise', 'purchase_enterprise', 'web_enterprise',
-        'stock_enterprise',
-        'aspl_pos_order_reservation_ee'
+        'stock_enterprise', 'sale_shop',
+        'aspl_pos_order_reservation_ee', 'prestashop_connector_gt'
     ],
     "data": [],
     'installable': True,

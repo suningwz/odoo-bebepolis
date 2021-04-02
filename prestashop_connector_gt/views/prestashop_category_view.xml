@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		 <!--product category tree view-->
+        <record id="prestashop_product_category_list_inherit" model="ir.ui.view">
+            <field name="name">prestashop.product.category.list</field>
+            <field name="model">prestashop.category</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <tree string="Product Categories">
+                    <field name="display_name"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--category -->
+
+        <record id="prestashop_category_form_view" model="ir.ui.view">
+            <field name="name">prestashop.category.form</field>
+            <field name="model">prestashop.category</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form class="oe_form_configuration">
+                    <sheet>
+
+                        <div class="oe_title">
+                            <label for="name" string="Category name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Lamps"/></h1>
+                        </div>
+                        <group name="first" col="4" string="Category Type">
+                            <field name="parent_id"/>
+                            <!--<field name="type"/>-->
+                            <field name="presta_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="to_be_exported" readonly="1"/>
+                            <field name="shop_ids" widget="many2many_tags" readonly="0"/>
+                        </group>
+
+                    </sheet>
+                </form>
+
+            </field>
+        </record>
+        <!-- Inherit Form View to Modify it -->
+
+        <record id="prestashop_category_action_presta" model="ir.actions.act_window">
+            <field name="name">Prestashop Categories</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">prestashop.category</field>
+<!--             <field name="view_type">form</field>
+ -->            <field name="view_mode">tree,form</field>
+            <!--<field name="domain">[('presta_id', '!=', False)]</field>-->
+            <field name="domain">['|',('presta_id', '!=', False),('to_be_exported', '=', True)]</field>
+            <field name = "context">{'default_to_be_exported' : True }</field>
+            <field name="search_view_id" ref="product.product_category_search_view"/>
+        </record>
+	</data>
+</odoo>
