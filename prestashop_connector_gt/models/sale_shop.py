@@ -1254,7 +1254,8 @@ class SaleShop(models.Model):
 			# print ("prod_id----------------->",prod_id)
 			self.env.cr.commit()
 		except Exception as e:
-			if self.env.context.get('log_id'):
+			self.env.cr.rollback()
+			if self.env.context.get('log_id') and type(self.env.context.get('log_id')) == int or float:
 				log_id = self.env.context.get('log_id')
 				self.env['log.error'].create({'log_description': str(e), 'log_id': log_id})
 			else:
