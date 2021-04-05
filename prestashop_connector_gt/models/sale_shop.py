@@ -459,19 +459,17 @@ class SaleShop(models.Model):
 
 	# @api.one
 	def create_customer(self, customer_detail, prestashop):
-		print("====create_customer====>",customer_detail)
-
+		#print("====create_customer====>", customer_detail)
 		res_partner_obj = self.env['res.partner']
 		lan_obj= self.env['res.lang']
 		cust_id=False
 		dob = self.get_value_data(customer_detail.get('customer').get('birthday'))
-
 		date_obj = False
 		try:
 			presta_id = self.get_value_data(customer_detail.get('customer').get('id'))
 			if dob and dob != '0000-00-00':
 				date_obj = datetime.strptime(dob, '%Y-%m-%d')
-			logger.info('===customer_detail========> %s',customer_detail.get('customer'))
+			#logger.info('===customer_detail========> %s',customer_detail.get('customer'))
 			vals = {
 				'presta_id': presta_id,
 				'name': self.get_value_data(customer_detail.get('customer').get('firstname')) + ' ' + self.get_value_data(customer_detail.get('customer').get(
@@ -484,7 +482,7 @@ class SaleShop(models.Model):
 				'website': self.get_value_data(customer_detail.get('customer').get('website')),
 				'date_of_birth': date_obj and date_obj.date() or False,
 			}
-			logger.info('======vals of customer ===> %s',vals)
+			#logger.info('======vals of customer ===> %s',vals)
 
 			if self.get_value_data(customer_detail.get('customer').get('id_lang')):
 				lang_values = prestashop.get('languages',self.get_value_data(customer_detail.get('customer').get('id_lang')))
@@ -512,10 +510,11 @@ class SaleShop(models.Model):
 							'lang': lang_ids[0].code
 						})
 			if self.get_value_data(customer_detail.get('customer').get('passwd')):
-				customer_ids = res_partner_obj.search([('presta_id', '=', presta_id),('customer_rank', '=', True),('supplier_rank', '=', False),('manufacturer', '=', False)])
+				domain_customer = [('presta_id', '=', presta_id),('customer_rank', '=', True),('supplier_rank', '=', False),('manufacturer', '=', False)]
+				logger.info(domain_customer)
+				customer_ids = res_partner_obj.search(domain_customer)
 				if not customer_ids:
 					cust_id = res_partner_obj.create(vals)
-					logger.info('Created Customer 1111===> %s'%(cust_id.id))
 				else:
 					cust_id = customer_ids[0]
 					customer_ids.write(vals)
@@ -552,18 +551,18 @@ class SaleShop(models.Model):
 				customers_data = prestashop.get('customers',options={'filter[date_upd]':last_imported_customer,'date':'1'})
 			else:
 				customers_data = prestashop.get('customers')
-				if customers_data.get('customers') and customers_data.get('customers').get('customer'):
-					customers = customers_data.get('customers').get('customer')
-					if isinstance(customers, list):
-						customers = customers
-					else:
-						customers = [customers]
-					for cust in customers:
 
-						customer_id = self.get_value_data(cust.get('attrs').get('id'))
-						if customer_id:
-							customer_detail = prestashop.get('customers', customer_id)
-							self.with_context(ctx).create_customer(customer_detail, prestashop)
+			if customers_data.get('customers') and customers_data.get('customers').get('customer'):
+				customers = customers_data.get('customers').get('customer')
+				if isinstance(customers, list):
+					customers = customers
+				else:
+					customers = [customers]
+				for cust in customers:
+					customer_id = self.get_value_data(cust.get('attrs').get('id'))
+					if customer_id:
+						customer_detail = prestashop.get('customers', customer_id)
+						self.with_context(ctx).create_customer(customer_detail, prestashop)
 			shop.write({'last_prestashop_customer_import_date':datetime.today()})
 			self.env.cr.commit()
 		return  True
