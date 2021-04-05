@@ -468,11 +468,12 @@ class SaleShop(models.Model):
 
 		date_obj = False
 		try:
+			presta_id = self.get_value_data(customer_detail.get('customer').get('id'))
 			if dob and dob != '0000-00-00':
 				date_obj = datetime.strptime(dob, '%Y-%m-%d')
 			logger.info('===customer_detail========> %s',customer_detail.get('customer'))
 			vals = {
-				'presta_id': self.get_value_data(customer_detail.get('customer').get('id')),
+				'presta_id': presta_id,
 				'name': self.get_value_data(customer_detail.get('customer').get('firstname')) + ' ' + self.get_value_data(customer_detail.get('customer').get(
 					'lastname')) or ' ',
 				'comment':self.get_value_data(customer_detail.get('customer').get('note')),
@@ -511,7 +512,7 @@ class SaleShop(models.Model):
 							'lang': lang_ids[0].code
 						})
 			if self.get_value_data(customer_detail.get('customer').get('passwd')):
-				customer_ids = res_partner_obj.search([('presta_id', '=', self.get_value_data(customer_detail.get('customer').get('id'))[0]),('customer_rank', '=', True),('supplier_rank', '=', False),('manufacturer', '=', False)])
+				customer_ids = res_partner_obj.search([('presta_id', '=', presta_id),('customer_rank', '=', True),('supplier_rank', '=', False),('manufacturer', '=', False)])
 				if not customer_ids:
 					cust_id = res_partner_obj.create(vals)
 					logger.info('Created Customer 1111===> %s'%(cust_id.id))
