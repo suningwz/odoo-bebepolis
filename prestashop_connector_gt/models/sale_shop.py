@@ -551,7 +551,8 @@ class SaleShop(models.Model):
                     cust_id = res_partner_obj.create(vals)
                 else:
                     cust_id = customer_ids[0]
-                    customer_ids.write(vals)
+                    return cust_id
+                    #customer_ids.write(vals)
                 if cust_id:
                     self.env.cr.execute("select cust_id from customer_shop_rel where cust_id = %s and shop_id = %s" % (
                     cust_id.id, self.id))
