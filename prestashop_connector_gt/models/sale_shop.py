@@ -272,10 +272,7 @@ class SaleShop(models.Model):
             # try:
             last_import_attrs = shop.last_presta_product_attrs_import_date
             if last_import_attrs:
-                last_imported_attrs = last_import_attrs.date()
-                product_options = prestashop.get('product_options', options={
-                    'filter[date_upd]': last_imported_attrs, 'date': '1'
-                })
+                product_options = prestashop.get('product_options')
             else:
                 product_options = prestashop.get('product_options')
 
