@@ -1270,10 +1270,10 @@ class SaleShop(models.Model):
 
                             attr_val_ids = att_val_obj.search(
                                 [('presta_id', 'in', self.get_value_data(value_list))])
+                            logger.info(self.get_value_data(value_list))
                             print("===========attr_val_idsattr_val_idsattr_val_ids>>>>>>>>>>>>>>>>>.",
                                   attr_val_ids[0].name,
                                   self.get_value_data(value_list))
-                            print("attr_val_ids=====", attr_val_ids)
                             # ffffffffffff
                             product_ids = prod_prod_obj.search(
                                 [('product_tmpl_id.presta_id', '=',
