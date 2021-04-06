@@ -943,6 +943,9 @@ class SaleShop(models.Model):
         att_val_obj = self.env['product.attribute.value']
         res_partner_obj = self.env['res.partner']
         key_id = self.prestashop_instance_id
+        prod_ids = prod_temp_obj.search([('presta_id', '=', self.get_value_data(product.get('id')))])
+        if prod_ids:
+            return prod_ids[0]
         search_sku = prod_temp_obj.sudo().search_count([
             ('sku', '=', self.get_value_data(product.get('reference')))
         ])
@@ -1380,9 +1383,7 @@ class SaleShop(models.Model):
                 if last_id != None:
                     last_id = last_id[0]
                 product = prestashop.get('products', options={
-                    'filter[id]': "[{},100000]".format(str(last_id if last_id else "0")),
                 })
-            logger.info(product)
             if product.get('products') and product.get('products').get('product'):
                 for attrs in product.get('products').get('product'):
                     data = self.get_value_data(attrs.get('attrs').get('id'))
