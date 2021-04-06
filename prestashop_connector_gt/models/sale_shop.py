@@ -244,16 +244,17 @@ class SaleShop(models.Model):
                     ('presta_id', '=', self.get_value_data(product_options.get('id'))),
                     ('attribute_id', '=', att_id.id)
                 ])
+                attrs_ids2 = prod_attr_vals_obj.search([
+                    ('name', '=', attrs_op_values['name']),
+                    ('attribute_id', '=', att_id.id),
+                    ('presta_id', '!=', self.get_value_data(product_options.get('id'))),
+                ])
+                if attrs_ids2:
+                    attrs_op_values['name'] = "{} - {}".format(
+                        attrs_op_values['name'],
+                        attrs_op_values['presta_id']
+                    )
                 if not attrs_ids:
-                    attrs_ids2 = prod_attr_vals_obj.search([
-                        ('name', '=', attrs_op_values['name']),
-                        ('attribute_id', '=', att_id.id)
-                    ])
-                    if attrs_ids2:
-                        attrs_op_values['name'] = "{} - {}".format(
-                            attrs_op_values['name'],
-                            attrs_op_values['presta_id']
-                        )
                     v_id = prod_attr_vals_obj.create(attrs_op_values)
                     self.env.cr.commit()
                 else:
