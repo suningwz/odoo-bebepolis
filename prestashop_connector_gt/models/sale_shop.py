@@ -387,7 +387,7 @@ class SaleShop(models.Model):
                         # print ("parent_id is 2=============================>", parent_category_check[0].id)
                         if categ_data == None:
                             self.env.cr.execute("insert into presta_categ_shop_rel values(%s,%s)" % (
-                            parent_category_check[0].id, self.id))
+                                parent_category_check[0].id, self.id))
 
                 cat_id = prod_category_obj.create(vals)
                 logger.info('Created Category ===> %s' % (cat_id.id))
@@ -552,10 +552,10 @@ class SaleShop(models.Model):
                 else:
                     cust_id = customer_ids[0]
                     return cust_id
-                    #customer_ids.write(vals)
+                    # customer_ids.write(vals)
                 if cust_id:
                     self.env.cr.execute("select cust_id from customer_shop_rel where cust_id = %s and shop_id = %s" % (
-                    cust_id.id, self.id))
+                        cust_id.id, self.id))
                     cust_data = self.env.cr.fetchone()
 
                 if cust_data == None:
@@ -584,10 +584,20 @@ class SaleShop(models.Model):
             last_import_customer = shop.last_prestashop_customer_import_date
             if last_import_customer:
                 last_imported_customer = last_import_customer.date()
-                customers_data = prestashop.get('customers',
-                                                options={'filter[date_upd]': last_imported_customer, 'date': '1'})
+                customers_data = prestashop.get('customers', options={
+                    'filter[date_upd]': last_imported_customer,
+                    'date': '1'
+                }
+                                                )
             else:
-                customers_data = prestashop.get('customers')
+                last_id = self.env['res.partner'].search([
+                    ('presta_id', '!=', False),
+                    ('prestashop_customer', '=', True),
+                    ('manufacturer', '=', False)
+                ], limit=1, order="presta_id DESC")
+                customers_data = prestashop.get('customers', options={
+                    'filter[id]': "[{},100000]".format(str(last_id.presta_id if last_id else 0)),
+                })
 
             if customers_data.get('customers') and customers_data.get('customers').get('customer'):
                 customers = customers_data.get('customers').get('customer')
@@ -631,7 +641,7 @@ class SaleShop(models.Model):
             if supplier_id:
                 self.env.cr.execute(
                     "select cust_id from customer_shop_rel where cust_id = %s and shop_id = %s" % (
-                    supplier_id.id, self.id))
+                        supplier_id.id, self.id))
                 supplier_data = self.env.cr.fetchone()
 
             if supplier_data == None:
@@ -693,7 +703,7 @@ class SaleShop(models.Model):
 
             if manufacturer_id:
                 self.env.cr.execute("select cust_id from customer_shop_rel where cust_id = %s and shop_id = %s" % (
-                manufacturer_id.id, self.id))
+                    manufacturer_id.id, self.id))
                 manufacturer_data = self.env.cr.fetchone()
             if manufacturer_data == None:
                 self.env.cr.execute("insert into customer_shop_rel values(%s,%s)" % (manufacturer_id.id, self.id))
@@ -793,7 +803,7 @@ class SaleShop(models.Model):
         else:
             data = [data]
             lang_id = self.env['prestashop.language'].search([('presta_id', '=', data[0].get('attrs').get('id')), (
-            'presta_instance_id', '=', self.prestashop_instance_id.id)])[0]
+                'presta_instance_id', '=', self.prestashop_instance_id.id)])[0]
         val = [i for i in data if int(i.get('attrs').get('id')) == int(lang_id.presta_id)]
         return val[0]
 
@@ -1458,7 +1468,7 @@ class SaleShop(models.Model):
             if product_ids:
                 self.env.cr.execute(
                     "select product_prod_id from product_prod_shop_rel where product_prod_id = %s and shop_id = %s" % (
-                    product_ids[0].id, self.id))
+                        product_ids[0].id, self.id))
                 prod_data = self.env.cr.fetchone()
                 if prod_data is None:
                     self.env.cr.execute(
@@ -1988,7 +1998,7 @@ class SaleShop(models.Model):
             if s_id:
                 self.env.cr.execute(
                     "select saleorder_id from saleorder_shop_rel where saleorder_id = %s and shop_id = %s" % (
-                    s_id.id, self.id))
+                        s_id.id, self.id))
                 so_data = self.env.cr.fetchone()
                 if so_data == None:
                     # print ("444444444444")
@@ -2080,11 +2090,11 @@ class SaleShop(models.Model):
                                     order_msg_vals.update({'customer_id': p_ids[0].id, })
                                 elif self.get_value_data(thread_data.get('customer_thread').get(
                                         'id_customer')) == '0' and self.get_value_data(
-                                        thread_data.get('customer_thread').get('id_order')) == '0':
+                                    thread_data.get('customer_thread').get('id_order')) == '0':
                                     continue
                                 elif self.get_value_data(thread_data.get('customer_thread').get(
                                         'id_customer')) == '0' and self.get_value_data(
-                                        thread_data.get('customer_thread').get('id_order')) != '0':
+                                    thread_data.get('customer_thread').get('id_order')) != '0':
                                     p_ids = res_obj.search([('name', '=', 'Guest')])
                                     if p_ids:
                                         order_msg_vals.update({'customer_id': p_ids[0].id, })
@@ -2146,7 +2156,7 @@ class SaleShop(models.Model):
                                         user_id = user_id[0].id
                                 order_msg_vals.update({'employee_id': user_id})
                                 order_msg_id = order_msg.search([('token', '=', order_msg_vals.get('token')), (
-                                'msg_prest_id', '=', order_msg_vals.get('msg_prest_id'))])
+                                    'msg_prest_id', '=', order_msg_vals.get('msg_prest_id'))])
                                 if not order_msg_id:
                                     msg_id = order_msg.create(order_msg_vals)
                                     logger.info('created messages ===> %s', msg_id.id)
@@ -2228,7 +2238,7 @@ class SaleShop(models.Model):
                                     carts_id = carts_ids[0]
                                 self.env.cr.execute(
                                     "select cart_id from cart_shop_rel where cart_id = %s and shop_id = %s" % (
-                                    carts_id.id, shop.id))
+                                        carts_id.id, shop.id))
                                 data = self.env.cr.fetchone()
                                 if not data:
                                     self.env.cr.execute(
@@ -2310,7 +2320,7 @@ class SaleShop(models.Model):
                                     rule_id = rule_ids[0]
                                 self.env.cr.execute(
                                     "select catalog_id from catalog_shop_rel where catalog_id = %s and shop_id = %s" % (
-                                    rule_id.id, shop.id))
+                                        rule_id.id, shop.id))
                                 data = self.env.cr.fetchone()
                                 if not data:
                                     self.env.cr.execute(
@@ -2730,7 +2740,7 @@ class SaleShop(models.Model):
                     if each.presta_inventory_id:
                         prod_variant_inventory = prestashop.get('stock_availables', each.presta_inventory_id)
                         query = "SELECT sum(quantity) FROM stock_quant where product_id = %s and location_id = %s group by product_id" % (
-                        each.id, shop.warehouse_id.lot_stock_id.id)
+                            each.id, shop.warehouse_id.lot_stock_id.id)
                         self.env.cr.execute(query)
                         qty = self.env.cr.fetchone()
                         if qty:
@@ -3247,7 +3257,7 @@ class SaleShop(models.Model):
                     })
                     customer_threads_res = prestashop.add('customer_threads', customer_message_schema)
                     msg_presta_id = \
-                    self.get_value_data(customer_threads_res.get('prestashop').get('customer_thread').get('id'))[0]
+                        self.get_value_data(customer_threads_res.get('prestashop').get('customer_thread').get('id'))[0]
                     customer_message.write({
                         'presta_id': msg_presta_id,
                         'to_be_exported': False,
