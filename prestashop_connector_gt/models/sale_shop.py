@@ -245,6 +245,12 @@ class SaleShop(models.Model):
                     ('attribute_id', '=', att_id.id)
                 ])
                 if not attrs_ids:
+                    attrs_ids2 = prod_attr_vals_obj.search([
+                        ('name', '=', attrs_op_values['name']),
+                        ('attribute_id', '=', att_id.id)
+                    ])
+                    if attrs_ids2:
+                        attrs_op_values['name'] = "{} - {}".format(attrs_op_values['name'], attrs_op_values['presta_id'])
                     v_id = prod_attr_vals_obj.create(attrs_op_values)
                     self.env.cr.commit()
                     logger.info('Value ===> %s', v_id.name)
