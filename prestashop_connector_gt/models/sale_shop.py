@@ -945,12 +945,22 @@ class SaleShop(models.Model):
         att_val_obj = self.env['product.attribute.value']
         res_partner_obj = self.env['res.partner']
         key_id = self.prestashop_instance_id
+        search_sku = prod_temp_obj.sudo().search_count([
+            ('sku', '=', self.get_value_data(product.get('reference')))
+        ])
+        if search_sku > 0:
+            sku = "{}-{}".format(
+                self.get_value_data(product.get('reference')),
+                self.get_value_data(product.get('id'))
+            )
+        else:
+            sku = self.get_value_data(product.get('reference'))
         prd_tmp_vals = {
             'name': self.get_value(product.get('name').get('language')).get('value'),
             'type': 'product',
             'list_price': self.get_value_data(product.get('price')),
             'default_code': self.get_value_data(product.get('reference')),
-            'sku': self.get_value_data(product.get('reference')),
+            'sku': sku,
             # 'description': '',
             # 'barcode':self.get_value_data(product.get('ean13')),
             'prd_label': self.get_value(product.get('name').get('language')).get('value'),
@@ -967,10 +977,19 @@ class SaleShop(models.Model):
         }
         logger.info("===========>prd_tmp_vals>>>>>>>>>>>", prd_tmp_vals)
         if self.get_value_data(product.get('ean13')):
-            try:
-                prd_tmp_vals.update({'barcode': self.get_value_data(product.get('ean13'))})
-            except:
-                pass
+            search_barcode = prod_temp_obj.sudo().search_count([
+                ('barcode', '=', self.get_value_data(product.get('ean13')))
+            ])
+            if search_barcode > 0:
+                barcode = "{}-{}".format(
+                    self.get_value_data(product.get('ean13')),
+                    self.get_value_data(product.get('id'))
+                )
+            else:
+                barcode = self.get_value_data(product.get('ean13'))
+            prd_tmp_vals.update({
+                'barcode': barcode
+            })
         logger.info('Product Barcode ===> %s', self.get_value_data(product.get('ean13')))
         logger.info('Product ID ===> %s', self.get_value_data(product.get('id')))
         print("Barcode=========", self.get_value_data(product.get('ean13')))
