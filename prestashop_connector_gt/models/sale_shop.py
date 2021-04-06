@@ -1177,7 +1177,10 @@ class SaleShop(models.Model):
 
         if not prod_ids:
             print("product=======not>>>>>>>>>>>found", prd_tmp_vals)
-            prod_id = prod_temp_obj.create(prd_tmp_vals)
+            try:
+                prod_id = prod_temp_obj.create(prd_tmp_vals)
+            except:
+                False
             logger.info('Producrt Created ===> %s', prod_id.id)
             self.env.cr.execute(
                 "select product_id from product_templ_shop_rel where product_id = %s and shop_id = %s" % (
