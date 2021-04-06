@@ -594,7 +594,7 @@ class SaleShop(models.Model):
                     ('presta_id', '!=', False),
                     ('prestashop_customer', '=', True),
                     ('manufacturer', '=', False)
-                ], limit=1, order="presta_id DESC")
+                ], limit=1, order="presta_id::int DESC")
                 customers_data = prestashop.get('customers', options={
                     'filter[id]': "[{},100000]".format(str(last_id.presta_id if last_id else 0)),
                 })
