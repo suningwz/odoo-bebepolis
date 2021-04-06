@@ -993,19 +993,29 @@ class SaleShop(models.Model):
         logger.info('Product Barcode ===> %s', self.get_value_data(product.get('ean13')))
         logger.info('Product ID ===> %s', self.get_value_data(product.get('id')))
         print("Barcode=========", self.get_value_data(product.get('ean13')))
-        manufacturers_ids = res_partner_obj.search(
-            [('presta_id', '=', self.get_value_data(product.get('id_manufacturer'))), ('manufacturer', '=', True)])
-        # print("===========>manufacturers_ids>>>>>>>>>>>", manufacturers_ids)
+        manufacturers_ids = res_partner_obj.search([
+            ('presta_id', '=', self.get_value_data(product.get('id_manufacturer'))),
+            ('manufacturer', '=', True)
+        ])
         if manufacturers_ids:
             manufact_id = manufacturers_ids[0].id
         else:
             if self.get_value_data(product.get('id_manufacturer')) == '0':
                 manufact_id = False
             else:
-                manufacturer_detail = prestashop.get('manufacturers',
-                                                     self.get_value_data(product.get('id_manufacturer')))
-                manufact_id = self.create_presta_manufacturers(manufacturer_detail)[0].id
-        prd_tmp_vals.update({'manufacturer_id': manufact_id})
+                logger.info("Manufacturador")
+                logger.info(self.get_value_data(product.get('id_manufacturer')))
+                search_manufacturer = self.env['res.partner'].sudo().search([
+                    ('manufacturer', '=', True),
+                    ('presta_id', '=', self.get_value_data(product.get('id_manufacturer')))
+                ], limit=1)
+                if search_manufacturer:
+                    manufact_id = search_manufacturer.id
+                else:
+                    manufact_id = False
+        prd_tmp_vals.update({
+            'manufacturer_id': manufact_id
+        })
 
         supplier_ids = res_partner_obj.search(
             [('presta_id', '=', self.get_value_data(product.get('id_supplier'))), ('supplier_rank', '=', True)])
