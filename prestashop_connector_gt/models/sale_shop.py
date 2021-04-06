@@ -1180,6 +1180,7 @@ class SaleShop(models.Model):
             try:
                 prod_id = prod_temp_obj.create(prd_tmp_vals)
             except:
+                self.env.cr.rollback()
                 return False
             logger.info('Producrt Created ===> %s', prod_id.id)
             self.env.cr.execute(
