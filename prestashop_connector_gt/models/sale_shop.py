@@ -205,62 +205,49 @@ class SaleShop(models.Model):
     # @api.one
     def create_attr(self, attr_val, prestashop):
         print("create_attrrrrrrrrrrrrr", attr_val)
-        try:
-            prod_att_obj = self.env['product.attribute']
-            prod_attr_vals_obj = self.env['product.attribute.value']
-            att_id = False
+        prod_att_obj = self.env['product.attribute']
+        prod_attr_vals_obj = self.env['product.attribute.value']
+        att_id = False
 
-            attribute_value = {
-                'name': self.get_value_data(self.get_value(attr_val.get('name').get('language'))),
-                'presta_id': self.get_value_data(attr_val.get('id'))
-            }
-            attrs_ids = prod_att_obj.search([('presta_id', '=', self.get_value_data(attr_val.get('id')))])
-            if not attrs_ids:
-                att_id = prod_att_obj.create(attribute_value)
+        attribute_value = {
+            'name': self.get_value_data(self.get_value(attr_val.get('name').get('language'))),
+            'presta_id': self.get_value_data(attr_val.get('id'))
+        }
+        attrs_ids = prod_att_obj.search([('presta_id', '=', self.get_value_data(attr_val.get('id')))])
+        if not attrs_ids:
+            att_id = prod_att_obj.create(attribute_value)
+        else:
+            att_id = attrs_ids[0]
+            attrs_ids.write(attribute_value)
+        self.env.cr.execute(
+            "select attr_id from attr_shop_rel where attr_id = %s and shop_id = %s" % (att_id.id, self.id))
+        attr_data = self.env.cr.fetchone()
+
+        if attr_data == None:
+            self.env.cr.execute("insert into attr_shop_rel values(%s,%s)" % (att_id.id, self.id))
+
+        if attr_val.get('associations').get('product_option_values').get('product_option_value'):
+            attributes = attr_val.get('associations').get('product_option_values').get('product_option_value')
+            if isinstance(attributes, list):
+                attributes = attributes
             else:
-                att_id = attrs_ids[0]
-                attrs_ids.write(attribute_value)
-            self.env.cr.execute(
-                "select attr_id from attr_shop_rel where attr_id = %s and shop_id = %s" % (att_id.id, self.id))
-            attr_data = self.env.cr.fetchone()
-
-            if attr_data == None:
-                self.env.cr.execute("insert into attr_shop_rel values(%s,%s)" % (att_id.id, self.id))
-
-            if attr_val.get('associations').get('product_option_values').get('product_option_value'):
-                attributes = attr_val.get('associations').get('product_option_values').get('product_option_value')
-                if isinstance(attributes, list):
-                    attributes = attributes
-                else:
-                    attributes = [attributes]
-                for attrs in attributes:
-                    product_options = prestashop.get('product_option_values', self.get_value_data(attrs.get('id')))
-                    product_options = product_options.get('product_option_value')
-                    attrs_op_values = {
-                        'attribute_id': self.get_value_data(att_id.id),
-                        'presta_id': self.get_value_data(product_options.get('id')),
-                        "name": self.get_value_data(self.get_value(product_options.get('name').get('language'))),
-                    }
-                    attrs_ids = prod_attr_vals_obj.search(
-                        [('presta_id', '=', self.get_value_data(product_options.get('id'))),
-                         ('attribute_id', '=', att_id.id)])
-                    if not attrs_ids:
-                        v_id = prod_attr_vals_obj.create(attrs_op_values)
-                        self.env.cr.commit()
-                        logger.info('Value ===> %s', v_id.name)
-        except Exception as e:
-            self.env.cr.rollback()
-            if self.env.context.get('log_id'):
-                log_id = self.env.context.get('log_id')
-                self.env['log.error'].create(
-                    {'log_description': "New error", 'log_id': log_id, 'prestashop_id': att_id.id})
-            else:
-                log_id_obj = self.env['prestashop.log'].create({'all_operations': 'import_attributes', 'error_lines': [
-                    (0, 0, {'log_description': 'atrs error', 'prestashop_id': att_id.id})]})
-                log_id = log_id_obj.id
-            new_context = dict(self.env.context)
-            new_context.update({'log_id': log_id})
-            self.env.context = new_context
+                attributes = [attributes]
+            for attrs in attributes:
+                product_options = prestashop.get('product_option_values', self.get_value_data(attrs.get('id')))
+                product_options = product_options.get('product_option_value')
+                attrs_op_values = {
+                    'attribute_id': self.get_value_data(att_id.id),
+                    'presta_id': self.get_value_data(product_options.get('id')),
+                    "name": self.get_value_data(self.get_value(product_options.get('name').get('language'))),
+                }
+                attrs_ids = prod_attr_vals_obj.search([
+                    ('presta_id', '=', self.get_value_data(product_options.get('id'))),
+                    ('attribute_id', '=', att_id.id)
+                ])
+                if not attrs_ids:
+                    v_id = prod_attr_vals_obj.create(attrs_op_values)
+                    self.env.cr.commit()
+                    logger.info('Value ===> %s', v_id.name)
         return True
 
     # @api.multi
@@ -1101,7 +1088,7 @@ class SaleShop(models.Model):
         attribute_line_ids = []
         atttibute_lines_dict = {}
         logger.info("===========>product.associations>>>>>>>>>>>",
-              product.get('associations').get('product_option_values').get('product_option_value'))
+                    product.get('associations').get('product_option_values').get('product_option_value'))
         if product.get('associations').get('product_option_values').get('product_option_value'):
             data = product.get('associations').get('product_option_values').get('product_option_value')
         else:
