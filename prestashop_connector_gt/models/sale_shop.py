@@ -830,11 +830,11 @@ class SaleShop(models.Model):
                     data = self.get_value_data(attrs.get('attrs').get('id'))
                     if data:
                         address = prestashop.get('addresses', data)
-                        print("addressssssssss=========>", address)
+                        logger.info("addressssssssss=========>", address)
 
                         address_ids = res_partner_obj.search(
                             [('address_id', '=', self.get_value_data(attrs.get('attrs').get('id')))])
-                        print("address_idsssssss111111111111", address_ids)
+                        logger.info("address_idsssssss111111111111", address_ids)
 
                         addr_vals = {
                             # 'parent_id': data,
@@ -862,7 +862,7 @@ class SaleShop(models.Model):
                             'address_id': self.get_value_data(address.get('address').get('id')),
 
                         }
-                        print("addr_valsssssssssssssss", addr_vals)
+                        logger.info("addr_valsssssssssssssss", addr_vals)
 
                         country_id = int(self.get_value_data(address.get('address').get('id_country')))
                         state_id = int(self.get_value_data(address.get('address').get('id_state')))
@@ -966,7 +966,7 @@ class SaleShop(models.Model):
                 'presta_id': self.get_value_data(product.get('id')),
 
             }
-            print("===========>prd_tmp_vals>>>>>>>>>>>", prd_tmp_vals)
+            logger.info("===========>prd_tmp_vals>>>>>>>>>>>", prd_tmp_vals)
             if self.get_value_data(product.get('ean13')):
                 prd_tmp_vals.update({'barcode': self.get_value_data(product.get('ean13'))})
 
@@ -1101,7 +1101,7 @@ class SaleShop(models.Model):
             reference = product.get('reference')
             attribute_line_ids = []
             atttibute_lines_dict = {}
-            print("===========>product.associations>>>>>>>>>>>",
+            logger.info("===========>product.associations>>>>>>>>>>>",
                   product.get('associations').get('product_option_values').get('product_option_value'))
             if product.get('associations').get('product_option_values').get('product_option_value'):
                 data = product.get('associations').get('product_option_values').get('product_option_value')
@@ -1115,7 +1115,7 @@ class SaleShop(models.Model):
                     if att_val.get('value') in ('', '0'):
                         continue
                     value_ids = att_val_obj.search([('presta_id', '=', self.get_value_data(att_val.get('id')))])
-                    print("===========>value_ids>>>>>>>>>>>", value_ids)
+                    logger.info("===========>value_ids>>>>>>>>>>>", value_ids)
 
                     # if not value_ids:
                     # 	raise UserError(("Please Import Product Attributes first."))
@@ -1134,7 +1134,7 @@ class SaleShop(models.Model):
                     attribute_line_ids.append(
                         (0, 0, {'attribute_id': i, 'value_ids': [(6, 0, atttibute_lines_dict.get(i))]}))
                 prd_tmp_vals.update({'attribute_line_ids': attribute_line_ids})
-                print("prd_tmp_vals====", prd_tmp_vals)
+                logger.info("prd_tmp_vals====", prd_tmp_vals)
             prod_ids = False
             categ_list = []
             # categories = product.get('associations').get('categories').get('category')
@@ -1153,7 +1153,7 @@ class SaleShop(models.Model):
             # print("self.get_value_data(product.get('reference'))[0]==",self.get_value_data(product.get('reference')))
             #	if self.get_value_data(product.get('reference')):
             prod_ids = prod_temp_obj.search([('presta_id', '=', self.get_value_data(product.get('id')))])
-            print("===========>prod_ids>>>>>>>>>>>", prod_ids)
+            logger.info("===========>prod_ids>>>>>>>>>>>", prod_ids)
             # previously we searched with presta_id
             # else:
             #     prod_ids = prod_temp_obj.search([('presta_id', '=', product.get('id'))])
@@ -1322,9 +1322,14 @@ class SaleShop(models.Model):
             self.env.cr.commit()
         except Exception as e:
             self.env.cr.rollback()
-            if self.env.context.get('log_id') and type(self.env.context.get('log_id')) == int or float:
-                log_id = self.env.context.get('log_id')
-                self.env['log.error'].create({'log_description': str(e), 'log_id': log_id})
+            log_id = self.env.context.get('log_id', False)
+            logger.info(log_id)
+            logger.info(str(e))
+            if log_id and type(log_id) == int or type(log_id) == float:
+                self.env['log.error'].create({
+                    'log_description': str(e),
+                    'log_id': log_id
+                })
             else:
                 log_id_obj = self.env['prestashop.log'].create(
                     {'all_operations': 'import_products', 'error_lines': [(0, 0, {'log_description': str(e), })]})
@@ -1336,28 +1341,35 @@ class SaleShop(models.Model):
 
     # @api.multi
     def import_products(self):
-        print("====import_products====>")
+        logger.info("====import_products====>")
         for shop in self:
-            prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,
-                                                  shop.prestashop_instance_id.webservice_key or None)
+            prestashop = PrestaShopWebServiceDict(
+                shop.prestashop_instance_id.location,
+                shop.prestashop_instance_id.webservice_key or None
+            )
             ctx = {}
             last_import_product = shop.last_prestashop_product_import_date
             if last_import_product:
                 last_imported_customer_products = last_import_product.date()
-                products = prestashop.get('products',
-                                          options={'filter[date_upd]': last_imported_customer_products, 'date': '1'})
+                product = prestashop.get('products', options={
+                    'filter[date_upd]': last_imported_customer_products, 'date': '1'
+                })
             else:
-                product = prestashop.get('products')
-                if product.get('products') and product.get('products').get('product'):
-                    for attrs in product.get('products').get('product'):
-                        data = self.get_value_data(attrs.get('attrs').get('id'))
+                product = prestashop.get('products', options={
+                })
+            if product.get('products') and product.get('products').get('product'):
+                for attrs in product.get('products').get('product'):
+                    data = self.get_value_data(attrs.get('attrs').get('id'))
+                    logger.info(data)
+                    if data:
+                        logger.info(data)
+                        product_data = prestashop.get('products', data)
+                        data = self.with_context(self.env.context.copy()).create_presta_product(
+                            product_data.get('product'), prestashop
+                        )
+                        logger.info(data)
                         if data:
-                            #                       try:
-                            product_data = prestashop.get('products', data)
-                            data = self.with_context(self.env.context.copy()).create_presta_product(
-                                product_data.get('product'), prestashop)
-                            if data:
-                                self = self.with_context(log_id=data)
+                            self = self.with_context(log_id=data)
         shop.write({'last_prestashop_product_import_date': datetime.now()})
         self.env.cr.commit()
         return True
