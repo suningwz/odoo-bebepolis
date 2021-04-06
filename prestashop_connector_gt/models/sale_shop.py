@@ -250,41 +250,47 @@ class SaleShop(models.Model):
                         ('attribute_id', '=', att_id.id)
                     ])
                     if attrs_ids2:
-                        attrs_op_values['name'] = "{} - {}".format(attrs_op_values['name'], attrs_op_values['presta_id'])
+                        attrs_op_values['name'] = "{} - {}".format(
+                            attrs_op_values['name'],
+                            attrs_op_values['presta_id']
+                        )
                     v_id = prod_attr_vals_obj.create(attrs_op_values)
                     self.env.cr.commit()
-                    logger.info('Value ===> %s', v_id.name)
+                else:
+                    attrs_ids.write(attrs_op_values)
         return True
 
     # @api.multi
     def import_product_attributes(self):
         print("import_product_attributeseeeeeeee")
-
         for shop in self:
-            prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,
-                                                  shop.prestashop_instance_id.webservice_key or None)
+            prestashop = PrestaShopWebServiceDict(
+                shop.prestashop_instance_id.location,
+                shop.prestashop_instance_id.webservice_key or None
+            )
             ctx = {'log_id': False}
             # try:
             last_import_attrs = shop.last_presta_product_attrs_import_date
             if last_import_attrs:
                 last_imported_attrs = last_import_attrs.date()
-                product_options = prestashop.get('product_options',
-                                                 options={'filter[date_upd]': last_imported_attrs, 'date': '1'})
+                product_options = prestashop.get('product_options', options={
+                    'filter[date_upd]': last_imported_attrs, 'date': '1'
+                })
             else:
                 product_options = prestashop.get('product_options')
-                if product_options.get('product_options') and product_options.get('product_options').get(
-                        'product_option'):
-                    attributes = product_options.get('product_options').get('product_option')
-                    if isinstance(attributes, list):
-                        attributes = attributes
-                    else:
-                        attributes = [attributes]
-                    for attrs in attributes:
-                        data = self.get_value_data(attrs.get('attrs').get('id'))
-                        if data:
-                            vals = prestashop.get('product_options', data).get('product_option')
-                            # self.with_context(ctx).create_attr(vals, prestashop)
-                            shop.create_attr(vals, prestashop)
+
+            if product_options.get('product_options') and product_options.get('product_options').get(
+                    'product_option'):
+                attributes = product_options.get('product_options').get('product_option')
+                if isinstance(attributes, list):
+                    attributes = attributes
+                else:
+                    attributes = [attributes]
+                for attrs in attributes:
+                    data = self.get_value_data(attrs.get('attrs').get('id'))
+                    if data:
+                        vals = prestashop.get('product_options', data).get('product_option')
+                        shop.create_attr(vals, prestashop)
                 shop.write({'last_presta_product_attrs_import_date': datetime.today()})
         return True
 
@@ -298,8 +304,9 @@ class SaleShop(models.Model):
             'name': self.get_value_data(self.get_value(category.get('category').get('name').get('language'))),
         }
         #
-        category_check = prod_category_obj.search(
-            [('presta_id', '=', self.get_value_data(category.get('category').get('id_parent')))])
+        category_check = prod_category_obj.search([
+            ('presta_id', '=', self.get_value_data(category.get('category').get('id_parent')))
+        ])
 
         if not category_check:
             print("ategory.get('category')===", category.get('category'))
@@ -960,8 +967,10 @@ class SaleShop(models.Model):
         }
         logger.info("===========>prd_tmp_vals>>>>>>>>>>>", prd_tmp_vals)
         if self.get_value_data(product.get('ean13')):
-            prd_tmp_vals.update({'barcode': self.get_value_data(product.get('ean13'))})
-
+            try:
+                prd_tmp_vals.update({'barcode': self.get_value_data(product.get('ean13'))})
+            except:
+                pass
         logger.info('Product Barcode ===> %s', self.get_value_data(product.get('ean13')))
         logger.info('Product ID ===> %s', self.get_value_data(product.get('id')))
         print("Barcode=========", self.get_value_data(product.get('ean13')))
