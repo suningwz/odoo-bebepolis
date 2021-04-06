@@ -944,399 +944,381 @@ class SaleShop(models.Model):
         prod_prod_obj = self.env['product.product']
         att_val_obj = self.env['product.attribute.value']
         res_partner_obj = self.env['res.partner']
-        try:
-            key_id = self.prestashop_instance_id
-            prd_tmp_vals = {
-                'name': self.get_value(product.get('name').get('language')).get('value'),
-                'type': 'product',
-                'list_price': self.get_value_data(product.get('price')),
-                'default_code': self.get_value_data(product.get('reference')),
-                'sku': self.get_value_data(product.get('reference')),
-                # 'description': '',
-                # 'barcode':self.get_value_data(product.get('ean13')),
-                'prd_label': self.get_value(product.get('name').get('language')).get('value'),
-                'wholesale_price': self.get_value_data(product.get('wholesale_price')),
-                'prdct_unit_price': self.get_value_data(product.get('price')),
-                'product_onsale': self.get_value_data(product.get('on_sale')),
-                'product_instock': self.get_value(product.get('available_now').get('language')),
-                'product_lngth': self.get_value_data(product.get('depth')),
-                'product_width': self.get_value_data(product.get('width')),
-                'product_wght': self.get_value_data(product.get('weight')),
-                'product_hght': self.get_value_data(product.get('height')),
-                'presta_id': self.get_value_data(product.get('id')),
+        key_id = self.prestashop_instance_id
+        prd_tmp_vals = {
+            'name': self.get_value(product.get('name').get('language')).get('value'),
+            'type': 'product',
+            'list_price': self.get_value_data(product.get('price')),
+            'default_code': self.get_value_data(product.get('reference')),
+            'sku': self.get_value_data(product.get('reference')),
+            # 'description': '',
+            # 'barcode':self.get_value_data(product.get('ean13')),
+            'prd_label': self.get_value(product.get('name').get('language')).get('value'),
+            'wholesale_price': self.get_value_data(product.get('wholesale_price')),
+            'prdct_unit_price': self.get_value_data(product.get('price')),
+            'product_onsale': self.get_value_data(product.get('on_sale')),
+            'product_instock': self.get_value(product.get('available_now').get('language')),
+            'product_lngth': self.get_value_data(product.get('depth')),
+            'product_width': self.get_value_data(product.get('width')),
+            'product_wght': self.get_value_data(product.get('weight')),
+            'product_hght': self.get_value_data(product.get('height')),
+            'presta_id': self.get_value_data(product.get('id')),
 
-            }
-            logger.info("===========>prd_tmp_vals>>>>>>>>>>>", prd_tmp_vals)
-            if self.get_value_data(product.get('ean13')):
-                prd_tmp_vals.update({'barcode': self.get_value_data(product.get('ean13'))})
+        }
+        logger.info("===========>prd_tmp_vals>>>>>>>>>>>", prd_tmp_vals)
+        if self.get_value_data(product.get('ean13')):
+            prd_tmp_vals.update({'barcode': self.get_value_data(product.get('ean13'))})
 
-            logger.info('Product Barcode ===> %s', self.get_value_data(product.get('ean13')))
-            logger.info('Product ID ===> %s', self.get_value_data(product.get('id')))
-            print("Barcode=========", self.get_value_data(product.get('ean13')))
-            manufacturers_ids = res_partner_obj.search(
-                [('presta_id', '=', self.get_value_data(product.get('id_manufacturer'))), ('manufacturer', '=', True)])
-            # print("===========>manufacturers_ids>>>>>>>>>>>", manufacturers_ids)
-            if manufacturers_ids:
-                manufact_id = manufacturers_ids[0].id
+        logger.info('Product Barcode ===> %s', self.get_value_data(product.get('ean13')))
+        logger.info('Product ID ===> %s', self.get_value_data(product.get('id')))
+        print("Barcode=========", self.get_value_data(product.get('ean13')))
+        manufacturers_ids = res_partner_obj.search(
+            [('presta_id', '=', self.get_value_data(product.get('id_manufacturer'))), ('manufacturer', '=', True)])
+        # print("===========>manufacturers_ids>>>>>>>>>>>", manufacturers_ids)
+        if manufacturers_ids:
+            manufact_id = manufacturers_ids[0].id
+        else:
+            if self.get_value_data(product.get('id_manufacturer')) == '0':
+                manufact_id = False
             else:
-                if self.get_value_data(product.get('id_manufacturer')) == '0':
-                    manufact_id = False
-                else:
-                    manufacturer_detail = prestashop.get('manufacturers',
-                                                         self.get_value_data(product.get('id_manufacturer')))
-                    manufact_id = self.create_presta_manufacturers(manufacturer_detail)[0].id
-            prd_tmp_vals.update({'manufacturer_id': manufact_id})
+                manufacturer_detail = prestashop.get('manufacturers',
+                                                     self.get_value_data(product.get('id_manufacturer')))
+                manufact_id = self.create_presta_manufacturers(manufacturer_detail)[0].id
+        prd_tmp_vals.update({'manufacturer_id': manufact_id})
 
-            supplier_ids = res_partner_obj.search(
-                [('presta_id', '=', self.get_value_data(product.get('id_supplier'))), ('supplier_rank', '=', True)])
-            # print("===========>supplier_ids>>>>>>>>>>>", supplier_ids)
-            if supplier_ids:
-                supply_id = supplier_ids[0].id
+        supplier_ids = res_partner_obj.search(
+            [('presta_id', '=', self.get_value_data(product.get('id_supplier'))), ('supplier_rank', '=', True)])
+        # print("===========>supplier_ids>>>>>>>>>>>", supplier_ids)
+        if supplier_ids:
+            supply_id = supplier_ids[0].id
+        else:
+            if self.get_value_data(product.get('id_supplier')) == '0':
+                supply_id = False
             else:
-                if self.get_value_data(product.get('id_supplier')) == '0':
-                    supply_id = False
-                else:
-                    supplier_detail = prestashop.get('suppliers', self.get_value_data(product.get('id_supplier')))
-                    supply_id = self.create_presta_supplier(supplier_detail)[0].id
-            prd_tmp_vals.update({'supplier_id': supply_id})
-            if supply_id:
-                prd_tmp_vals.update({'seller_ids': [(0, 0, {'name': supply_id})]})
+                supplier_detail = prestashop.get('suppliers', self.get_value_data(product.get('id_supplier')))
+                supply_id = self.create_presta_supplier(supplier_detail)[0].id
+        prd_tmp_vals.update({'supplier_id': supply_id})
+        if supply_id:
+            prd_tmp_vals.update({'seller_ids': [(0, 0, {'name': supply_id})]})
 
-            # if int(self.get_value_data(product.get('id_category_default'))) > 0:
-            # 	cat_ids = category_obj.search(
-            # 		[('presta_id', '=', self.get_value_data(product.get('id_category_default')))])
-            # 	if cat_ids:
-            # 		categ_id = cat_ids[0]
-            # 	else:
-            # 		vals = prestashop.get('categories', self.get_value_data(product.get('id_category_default')))
-            # 		categ_id = self.create_presta_category(prestashop, vals)
-            # 	prd_tmp_vals.update({'presta_categ_id': categ_id.id})
-            img_ids = product.get('associations').get('images').get('image', False)
-            # comment from here to   prd_tmp_vals.update({'product_img_ids': image_list})
+        # if int(self.get_value_data(product.get('id_category_default'))) > 0:
+        # 	cat_ids = category_obj.search(
+        # 		[('presta_id', '=', self.get_value_data(product.get('id_category_default')))])
+        # 	if cat_ids:
+        # 		categ_id = cat_ids[0]
+        # 	else:
+        # 		vals = prestashop.get('categories', self.get_value_data(product.get('id_category_default')))
+        # 		categ_id = self.create_presta_category(prestashop, vals)
+        # 	prd_tmp_vals.update({'presta_categ_id': categ_id.id})
+        img_ids = product.get('associations').get('images').get('image', False)
+        # comment from here to   prd_tmp_vals.update({'product_img_ids': image_list})
 
-            if img_ids:
-                if isinstance(img_ids, list):
-                    img_ids = img_ids
-                else:
-                    img_ids = [img_ids]
-                image_list = []
-                def_image_id = product.get('id_default_image')
-            # for image in img_ids:
-            # # try:
-            # 	print ("IMAGEEEEEEEEE",image)
-
-            # 	loc = (self.prestashop_instance_id.location).split('//')
-            # 	print("=====",loc[1],product,image)
-            # 	# url = "https://homepages.cae.wisc.edu/~ece533/images/airplane.png"
-            # 	# file_data=urllib.request.urlopen(url).read()
-            # 	# image_data = base64.encodestring(file_data)
-            # 	# print ("DATAAAAAAIMAGE",type(image_data))
-            # 	# from BeautifulSoup import BeautifulSoup
-            # 	# import urllib3
-            # 	from requests.auth import HTTPBasicAuth
-            # 	url = "http://" +loc[1] + '/api/images/products/' + product.get('id') + '/' + image.get('id')
-            # 	print("urk=======",url)
-            # 	req = requests.get(url,str(prestashop))
-            # 	re = req.urljoin(req)
-            # 	# headers = {'TRN-Api-Key':key}
-            # 	# req = requests.get(url,headers=headers)
-            # 	print("json===",re)
-            # 	print("text ====",re.text)
-            # 	dddd
-            # 	# fffff
-            # 	# response = requests.get(url)
-            # 	response = requests.get(url,key)
-
-            #  #          auth = HTTPBasicAuth(key_id, key))
-            # 	# print("text formate",response)
-            # 	# ppri
-            # 	print("jjjjj===",response)
-            # 	ddddds
-
-            # 	# headers = {}
-            # 	# headers['User-Agent'] = "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0"
-            # 	re = urllib.request.urlopen(url)
-            # 	# res = urllib.request.Request(url, data=None, headers={}, origin_req_host=None, unverifiable=False, method=None)
-            # 	print("req====",re)
-            # 	# # dddd
-            # 	# response = requests.get(res)
-            # 	# h = response.state_code
-            # 	# print("jjjjj===",h)
-            # 	# hhhhhh
-            # 	# resp = urllib.request.urlopen(req)
-            # 	# respData = resp.read()
-
-            # 	ddddddd
-
-            # 	# if def_image_id == image.get('id'):
-            # 	#     print ("iiiiiiiiiiiiii")
-            # 	#     cccc
-            # 	#     print ("image data",image_data)
-            #   		# prd_tmp_vals.update({'prest_img_id': image_data})
-            # 	# print ("image.get('id')))))))))))))))",image.get('id'))
-
-            # 	image_list.append((0, 0, {'url': url,
-            # 							  # 'prest_img_id': image.get('id'),
-            # 							  'link': True,
-            # 							  'name': image.get('id'),
-            # 	}))
-            # 	print("v=====",image_list)
-
-            # 	# except Exception as e:
-            # 	#     if self.env.context.get('log_id'):
-            # 	#         log_id =  self.env.context.get('log_id')
-            # 	#         self.env['log.error'].create({'log_description': str(e) + " While Getting Image of %s"%( image.get('id')), 'log_id': log_id})
-            # 	#     else:
-            # 	#         log_id = self.env['prestashop.log'].create({'all_operations':'import_products','error_lines': [(0,0, {'log_description': str(e)+" While Getting Image info of %s"%( image.get('id'))})]})
-            # 	#         log_id1 = log_id.id
-            # 	    #         self = self.with_context(log_id = log_id.id)
-
-            # 	if len(image_list) > 0:
-            # 		print("image_data========",image_data)
-            # 		prd_tmp_vals.update({'image_1920':image_data})
-            # 		print("prod_prod_obj====",prd_tmp_vals.get('image_1920'))
-            # dddddd
-            # prd_tmp_vals.update({'product_img_ids': image_list,'image_1920':image_data})
-
-            reference = product.get('reference')
-            attribute_line_ids = []
-            atttibute_lines_dict = {}
-            logger.info("===========>product.associations>>>>>>>>>>>",
-                  product.get('associations').get('product_option_values').get('product_option_value'))
-            if product.get('associations').get('product_option_values').get('product_option_value'):
-                data = product.get('associations').get('product_option_values').get('product_option_value')
+        if img_ids:
+            if isinstance(img_ids, list):
+                img_ids = img_ids
             else:
-                data = product.get('associations').get('product_option_values')
+                img_ids = [img_ids]
+            image_list = []
+            def_image_id = product.get('id_default_image')
+        # for image in img_ids:
+        # # try:
+        # 	print ("IMAGEEEEEEEEE",image)
 
-            if data:
-                if isinstance(data, dict):
-                    data = [data]
-                for att_val in data:
-                    if att_val.get('value') in ('', '0'):
-                        continue
-                    value_ids = att_val_obj.search([('presta_id', '=', self.get_value_data(att_val.get('id')))])
-                    logger.info("===========>value_ids>>>>>>>>>>>", value_ids)
+        # 	loc = (self.prestashop_instance_id.location).split('//')
+        # 	print("=====",loc[1],product,image)
+        # 	# url = "https://homepages.cae.wisc.edu/~ece533/images/airplane.png"
+        # 	# file_data=urllib.request.urlopen(url).read()
+        # 	# image_data = base64.encodestring(file_data)
+        # 	# print ("DATAAAAAAIMAGE",type(image_data))
+        # 	# from BeautifulSoup import BeautifulSoup
+        # 	# import urllib3
+        # 	from requests.auth import HTTPBasicAuth
+        # 	url = "http://" +loc[1] + '/api/images/products/' + product.get('id') + '/' + image.get('id')
+        # 	print("urk=======",url)
+        # 	req = requests.get(url,str(prestashop))
+        # 	re = req.urljoin(req)
+        # 	# headers = {'TRN-Api-Key':key}
+        # 	# req = requests.get(url,headers=headers)
+        # 	print("json===",re)
+        # 	print("text ====",re.text)
+        # 	dddd
+        # 	# fffff
+        # 	# response = requests.get(url)
+        # 	response = requests.get(url,key)
 
-                    # if not value_ids:
-                    # 	raise UserError(("Please Import Product Attributes first."))
+        #  #          auth = HTTPBasicAuth(key_id, key))
+        # 	# print("text formate",response)
+        # 	# ppri
+        # 	print("jjjjj===",response)
+        # 	ddddds
 
-                    if value_ids:
-                        v_id = value_ids[0]
-                        # print("v_id======",v_id)
-                        if v_id.attribute_id.id in atttibute_lines_dict:
-                            if v_id.id not in atttibute_lines_dict.get(v_id.attribute_id.id):
-                                atttibute_lines_dict.get(v_id.attribute_id.id).append(v_id.id)
-                        else:
+        # 	# headers = {}
+        # 	# headers['User-Agent'] = "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0"
+        # 	re = urllib.request.urlopen(url)
+        # 	# res = urllib.request.Request(url, data=None, headers={}, origin_req_host=None, unverifiable=False, method=None)
+        # 	print("req====",re)
+        # 	# # dddd
+        # 	# response = requests.get(res)
+        # 	# h = response.state_code
+        # 	# print("jjjjj===",h)
+        # 	# hhhhhh
+        # 	# resp = urllib.request.urlopen(req)
+        # 	# respData = resp.read()
 
-                            atttibute_lines_dict.update({v_id.attribute_id.id: [v_id.id]})
-                # print("atttibute_lines_dict===",atttibute_lines_dict)
-                for i in atttibute_lines_dict.keys():
-                    attribute_line_ids.append(
-                        (0, 0, {'attribute_id': i, 'value_ids': [(6, 0, atttibute_lines_dict.get(i))]}))
-                prd_tmp_vals.update({'attribute_line_ids': attribute_line_ids})
-                logger.info("prd_tmp_vals====", prd_tmp_vals)
-            prod_ids = False
-            categ_list = []
-            # categories = product.get('associations').get('categories').get('category')
-            # if isinstance(categories, dict):
-            #     categories = [categories]
-            #
-            # for category in categories:
-            #     cat_ids = category_obj.search([('presta_id', '=', category.get('id'))])
-            #     if cat_ids:
-            #         categ_list.append(cat_ids[0].id)
-            #     else:
-            #         vals = prestashop.get('categories', category.get('id'))
-            #         cat_id = self.create_presta_category(prestashop, vals)
-            #         categ_list.append(cat_id[0].id)
-            # prd_tmp_vals.update({'presta_categ_ids': [(6, 0, categ_list)]})
-            # print("self.get_value_data(product.get('reference'))[0]==",self.get_value_data(product.get('reference')))
-            #	if self.get_value_data(product.get('reference')):
-            prod_ids = prod_temp_obj.search([('presta_id', '=', self.get_value_data(product.get('id')))])
-            logger.info("===========>prod_ids>>>>>>>>>>>", prod_ids)
-            # previously we searched with presta_id
-            # else:
-            #     prod_ids = prod_temp_obj.search([('presta_id', '=', product.get('id'))])
-            #     print "presta_id found===========>",prod_ids
-            if prod_ids:
-                p_id = prod_ids[0]
-                # write attributes
+        # 	ddddddd
+
+        # 	# if def_image_id == image.get('id'):
+        # 	#     print ("iiiiiiiiiiiiii")
+        # 	#     cccc
+        # 	#     print ("image data",image_data)
+        #   		# prd_tmp_vals.update({'prest_img_id': image_data})
+        # 	# print ("image.get('id')))))))))))))))",image.get('id'))
+
+        # 	image_list.append((0, 0, {'url': url,
+        # 							  # 'prest_img_id': image.get('id'),
+        # 							  'link': True,
+        # 							  'name': image.get('id'),
+        # 	}))
+        # 	print("v=====",image_list)
+
+        # 	# except Exception as e:
+        # 	#     if self.env.context.get('log_id'):
+        # 	#         log_id =  self.env.context.get('log_id')
+        # 	#         self.env['log.error'].create({'log_description': str(e) + " While Getting Image of %s"%( image.get('id')), 'log_id': log_id})
+        # 	#     else:
+        # 	#         log_id = self.env['prestashop.log'].create({'all_operations':'import_products','error_lines': [(0,0, {'log_description': str(e)+" While Getting Image info of %s"%( image.get('id'))})]})
+        # 	#         log_id1 = log_id.id
+        # 	    #         self = self.with_context(log_id = log_id.id)
+
+        # 	if len(image_list) > 0:
+        # 		print("image_data========",image_data)
+        # 		prd_tmp_vals.update({'image_1920':image_data})
+        # 		print("prod_prod_obj====",prd_tmp_vals.get('image_1920'))
+        # dddddd
+        # prd_tmp_vals.update({'product_img_ids': image_list,'image_1920':image_data})
+
+        reference = product.get('reference')
+        attribute_line_ids = []
+        atttibute_lines_dict = {}
+        logger.info("===========>product.associations>>>>>>>>>>>",
+              product.get('associations').get('product_option_values').get('product_option_value'))
+        if product.get('associations').get('product_option_values').get('product_option_value'):
+            data = product.get('associations').get('product_option_values').get('product_option_value')
+        else:
+            data = product.get('associations').get('product_option_values')
+
+        if data:
+            if isinstance(data, dict):
+                data = [data]
+            for att_val in data:
+                if att_val.get('value') in ('', '0'):
+                    continue
+                value_ids = att_val_obj.search([('presta_id', '=', self.get_value_data(att_val.get('id')))])
+                logger.info("===========>value_ids>>>>>>>>>>>", value_ids)
+
+                # if not value_ids:
+                # 	raise UserError(("Please Import Product Attributes first."))
+
+                if value_ids:
+                    v_id = value_ids[0]
+                    # print("v_id======",v_id)
+                    if v_id.attribute_id.id in atttibute_lines_dict:
+                        if v_id.id not in atttibute_lines_dict.get(v_id.attribute_id.id):
+                            atttibute_lines_dict.get(v_id.attribute_id.id).append(v_id.id)
+                    else:
+
+                        atttibute_lines_dict.update({v_id.attribute_id.id: [v_id.id]})
+            # print("atttibute_lines_dict===",atttibute_lines_dict)
+            for i in atttibute_lines_dict.keys():
+                attribute_line_ids.append(
+                    (0, 0, {'attribute_id': i, 'value_ids': [(6, 0, atttibute_lines_dict.get(i))]}))
+            prd_tmp_vals.update({'attribute_line_ids': attribute_line_ids})
+            logger.info("prd_tmp_vals====", prd_tmp_vals)
+        prod_ids = False
+        categ_list = []
+        # categories = product.get('associations').get('categories').get('category')
+        # if isinstance(categories, dict):
+        #     categories = [categories]
+        #
+        # for category in categories:
+        #     cat_ids = category_obj.search([('presta_id', '=', category.get('id'))])
+        #     if cat_ids:
+        #         categ_list.append(cat_ids[0].id)
+        #     else:
+        #         vals = prestashop.get('categories', category.get('id'))
+        #         cat_id = self.create_presta_category(prestashop, vals)
+        #         categ_list.append(cat_id[0].id)
+        # prd_tmp_vals.update({'presta_categ_ids': [(6, 0, categ_list)]})
+        # print("self.get_value_data(product.get('reference'))[0]==",self.get_value_data(product.get('reference')))
+        #	if self.get_value_data(product.get('reference')):
+        prod_ids = prod_temp_obj.search([('presta_id', '=', self.get_value_data(product.get('id')))])
+        logger.info("===========>prod_ids>>>>>>>>>>>", prod_ids)
+        # previously we searched with presta_id
+        # else:
+        #     prod_ids = prod_temp_obj.search([('presta_id', '=', product.get('id'))])
+        #     print "presta_id found===========>",prod_ids
+        if prod_ids:
+            p_id = prod_ids[0]
+            # write attributes
+            if prd_tmp_vals.get('attribute_line_ids'):
+                for each in prd_tmp_vals.get('attribute_line_ids'):
+                    attribute_ids = self.env['product.template.attribute.line'].search(
+                        [('product_tmpl_id', '=', p_id.id), ('attribute_id', '=', each[2].get('attribute_id'))])
+                    if attribute_ids:
+                        for val_at in each[2].get('value_ids')[0][2]:
+                            if val_at not in attribute_ids[0].value_ids.ids:
+                                attribute_ids[0].write({'value_ids': [(6, 0, [val_at])]})
+                    else:
+                        self.env['product.template.attribute.line'].create(
+                            {'attribute_id': each[2].get('attribute_id'), 'product_tmpl_id': p_id.id,
+                             'value_ids': each[2].get('value_ids')})
                 if prd_tmp_vals.get('attribute_line_ids'):
-                    for each in prd_tmp_vals.get('attribute_line_ids'):
-                        attribute_ids = self.env['product.template.attribute.line'].search(
-                            [('product_tmpl_id', '=', p_id.id), ('attribute_id', '=', each[2].get('attribute_id'))])
-                        if attribute_ids:
-                            for val_at in each[2].get('value_ids')[0][2]:
-                                if val_at not in attribute_ids[0].value_ids.ids:
-                                    attribute_ids[0].write({'value_ids': [(6, 0, [val_at])]})
+                    prd_tmp_vals.pop('attribute_line_ids')
+            p_id.write(prd_tmp_vals)
+            self.env.cr.execute(
+                "select product_id from product_templ_shop_rel where product_id = %s and shop_id = %s" % (
+                    prod_ids.id, self.id))
+            prod_data = self.env.cr.fetchone()
+            if prod_data == None:
+                self.env.cr.execute("insert into product_templ_shop_rel values(%s,%s)" % (prod_ids.id, self.id))
+
+        if not prod_ids:
+            print("product=======not>>>>>>>>>>>found", prd_tmp_vals)
+            prod_id = prod_temp_obj.create(prd_tmp_vals)
+            logger.info('Producrt Created ===> %s', prod_id.id)
+            self.env.cr.execute(
+                "select product_id from product_templ_shop_rel where product_id = %s and shop_id = %s" % (
+                    prod_id.id, self.id))
+            prod_data = self.env.cr.fetchone()
+            if prod_data == None:
+                q1 = "insert into product_templ_shop_rel values(%s,%s)" % (prod_id.id, self.id)
+                self.env.cr.execute(q1)
+
+            if product.get('associations').get('combinations').get('combination', False):
+                comb_l = product.get('associations').get('combinations').get('combination', False)
+                print("===========>ifffffffffffffffffcomb_lcomb_l>>>>>>>>>>>", comb_l)
+                # 			else:
+                # 				comb_l = product.get('combinations').get('combination')
+                # 				print("===========>elseeeeeeeeeeeeeecomb_lcomb_l>>>>>>>>>>>",comb_l)
+                c_val = {}
+                if comb_l:
+                    if isinstance(comb_l, list):
+                        comb_l = comb_l
+                    else:
+                        comb_l = [comb_l]
+
+                    for comb in comb_l:
+                        print("comb==========comb=======_id===", self.get_value_data(comb.get('id')))
+
+                        combination_dict = prestashop.get('combinations', self.get_value_data(comb.get('id')))
+                        print("===========>combination_dictcombination_dict>>>>>>>>>>>", combination_dict)
+                        value_list = []
+                        value_comb_ids = combination_dict.get('combination').get('associations').get(
+                            'product_option_values').get('product_option_value')
+                        print("===========>value_comb_ids>>>>>>>>>>>", value_comb_ids)
+                        if value_comb_ids == None:
+                            value_comb_ids = False
                         else:
-                            self.env['product.template.attribute.line'].create(
-                                {'attribute_id': each[2].get('attribute_id'), 'product_tmpl_id': p_id.id,
-                                 'value_ids': each[2].get('value_ids')})
-                    if prd_tmp_vals.get('attribute_line_ids'):
-                        prd_tmp_vals.pop('attribute_line_ids')
-                p_id.write(prd_tmp_vals)
-                self.env.cr.execute(
-                    "select product_id from product_templ_shop_rel where product_id = %s and shop_id = %s" % (
-                        prod_ids.id, self.id))
-                prod_data = self.env.cr.fetchone()
-                if prod_data == None:
-                    self.env.cr.execute("insert into product_templ_shop_rel values(%s,%s)" % (prod_ids.id, self.id))
-
-            if not prod_ids:
-                print("product=======not>>>>>>>>>>>found", prd_tmp_vals)
-                prod_id = prod_temp_obj.create(prd_tmp_vals)
-                logger.info('Producrt Created ===> %s', prod_id.id)
-                self.env.cr.execute(
-                    "select product_id from product_templ_shop_rel where product_id = %s and shop_id = %s" % (
-                        prod_id.id, self.id))
-                prod_data = self.env.cr.fetchone()
-                if prod_data == None:
-                    q1 = "insert into product_templ_shop_rel values(%s,%s)" % (prod_id.id, self.id)
-                    self.env.cr.execute(q1)
-
-                if product.get('associations').get('combinations').get('combination', False):
-                    comb_l = product.get('associations').get('combinations').get('combination', False)
-                    print("===========>ifffffffffffffffffcomb_lcomb_l>>>>>>>>>>>", comb_l)
-                    # 			else:
-                    # 				comb_l = product.get('combinations').get('combination')
-                    # 				print("===========>elseeeeeeeeeeeeeecomb_lcomb_l>>>>>>>>>>>",comb_l)
-                    c_val = {}
-                    if comb_l:
-                        if isinstance(comb_l, list):
-                            comb_l = comb_l
-                        else:
-                            comb_l = [comb_l]
-
-                        for comb in comb_l:
-                            print("comb==========comb=======_id===", self.get_value_data(comb.get('id')))
-
-                            combination_dict = prestashop.get('combinations', self.get_value_data(comb.get('id')))
-                            print("===========>combination_dictcombination_dict>>>>>>>>>>>", combination_dict)
-                            value_list = []
-                            value_comb_ids = combination_dict.get('combination').get('associations').get(
-                                'product_option_values').get('product_option_value')
-                            print("===========>value_comb_ids>>>>>>>>>>>", value_comb_ids)
-                            if value_comb_ids == None:
-                                value_comb_ids = False
+                            if isinstance(value_comb_ids, list):
+                                value_comb_ids = value_comb_ids
                             else:
-                                if isinstance(value_comb_ids, list):
-                                    value_comb_ids = value_comb_ids
-                                else:
-                                    value_comb_ids = [value_comb_ids]
-                                # print "value_comb_ids",value_comb_ids
-                                for each in value_comb_ids:
-                                    val_id = self.get_value_data(each.get('id'))
+                                value_comb_ids = [value_comb_ids]
+                            # print "value_comb_ids",value_comb_ids
+                            for each in value_comb_ids:
+                                val_id = self.get_value_data(each.get('id'))
 
-                                    value_list.append(val_id)
-                                    print("value_list====", value_list)
-                                # fffff
-                                print("-----", self.get_value_data(value_list))
+                                value_list.append(val_id)
+                                print("value_list====", value_list)
+                            # fffff
+                            print("-----", self.get_value_data(value_list))
 
-                                attr_val_ids = att_val_obj.search(
-                                    [('presta_id', 'in', self.get_value_data(value_list))])
-                                print("===========attr_val_idsattr_val_idsattr_val_ids>>>>>>>>>>>>>>>>>.",
-                                      attr_val_ids[0].name,
-                                      self.get_value_data(value_list))
-                                print("attr_val_ids=====", attr_val_ids)
-                                # ffffffffffff
-                                product_ids = prod_prod_obj.search(
-                                    [('product_tmpl_id.presta_id', '=',
-                                      self.get_value_data(combination_dict.get('combination').get('id_product')))])
-                                print("product_idsproduct_idsincombbbbbbbbbb", product_ids)
-                                value_list
-                                prod_id_var = False
-                                #                     prod_id_var = prd_tmp_vals.pop('barcode', None)
-                                if product_ids:
+                            attr_val_ids = att_val_obj.search(
+                                [('presta_id', 'in', self.get_value_data(value_list))])
+                            print("===========attr_val_idsattr_val_idsattr_val_ids>>>>>>>>>>>>>>>>>.",
+                                  attr_val_ids[0].name,
+                                  self.get_value_data(value_list))
+                            print("attr_val_ids=====", attr_val_ids)
+                            # ffffffffffff
+                            product_ids = prod_prod_obj.search(
+                                [('product_tmpl_id.presta_id', '=',
+                                  self.get_value_data(combination_dict.get('combination').get('id_product')))])
+                            print("product_idsproduct_idsincombbbbbbbbbb", product_ids)
+                            value_list
+                            prod_id_var = False
+                            #                     prod_id_var = prd_tmp_vals.pop('barcode', None)
+                            if product_ids:
 
-                                    for product_data in product_ids:
-                                        # if not product_data.combination_id
-                                        print("product_data========1111",
-                                              product_data.product_template_attribute_value_ids.product_attribute_value_id[
-                                                  0].presta_id, product_ids, product_data)
-                                        # oooooooooo
-                                        print("combination===id=======", self.get_value_data(comb.get('id')))
-                                        # gggggg
-                                        # print("------",self.get_value_data(value_list))
+                                for product_data in product_ids:
+                                    # if not product_data.combination_id
+                                    print("product_data========1111",
+                                          product_data.product_template_attribute_value_ids.product_attribute_value_id[
+                                              0].presta_id, product_ids, product_data)
+                                    # oooooooooo
+                                    print("combination===id=======", self.get_value_data(comb.get('id')))
+                                    # gggggg
+                                    # print("------",self.get_value_data(value_list))
 
-                                        # new = product_data.search([('product_template_attribute_value_ids.presta_id','in',
-                                        # str(self.get_value_data(value_list)))])
-                                        # print("new=====",new)
+                                    # new = product_data.search([('product_template_attribute_value_ids.presta_id','in',
+                                    # str(self.get_value_data(value_list)))])
+                                    # print("new=====",new)
 
-                                        prod_val_ids = product_data.product_template_attribute_value_ids.product_attribute_value_id
-                                        k = []
-                                        for red in prod_val_ids:
-                                            print("prod_val_ids===", prod_val_ids)
-                                            k.append(red.presta_id)
-                                        # ccccs
-                                        print("check both data---", k, self.get_value_data(value_list))
-                                        # cccc
-                                        res = k
-                                        rles = sorted(res, key=int)
-                                        print("res====", rles)
-                                        t = self.get_value_data(value_list)
-                                        if rles == t:
-                                            print("combination_dict====", combination_dict)
-                                            # dddd
-                                            c_val.update({
+                                    prod_val_ids = product_data.product_template_attribute_value_ids.product_attribute_value_id
+                                    k = []
+                                    for red in prod_val_ids:
+                                        print("prod_val_ids===", prod_val_ids)
+                                        k.append(red.presta_id)
+                                    # ccccs
+                                    print("check both data---", k, self.get_value_data(value_list))
+                                    # cccc
+                                    res = k
+                                    rles = sorted(res, key=int)
+                                    print("res====", rles)
+                                    t = self.get_value_data(value_list)
+                                    if rles == t:
+                                        print("combination_dict====", combination_dict)
+                                        # dddd
+                                        c_val.update({
 
-                                                'combination_price': float(
-                                                    self.get_value_data(
-                                                        combination_dict.get('combination').get('price', 0.0))),
-                                                'combination_id': self.get_value_data(comb.get('id')),
-                                                'default_code':
-                                                    self.get_value_data(
-                                                        combination_dict.get('combination').get('reference')),
+                                            'combination_price': float(
+                                                self.get_value_data(
+                                                    combination_dict.get('combination').get('price', 0.0))),
+                                            'combination_id': self.get_value_data(comb.get('id')),
+                                            'default_code':
+                                                self.get_value_data(
+                                                    combination_dict.get('combination').get('reference')),
 
-                                            })
-                                            print("c_val=======", c_val)
-                                            # if self.get_value_data(combination_dict.get('combination').get('ean13')):
-                                            # 	c_val.update({'barcode':self.get_value_data(combination_dict.get('combination').get('ean13'))})
+                                        })
+                                        print("c_val=======", c_val)
+                                        # if self.get_value_data(combination_dict.get('combination').get('ean13')):
+                                        # 	c_val.update({'barcode':self.get_value_data(combination_dict.get('combination').get('ean13'))})
 
-                                            product_data.write(c_val)
-                                            print("product_data====11", product_data.combination_id)
-                                            print("product_data====11", product_data.combination_price)
-                                            print("product_data====11", product_data.default_code)
-                                            print("product_data====11", product_data.default_code)
-                                            print("product_data===========orders", product_ids)
-                            # if self.get_value_data(combination_dict.get('combination').get('reference')):
-                            # c_val.update({'default_code':self.get_value_data(combination_dict.get('combination').get('reference'))})
-                            # product_data.write(c_val)
-                            # get_val_ids = attr_val_ids.ids
-                            # get_val_ids.sort()
-                            # if get_val_ids == prod_val_ids:
-                            # 	prod_id_var = product_data
-                            # 	value_ids = product_data.product_template_attribute_value_ids
-                            # 	break
-                # print("combination_id=======",self.get_value_data(comb.get('id')))
+                                        product_data.write(c_val)
+                                        print("product_data====11", product_data.combination_id)
+                                        print("product_data====11", product_data.combination_price)
+                                        print("product_data====11", product_data.default_code)
+                                        print("product_data====11", product_data.default_code)
+                                        print("product_data===========orders", product_ids)
+                        # if self.get_value_data(combination_dict.get('combination').get('reference')):
+                        # c_val.update({'default_code':self.get_value_data(combination_dict.get('combination').get('reference'))})
+                        # product_data.write(c_val)
+                        # get_val_ids = attr_val_ids.ids
+                        # get_val_ids.sort()
+                        # if get_val_ids == prod_val_ids:
+                        # 	prod_id_var = product_data
+                        # 	value_ids = product_data.product_template_attribute_value_ids
+                        # 	break
+            # print("combination_id=======",self.get_value_data(comb.get('id')))
 
-                # print("product_data====",c_val)
-                # print("c_val======",c_val,product_data)
-                # # dddd
-                # # if prod_id_var:
-                # product_ids[0].write(c_val)
-                # 	print("c_valc_valc_val d end==>", c_val)
-            else:
-                prod_id = prod_ids[0]
-            # print ("prod_id----------------->",prod_id)
-            self.env.cr.commit()
-        except Exception as e:
-            self.env.cr.rollback()
-            log_id = self.env.context.get('log_id', False)
-            logger.info(log_id)
-            logger.info(str(e))
-            if log_id and type(log_id) == int or type(log_id) == float:
-                self.env['log.error'].create({
-                    'log_description': str(e),
-                    'log_id': log_id
-                })
-            else:
-                log_id_obj = self.env['prestashop.log'].create(
-                    {'all_operations': 'import_products', 'error_lines': [(0, 0, {'log_description': str(e), })]})
-                log_id = log_id_obj.id
-            new_context = dict(self.env.context)
-            new_context.update({'log_id': log_id})
-            self.env.context = new_context
+            # print("product_data====",c_val)
+            # print("c_val======",c_val,product_data)
+            # # dddd
+            # # if prod_id_var:
+            # product_ids[0].write(c_val)
+            # 	print("c_valc_valc_val d end==>", c_val)
+        else:
+            prod_id = prod_ids[0]
+        # print ("prod_id----------------->",prod_id)
+        self.env.cr.commit()
         return True
 
     # @api.multi
@@ -1360,14 +1342,11 @@ class SaleShop(models.Model):
             if product.get('products') and product.get('products').get('product'):
                 for attrs in product.get('products').get('product'):
                     data = self.get_value_data(attrs.get('attrs').get('id'))
-                    logger.info(data)
                     if data:
-                        logger.info(data)
                         product_data = prestashop.get('products', data)
                         data = self.with_context(self.env.context.copy()).create_presta_product(
                             product_data.get('product'), prestashop
                         )
-                        logger.info(data)
                         if data:
                             self = self.with_context(log_id=data)
         shop.write({'last_prestashop_product_import_date': datetime.now()})
