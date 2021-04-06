@@ -590,13 +590,17 @@ class SaleShop(models.Model):
                 }
                                                 )
             else:
-                last_id = self.env['res.partner'].search([
-                    ('presta_id', '!=', False),
-                    ('prestashop_customer', '=', True),
-                    ('manufacturer', '=', False)
-                ], limit=1, order="presta_id::int DESC")
+                query = """
+                    SELECT presta_id FROM res_partner
+                    WHERE presta_id IS NOT NULL AND prestashop_customer = true AND manufacturer = false
+                    ORDER BY presta_id::int DESC;
+                """
+                self.env.cr.execute(query)
+                last_id = self.env.cr.fetchone()
+                if last_id != None:
+                    last_id = last_id[0]
                 customers_data = prestashop.get('customers', options={
-                    'filter[id]': "[{},100000]".format(str(last_id.presta_id if last_id else 0)),
+                    'filter[id]': "[{},100000]".format(str(last_id if last_id else "0")),
                 })
 
             if customers_data.get('customers') and customers_data.get('customers').get('customer'):
