@@ -1180,7 +1180,7 @@ class SaleShop(models.Model):
             try:
                 prod_id = prod_temp_obj.create(prd_tmp_vals)
             except:
-                False
+                return False
             logger.info('Producrt Created ===> %s', prod_id.id)
             self.env.cr.execute(
                 "select product_id from product_templ_shop_rel where product_id = %s and shop_id = %s" % (
