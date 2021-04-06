@@ -1372,7 +1372,17 @@ class SaleShop(models.Model):
                     'filter[date_upd]': last_imported_customer_products, 'date': '1'
                 })
             else:
+                query = """
+                    SELECT presta_id FROM product_template 
+                    WHERE presta_id IS NOT NULL
+                    ORDER BY presta_id::int DESC;
+                """
+                self.env.cr.execute(query)
+                last_id = self.env.cr.fetchone()
+                if last_id != None:
+                    last_id = last_id[0]
                 product = prestashop.get('products', options={
+                    'filter[id]': "[{},100000]".format(str(last_id if last_id else "0")),
                 })
             if product.get('products') and product.get('products').get('product'):
                 for attrs in product.get('products').get('product'):
