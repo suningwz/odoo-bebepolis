@@ -1943,6 +1943,8 @@ class SaleShop(models.Model):
         status_obj = self.env['presta.order.status']
         order_vals = {}
         id_customer = self.get_value_data(order_detail.get('id_customer'))
+        if id_customer == '0':
+            return False
         partner_ids = res_partner_obj.search([
             ('presta_id', '=', id_customer)
         ])
@@ -1951,7 +1953,6 @@ class SaleShop(models.Model):
         if partner_ids:
             order_vals.update({'partner_id': partner_ids[0].id})
         else:
-            logging.info(order_detail)
             cust_data = prestashop.get('customers', id_customer)
             # print("cust_data========>>>>>>>",cust_data)
             customer = self.create_customer(cust_data, prestashop)
