@@ -1288,9 +1288,6 @@ class SaleShop(models.Model):
 
                                 for product_data in product_ids:
                                     # if not product_data.combination_id
-                                    print("product_data========1111",
-                                          product_data.product_template_attribute_value_ids.product_attribute_value_id[
-                                              0].presta_id, product_ids, product_data)
                                     # oooooooooo
                                     print("combination===id=======", self.get_value_data(comb.get('id')))
                                     # gggggg
