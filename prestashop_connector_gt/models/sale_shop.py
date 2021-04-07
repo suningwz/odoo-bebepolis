@@ -272,7 +272,7 @@ class SaleShop(models.Model):
             ctx = {'log_id': False}
             # try:
             query = """
-                SELECT presta_id FROM product_attribute_value
+                SELECT presta_id FROM product_attribute
                 WHERE presta_id IS NOT NULL
                 ORDER BY presta_id::int DESC;
             """
