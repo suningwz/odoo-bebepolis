@@ -1503,15 +1503,9 @@ class SaleShop(models.Model):
                 ('combination_id', '=', inv_res.get('id_product_attribute'))
             ])
         if product_ids:
-            self.env.cr.execute(
-                "select product_prod_id from product_prod_shop_rel where product_prod_id = %s and shop_id = %s" % (
-                    product_ids[0].id, self.id
-                ))
-            prod_data = self.env.cr.fetchone()
-            if prod_data is None:
-                self.env.cr.execute(
-                    "insert into product_prod_shop_rel values(%s,%s)" % (product_ids[0].id, self.id))
-            print("quantityquantity====quantity", quantity, product_ids[0].id, product_ids)
+            logger.info("quantityquantity====quantity {} {} {}".format(
+                quantity, product_ids[0].id, ",".join(product_ids)
+            ))
             inv_wizard = inv_wiz.create({
                 'product_tmpl_id': product_ids[0].product_tmpl_id.id,
                 'new_quantity': quantity,
@@ -1948,111 +1942,94 @@ class SaleShop(models.Model):
         carrier_obj = self.env['delivery.carrier']
         status_obj = self.env['presta.order.status']
         order_vals = {}
-        try:
-            partner_ids = res_partner_obj.search(
-                [('presta_id', '=', self.get_value_data(order_detail.get('id_customer')))])
-            # print("sale order part>>>>>>>>>>>>>>>>",self.get_value_data(order_detail.get('id_customer')),partner_ids)
+        partner_ids = res_partner_obj.search([
+            ('presta_id', '=', self.get_value_data(order_detail.get('id_customer')))
+        ])
+        # print("sale order part>>>>>>>>>>>>>>>>",self.get_value_data(order_detail.get('id_customer')),partner_ids)
 
-            if partner_ids:
-                order_vals.update({'partner_id': partner_ids[0].id})
+        if partner_ids:
+            order_vals.update({'partner_id': partner_ids[0].id})
+        else:
+            # try:
+            cust_data = prestashop.get('customers', self.get_value_data(order_detail.get('id_customer')))
+            # print("cust_data========>>>>>>>",cust_data)
+            customer = self.create_customer(cust_data, prestashop)
+            # except:
+            customer = [self.partner_id]
+            # pass
+            order_vals.update({'partner_id': customer[0].id})
+
+        state_ids = status_obj.search([
+            ('presta_id', '=', self.get_value_data(order_detail.get('current_state')))
+        ])
+        if state_ids:
+            st_id = state_ids[0]
+        else:
+            orders_status_lst = prestashop.get('order_states', self.get_value_data(order_detail.get('current_state')))
+            st_id = status_obj.create({
+                'name': self.get_value_data(
+                    self.get_value(orders_status_lst.get('order_state').get('name').get('language'))),
+                'presta_id': self.get_value_data(order_detail.get('current_state')),
+            })
+
+        a = self.get_value_data(order_detail.get('payment'))
+        p_mode = False
+        if a[0] == 'Bank wire':
+            p_mode = 'bankwire'
+        elif a[0] == 'Payments by check':
+            p_mode = 'cheque'
+        elif a[0] == 'Bank transfer':
+            p_mode = 'banktran'
+        order_vals.update({
+            'reference': self.get_value_data(order_detail.get('reference')),
+            # 					   'presta_payment_mode' : self.get_value_data(order_detail.get('module'))[0],
+            'presta_id': self.get_value_data(order_detail.get('id')),
+            'warehouse_id': self.warehouse_id.id,
+            'presta_order_ref': self.get_value_data(order_detail.get('reference')),
+            # 'carrier_prestashop': order_detail.get('id_carrier'),
+            'pretsa_payment_mode': p_mode,
+            'pricelist_id': self.pricelist_id.id,
+            'name': 'SO000' + self.get_value_data(order_detail.get('id')),
+            'order_status': st_id.id,
+            'shop_id': self.id,
+            'presta_order_date': self.get_value_data(order_detail.get('date_add')),
+            # 'id_shop_group':1,
+        })
+        if self.workflow_id.picking_policy:
+            order_vals.update({'picking_policy': self.workflow_id.picking_policy})
+
+        carr_ids = carrier_obj.search([('presta_id', '=', self.get_value_data(order_detail.get('id_carrier')))])
+        if int(self.get_value_data(order_detail.get('id_carrier'))) > 0:
+            if carr_ids:
+                order_vals.update({'carrier_prestashop': carr_ids[0].id})
             else:
+                try:
+                    carrier_data = prestashop.get('carriers', self.get_value_data(order_detail.get('id_carrier')))
+                    order_vals.update({'carrier_prestashop': self.create_carrier(
+                        self.get_value_data(carrier_data.get('carrier'))).id})
+                except:
+                    pass
 
-                # try:
-                cust_data = prestashop.get('customers', self.get_value_data(order_detail.get('id_customer')))
-                # print("cust_data========>>>>>>>",cust_data)
+        sale_order_ids = sale_order_obj.search([('presta_id', '=', self.get_value_data(order_detail.get('id')))])
+        if not sale_order_ids:
+            s_id = sale_order_obj.create(order_vals)
+            logger.info('created orders ===> %s', s_id.id)
+        else:
+            s_id = sale_order_ids[0]
 
-                customer = self.create_customer(cust_data, prestashop)
-                # except:
-                customer = [self.partner_id]
-                # pass
-                order_vals.update({'partner_id': customer[0].id})
+        if s_id:
+            self.env.cr.execute(
+                "select saleorder_id from saleorder_shop_rel where saleorder_id = %s and shop_id = %s" % (
+                    s_id.id, self.id))
+            so_data = self.env.cr.fetchone()
+            if so_data == None:
+                # print ("444444444444")
+                self.env.cr.execute("insert into saleorder_shop_rel values(%s,%s)" % (s_id.id, self.id))
 
-            state_ids = status_obj.search([('presta_id', '=', self.get_value_data(order_detail.get('current_state')))])
-            if state_ids:
-                st_id = state_ids[0]
-            else:
-                orders_status_lst = prestashop.get('order_states',
-                                                   self.get_value_data(order_detail.get('current_state')))
-                st_id = status_obj.create({
-                    'name': self.get_value_data(
-                        self.get_value(orders_status_lst.get('order_state').get('name').get('language'))),
-                    'presta_id': self.get_value_data(order_detail.get('current_state')),
-                })
-
-            a = self.get_value_data(order_detail.get('payment'))
-            p_mode = False
-            if a[0] == 'Bank wire':
-                p_mode = 'bankwire'
-            elif a[0] == 'Payments by check':
-                p_mode = 'cheque'
-            elif a[0] == 'Bank transfer':
-                p_mode = 'banktran'
-            order_vals.update({'reference': self.get_value_data(order_detail.get('reference')),
-                               # 					   'presta_payment_mode' : self.get_value_data(order_detail.get('module'))[0],
-                               'presta_id': self.get_value_data(order_detail.get('id')),
-                               # 'shop_id' : self[0].id,
-                               'warehouse_id': self.warehouse_id.id,
-                               'presta_order_ref': self.get_value_data(order_detail.get('reference')),
-                               # 'carrier_prestashop': order_detail.get('id_carrier'),
-                               'pretsa_payment_mode': p_mode,
-                               'pricelist_id': self.pricelist_id.id,
-                               'name': 'SO000' + self.get_value_data(order_detail.get('id')),
-                               'order_status': st_id.id,
-                               'shop_id': self.id,
-                               'presta_order_date': self.get_value_data(order_detail.get('date_add')),
-                               # 'id_shop_group':1,
-                               })
-            if self.workflow_id.picking_policy:
-                order_vals.update({'picking_policy': self.workflow_id.picking_policy})
-
-            carr_ids = carrier_obj.search([('presta_id', '=', self.get_value_data(order_detail.get('id_carrier')))])
-            if int(self.get_value_data(order_detail.get('id_carrier'))) > 0:
-                if carr_ids:
-                    order_vals.update({'carrier_prestashop': carr_ids[0].id})
-                else:
-                    try:
-                        carrier_data = prestashop.get('carriers', self.get_value_data(order_detail.get('id_carrier')))
-                        order_vals.update({'carrier_prestashop': self.create_carrier(
-                            self.get_value_data(carrier_data.get('carrier'))).id})
-                    except:
-                        pass
-
-            sale_order_ids = sale_order_obj.search([('presta_id', '=', self.get_value_data(order_detail.get('id')))])
-            if not sale_order_ids:
-                s_id = sale_order_obj.create(order_vals)
-                logger.info('created orders ===> %s', s_id.id)
-            else:
-                s_id = sale_order_ids[0]
-
-            if s_id:
-                self.env.cr.execute(
-                    "select saleorder_id from saleorder_shop_rel where saleorder_id = %s and shop_id = %s" % (
-                        s_id.id, self.id))
-                so_data = self.env.cr.fetchone()
-                if so_data == None:
-                    # print ("444444444444")
-                    self.env.cr.execute("insert into saleorder_shop_rel values(%s,%s)" % (s_id.id, self.id))
-
-            self.manageOrderLines(s_id, order_detail, prestashop)
-            self.manageOrderWorkflow(s_id, order_detail, st_id)
-            self.env.cr.commit()
-            return s_id
-        except Exception as e:
-            print('e------------------------------------------', e)
-            print('e-------------------self.env.context-----------------------', self.env.context)
-            if self.env.context.get('log_id'):
-                log_id = self.env.context.get('log_id')
-                self.env['log.error'].create({'log_description': str(e), 'log_id': log_id})
-            else:
-                log_id_obj = self.env['prestashop.log'].create(
-                    {'all_operations': 'import_orders', 'error_lines': [(0, 0, {'log_description': str(e)})]})
-                log_id = log_id_obj.id
-            # self = self.with_context(log_id = log_id.id)
-            new_context = dict(self.env.context)
-            new_context.update({'log_id': log_id})
-            self.env.context = new_context
-            print('self.env.context0000000---------------', self.env.context)
-        return True
+        self.manageOrderLines(s_id, order_detail, prestashop)
+        self.manageOrderWorkflow(s_id, order_detail, st_id)
+        self.env.cr.commit()
+        return s_id
 
     # @api.multi
     def import_orders(self):
