@@ -1476,62 +1476,55 @@ class SaleShop(models.Model):
 
     # @api.one
     def createInventory(self, inv_res, lot_stock_id, prestashop):
-        print("inside createInventory", inv_res)
+        logger.info("inside createInventory")
+        logger.info(inv_res)
         product_obj = self.env['product.product']
         product_temp_obj = self.env['product.template']
         inv_wiz = self.env['stock.change.product.qty']
         quantity = self.get_value_data(inv_res.get('quantity'))
-        try:
+        if self.get_value_data(inv_res.get('id_product_attribute')) == '0':
+            product_ids = product_obj.search(
+                [('product_tmpl_id.presta_id', '=', self.get_value_data(inv_res.get('id_product')))])
+            if product_ids:
+                child_ids = product_obj.search([('product_tmpl_id', '=', product_ids[0].product_tmpl_id.id)])
+                if len(child_ids) > 1:
+                    logger.info("NO 1")
+                    logger.info([('product_tmpl_id.presta_id', '=', self.get_value_data(inv_res.get('id_product')))])
+                    return True
+        else:
+            product_ids = product_obj.search([('combination_id', '=', inv_res.get('id_product_attribute'))])
+        if not product_ids:
+            prod_data_tmpl = prestashop.get('products', self.get_value_data(inv_res.get('id_product')))
+            self.create_presta_product(prod_data_tmpl.get('product'), prestashop)
             if self.get_value_data(inv_res.get('id_product_attribute')) == '0':
                 product_ids = product_obj.search(
-                    [('product_tmpl_id.presta_id', '=', self.get_value_data(inv_res.get('id_product')))])
+                    [('product_tmpl_id.id', '=', self.get_value_data(inv_res.get('id_product')))])
                 if product_ids:
                     child_ids = product_obj.search([('product_tmpl_id', '=', product_ids[0].product_tmpl_id.id)])
                     if len(child_ids) > 1:
+                        logger.info("NO 2")
+                        logger.info([('product_tmpl_id.id', '=', self.get_value_data(inv_res.get('id_product')))])
                         return True
             else:
-                product_ids = product_obj.search([('combination_id', '=', inv_res.get('id_product_attribute'))])
-            if not product_ids:
-                prod_data_tmpl = prestashop.get('products', self.get_value_data(inv_res.get('id_product')))
-                self.create_presta_product(prod_data_tmpl.get('product'), prestashop)
-                if self.get_value_data(inv_res.get('id_product_attribute')) == '0':
-                    product_ids = product_obj.search(
-                        [('product_tmpl_id.id', '=', self.get_value_data(inv_res.get('id_product')))])
-                    if product_ids:
-                        child_ids = product_obj.search([('product_tmpl_id', '=', product_ids[0].product_tmpl_id.id)])
-                        if len(child_ids) > 1:
-                            return True
-                else:
-                    product_ids = product_obj.search(
-                        [('combination_id', '=', self.get_value_data(inv_res.get('id_product_attribute')))])
-            if product_ids:
+                product_ids = product_obj.search(
+                    [('combination_id', '=', self.get_value_data(inv_res.get('id_product_attribute')))])
+        if product_ids:
+            self.env.cr.execute(
+                "select product_prod_id from product_prod_shop_rel where product_prod_id = %s and shop_id = %s" % (
+                    product_ids[0].id, self.id))
+            prod_data = self.env.cr.fetchone()
+            if prod_data is None:
                 self.env.cr.execute(
-                    "select product_prod_id from product_prod_shop_rel where product_prod_id = %s and shop_id = %s" % (
-                        product_ids[0].id, self.id))
-                prod_data = self.env.cr.fetchone()
-                if prod_data is None:
-                    self.env.cr.execute(
-                        "insert into product_prod_shop_rel values(%s,%s)" % (product_ids[0].id, self.id))
-                print("quantityquantity====quantity", quantity, product_ids[0].id, product_ids)
-                inv_wizard = inv_wiz.create({
-                    'product_tmpl_id': product_ids[0].product_tmpl_id.id,
-                    'new_quantity': quantity,
-                    'product_id': product_ids[0].id,
-                })
-                inv_wizard.change_product_qty()
-                self.env.cr.commit()
-                return True
-        except Exception as e:
-            if self.env.context.get('log_id'):
-                log_id = self.env.context.get('log_id')
-                self.env['log.error'].create({'log_description': str(e), 'log_id': log_id})
-            else:
-                log_id_obj = self.env['prestashop.log'].create(
-                    {'all_operations': 'import_inventory', 'error_lines': [(0, 0, {'log_description': str(e), })]})
-                log_id = log_id_obj.id
-            new_context = dict(self.env.context)
-            new_context.update({'log_id': log_id})
-            self.env.context = new_context
+                    "insert into product_prod_shop_rel values(%s,%s)" % (product_ids[0].id, self.id))
+            print("quantityquantity====quantity", quantity, product_ids[0].id, product_ids)
+            inv_wizard = inv_wiz.create({
+                'product_tmpl_id': product_ids[0].product_tmpl_id.id,
+                'new_quantity': quantity,
+                'product_id': product_ids[0].id,
+            })
+            inv_wizard.change_product_qty()
+            self.env.cr.commit()
+            return True
 
     # @api.multi
     def import_product_inventory(self):
