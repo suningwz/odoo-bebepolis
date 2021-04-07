@@ -577,6 +577,8 @@ class PrestaShopWebServiceDict(PrestaShopWebService):
         :return: a dict of the response.
             Remove root keys ['prestashop'] from the message
         """
+        import logging
+        logging.info(url)
         response = super(PrestaShopWebServiceDict, self).get_with_url(url)
         if isinstance(response, dict):
             return response['prestashop']
