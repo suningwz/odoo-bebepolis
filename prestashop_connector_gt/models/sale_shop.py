@@ -2039,7 +2039,7 @@ class SaleShop(models.Model):
             )
             ctx = {}
             order_data = prestashop.get('orders', options={
-                'filter[date_add]': self.env.context.get('last_order_import_date'),
+                'filter[date_add]': "[{},]".format(self.env.context.get('last_order_import_date')),
                 'date': '1'
             })
             logger.info(self.env.context.get('last_order_import_date'))
