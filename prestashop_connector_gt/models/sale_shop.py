@@ -271,12 +271,18 @@ class SaleShop(models.Model):
             )
             ctx = {'log_id': False}
             # try:
-            last_import_attrs = shop.last_presta_product_attrs_import_date
-            if last_import_attrs:
-                product_options = prestashop.get('product_options')
-            else:
-                product_options = prestashop.get('product_options')
-
+            query = """
+                SELECT presta_id FROM product_attribute_value
+                WHERE presta_id IS NOT NULL
+                ORDER BY presta_id::int DESC;
+            """
+            self.env.cr.execute(query)
+            last_id = self.env.cr.fetchone()
+            if last_id != None:
+                last_id = last_id[0]
+            product_options = prestashop.get('product_options', {
+                'filter[id]': "[{},1000000]".format(str(last_id if last_id else "0")),
+            })
             if product_options.get('product_options') and product_options.get('product_options').get(
                     'product_option'):
                 attributes = product_options.get('product_options').get('product_option')
@@ -2043,7 +2049,8 @@ class SaleShop(models.Model):
             )
             ctx = {}
             order_data = prestashop.get('orders', options={
-                'filter[date_add]': "[{},{}]".format(self.env.context.get('last_order_import_date'), str(datetime.now())),
+                'filter[date_add]': "[{},{}]".format(self.env.context.get('last_order_import_date'),
+                                                     str(datetime.now())),
                 'date': '1',
                 'sort': '[id_DESC]'
             })
