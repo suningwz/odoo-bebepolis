@@ -280,7 +280,7 @@ class SaleShop(models.Model):
             last_id = self.env.cr.fetchone()
             if last_id != None:
                 last_id = last_id[0]
-            product_options = prestashop.get('product_options', {
+            product_options = prestashop.get('product_options', options={
                 'filter[id]': "[{},1000000]".format(str(last_id if last_id else "0")),
             })
             if product_options.get('product_options') and product_options.get('product_options').get(
