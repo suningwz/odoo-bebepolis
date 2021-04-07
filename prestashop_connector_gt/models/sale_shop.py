@@ -1765,17 +1765,12 @@ class SaleShop(models.Model):
 
     # @api.one
     def manageOrderLines(self, orderid, order_detail, prestashop):
-        # vvvvvvvvv
-        print("===========manageOrderLines_order_detail==========", order_detail, order_detail.get('total_discounts'))
-        # print ("===========prestashop==========",prestashop)
         sale_order_line_obj = self.env['sale.order.line']
         prod_attr_val_obj = self.env['product.attribute.value']
         prod_templ_obj = self.env['product.template']
         product_obj = self.env['product.product']
         lines = []
         order_rows = order_detail.get('associations').get('order_rows').get('order_row')
-        # print("===========order_rows==========", order_rows)
-        # dddddd
         if isinstance(order_rows, list):
             order_rows = order_rows
         else:
@@ -1783,7 +1778,6 @@ class SaleShop(models.Model):
         for child in order_rows:
             if child == None or not child:
                 continue
-            logger.info(child)
             line = {
                 'price_unit': str(self.get_value_data(child.get('unit_price_tax_incl'))),
                 'name': self.get_value_data(child.get('product_name')),
@@ -1791,97 +1785,67 @@ class SaleShop(models.Model):
                 'order_id': orderid.id,
                 'tax_id': False,
             }
-            # print("===========line==========", line)
-
-            # discount details
-            # discount = 0.0
-            # discou = order_detail.get('total_discounts')
-            # print("discou====",discou,type(discou))
-            # discou = discou.get('value')
-            # print("discou===",discou)
-            # if float(discou) > 0.0:
-            # 	line.update({'discount': discou})
-            # print('------',child.get('product_attribute_id'))
             if self.get_value_data(child.get('product_attribute_id')) != '0':
                 value_ids = []
                 value_list = []
-                combination = prestashop.get('combinations', self.get_value_data(child.get('product_attribute_id')))
-                # print("====combination========>", combination)
-                value_ids = combination.get('combination').get('associations').get('product_option_values').get(
-                    'product_option_value')
-                # print("====value_ids========>", value_ids)
-                if isinstance(value_ids, list):
-                    value_ids = value_ids
-                else:
-                    value_ids = [value_ids]
-                for value_id in value_ids:
-                    values = self.get_value_data(value_id.get('id'))
-                    value_ids = prod_attr_val_obj.search([('presta_id', '=', values)])
-                    sa = value_list.append(value_ids.id)
-                # values = self.get_value_data(value_ids.get('id'))[0]
-                # print("====values========>", values)
-                # if  value_ids.get('id') :
-                # value_ids = prod_attr_val_obj.search([('presta_id', '=', self.get_value_data(values)[0])])
-                temp_ids = prod_templ_obj.search(
-                    [('presta_id', '=', self.get_value_data(combination.get('combination').get('id_product')))])
-
-                # print("====temp_ids======",temp_ids)
-                if not temp_ids:
-                    prod_data_tmpl = prestashop.get('products', self.get_value_data(
-                        combination.get('combination').get('id_product')))
-                    temp_ids = self.create_presta_product(prod_data_tmpl.get('product'), prestashop)
-
-                if temp_ids:
-                    # print("product_ids====",self.get_value_data(combination.get('combination').get('id_product')))
-                    product_ids = product_obj.search(
-                        [('id', '=', self.get_value_data(combination.get('combination').get('id_product')))])
-                    # print("product_ids============",product_ids)
-
-                    # cccccc
-                    # print("product_ids====",self.get_value_data(
-                    # 	combination.get('combination').get('id_product')))
-                    for product_id in product_ids:
-                        # bbbb
-                        if product_id.product_template_attribute_value_ids == prod_attr_val_obj.browse(
-                                value_list) and product_id.product_tmpl_id == temp_ids[0]:
-                            product_ids = product_id
-                        # eeeeee
-                    if product_ids:
-                        # jjjj
-                        # print("====product_ids[0].id====",product_ids[0].id)
-                        line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
+                try:
+                    combination = prestashop.get('combinations', self.get_value_data(child.get('product_attribute_id')))
+                    value_ids = combination.get('combination').get('associations').get('product_option_values').get(
+                        'product_option_value')
+                    if isinstance(value_ids, list):
+                        value_ids = value_ids
                     else:
-                        prod_data = prestashop.get('products', self.get_value_data(
-                            combination.get('combination').get('id_product')))
-                        tmpl_id = self.create_presta_product(prod_data.get('product'), prestashop)[0]
-                        product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id[0].id)])
-                        line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
-            # 			except:
-            # 				pass
+                        value_ids = [value_ids]
+                    for value_id in value_ids:
+                        values = self.get_value_data(value_id.get('id'))
+                        value_ids = prod_attr_val_obj.search([('presta_id', '=', values)])
+                        sa = value_list.append(value_ids.id)
+                    temp_ids = prod_templ_obj.search([
+                        ('presta_id', '=', self.get_value_data(combination.get('combination').get('id_product')))
+                    ], limit=1)
+                    if not temp_ids:
+                        prod_data_tmpl = prestashop.get(
+                            'products',
+                            self.get_value_data(combination.get('combination').get('id_product'))
+                        )
+                        temp_ids = self.create_presta_product(prod_data_tmpl.get('product'), prestashop)
+                        if temp_ids:
+                            product_ids = product_obj.search(
+                                [('id', '=', self.get_value_data(combination.get('combination').get('id_product')))])
+                            for product_id in product_ids:
+                                if product_id.product_template_attribute_value_ids == prod_attr_val_obj.browse(
+                                        value_list) and product_id.product_tmpl_id == temp_ids[0]:
+                                    product_ids = product_id
+                            if product_ids:
+                                line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
+                            else:
+                                prod_data = prestashop.get('products', self.get_value_data(
+                                    combination.get('combination').get('id_product')))
+                                tmpl_id = self.create_presta_product(prod_data.get('product'), prestashop)[0]
+                                product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id[0].id)])
+                                line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
+                except:
+                    pass
             else:
                 temp_ids = prod_templ_obj.search([('presta_id', '=', self.get_value_data(child.get('product_id')))])
-                # print("temp_ids-----", temp_ids)
-                # check for non variant product
                 if temp_ids:
                     product_ids = product_obj.search([('product_tmpl_id', '=', temp_ids[0].id)])
-                    # print("============tempproduct_ids==>>>>>>>>>>", product_ids)
-                    # check for non variant products by product_tmpl_ids if multiple found
                     if product_ids:
                         line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
-                    # print("line=====>>>>>>", line)
                     else:
-                        prod_data = prestashop.get('products', self.get_value_data(child.get('product_id')))
-                        # changed to product_id
-                        tmpl_id = self.create_presta_product(prod_data.get('products'), prestashop)[0].id
-                        product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id)])
-                        line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
+                        try:
+                            prod_data = prestashop.get('products', self.get_value_data(child.get('product_id')))
+                            tmpl_id = self.create_presta_product(prod_data.get('products'), prestashop)[0].id
+                            product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id)])
+                            line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
+                        except:
+                            pass
                 else:
                     try:
                         new_product_data = prestashop.get('products', self.get_value_data(child.get('product_id')))
                         new_tmpl_id = self.create_presta_product(new_product_data.get('product'), prestashop)[0].id
                         new_product_ids = product_obj.search([('product_tmpl_id', '=', new_tmpl_id)])
                         line.update({'product_id': new_product_ids[0].id, 'product_uom': new_product_ids[0].uom_id.id})
-                    # print("============line==>>>>>>>>>>", line)
                     except:
                         p_ids = product_obj.search([('default_code', '=', 'RMVPRD')])
                         if not p_ids:
@@ -1890,12 +1854,11 @@ class SaleShop(models.Model):
                             pid = p_ids[0]
                         line.update({'product_id': pid[0].id, 'product_uom': pid[0].uom_id.id})
                         pass
-
             if line.get('product_id'):
-                # print("===line===")
-                line_ids = sale_order_line_obj.search(
-                    [('product_id', '=', self.get_value_data(line.get('product_id'))), ('order_id', '=', orderid.id)])
-                print("=========line_ids____", line_ids)
+                line_ids = sale_order_line_obj.search([
+                    ('product_id', '=', self.get_value_data(line.get('product_id'))),
+                    ('order_id', '=', orderid.id)
+                ])
                 if not line_ids:
                     sale_order_line_obj.create(line)
 
@@ -1938,8 +1901,10 @@ class SaleShop(models.Model):
             if not wline_ids:
                 sale_order_line_obj.create(wline)
             else:
-                wline_ids[0].write({'price_unit': wline_ids[0].price_unit + wrapping,
-                                    'name': wline_ids[0].name + self.get_value_data(wline.get('name'))})
+                wline_ids[0].write({
+                    'price_unit': wline_ids[0].price_unit + wrapping,
+                    'name': wline_ids[0].name + self.get_value_data(wline.get('name'))
+                })
 
     # @api.one
     def create_presta_order(self, order_detail, prestashop):
@@ -1950,35 +1915,35 @@ class SaleShop(models.Model):
         order_vals = {}
         id_customer = self.get_value_data(order_detail.get('id_customer'))
         if id_customer == '0':
-            return False
-        partner_ids = res_partner_obj.search([
-            ('presta_id', '=', id_customer)
-        ])
-        # print("sale order part>>>>>>>>>>>>>>>>",self.get_value_data(order_detail.get('id_customer')),partner_ids)
-
-        if partner_ids:
-            order_vals.update({'partner_id': partner_ids[0].id})
+            partner_ids = [self.env.ref('base.public_user')]
         else:
-            cust_data = prestashop.get('customers', id_customer)
-            # print("cust_data========>>>>>>>",cust_data)
-            customer = self.create_customer(cust_data, prestashop)
-            # except:
-            customer = [self.partner_id]
-            # pass
-            order_vals.update({'partner_id': customer[0].id})
-
+            partner_ids = res_partner_obj.search([
+                ('presta_id', '=', id_customer)
+            ])
+        if partner_ids:
+            order_vals.update({
+                'partner_id': partner_ids[0].id
+            })
+        else:
+            raise UserError("No hay clientes disponibles")
         state_ids = status_obj.search([
             ('presta_id', '=', self.get_value_data(order_detail.get('current_state')))
         ])
         if state_ids:
             st_id = state_ids[0]
         else:
-            orders_status_lst = prestashop.get('order_states', self.get_value_data(order_detail.get('current_state')))
-            st_id = status_obj.create({
-                'name': self.get_value_data(
-                    self.get_value(orders_status_lst.get('order_state').get('name').get('language'))),
-                'presta_id': self.get_value_data(order_detail.get('current_state')),
-            })
+            try:
+                orders_status_lst = prestashop.get(
+                    'order_states',
+                    self.get_value_data(order_detail.get('current_state'))
+                )
+                st_id = status_obj.create({
+                    'name': self.get_value_data(
+                        self.get_value(orders_status_lst.get('order_state').get('name').get('language'))),
+                    'presta_id': self.get_value_data(order_detail.get('current_state')),
+                })
+            except:
+                pass
 
         a = self.get_value_data(order_detail.get('payment'))
         p_mode = False
@@ -1990,18 +1955,16 @@ class SaleShop(models.Model):
             p_mode = 'banktran'
         order_vals.update({
             'reference': self.get_value_data(order_detail.get('reference')),
-            # 					   'presta_payment_mode' : self.get_value_data(order_detail.get('module'))[0],
             'presta_id': self.get_value_data(order_detail.get('id')),
             'warehouse_id': self.warehouse_id.id,
             'presta_order_ref': self.get_value_data(order_detail.get('reference')),
-            # 'carrier_prestashop': order_detail.get('id_carrier'),
             'pretsa_payment_mode': p_mode,
             'pricelist_id': self.pricelist_id.id,
             'name': 'SO000' + self.get_value_data(order_detail.get('id')),
             'order_status': st_id.id,
             'shop_id': self.id,
             'presta_order_date': self.get_value_data(order_detail.get('date_add')),
-            # 'id_shop_group':1,
+            'date_order': self.get_value_data(order_detail.get('date_add')),
         })
         if self.workflow_id.picking_policy:
             order_vals.update({'picking_policy': self.workflow_id.picking_policy})
@@ -2018,10 +1981,11 @@ class SaleShop(models.Model):
                 except:
                     pass
 
-        sale_order_ids = sale_order_obj.search([('presta_id', '=', self.get_value_data(order_detail.get('id')))])
+        sale_order_ids = sale_order_obj.search([
+            ('presta_id', '=', self.get_value_data(order_detail.get('id')))
+        ])
         if not sale_order_ids:
             s_id = sale_order_obj.create(order_vals)
-            logger.info('created orders ===> %s', s_id.id)
         else:
             s_id = sale_order_ids[0]
 
@@ -2031,9 +1995,7 @@ class SaleShop(models.Model):
                     s_id.id, self.id))
             so_data = self.env.cr.fetchone()
             if so_data == None:
-                # print ("444444444444")
                 self.env.cr.execute("insert into saleorder_shop_rel values(%s,%s)" % (s_id.id, self.id))
-
         self.manageOrderLines(s_id, order_detail, prestashop)
         self.manageOrderWorkflow(s_id, order_detail, st_id)
         self.env.cr.commit()
