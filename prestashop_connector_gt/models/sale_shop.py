@@ -2038,8 +2038,10 @@ class SaleShop(models.Model):
                 shop.prestashop_instance_id.webservice_key or None
             )
             ctx = {}
-            order_data = prestashop.get('orders')
-            print("==order_data=>", order_data)
+            order_data = prestashop.get('orders', options={
+                'filter[date_upd]': self.env.context.get('last_order_import_date'),
+                'date': '1'
+            })
             if order_data.get('orders') and order_data.get('orders').get('order'):
                 orders = order_data.get('orders').get('order')
                 if isinstance(orders, list):
