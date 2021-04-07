@@ -1807,28 +1807,28 @@ class SaleShop(models.Model):
                     temp_ids = prod_templ_obj.search([
                         ('presta_id', '=', self.get_value_data(combination.get('combination').get('id_product')))
                     ], limit=1)
-                    logger.info(temp_ids)
                     if not temp_ids:
                         prod_data_tmpl = prestashop.get(
                             'products',
                             self.get_value_data(combination.get('combination').get('id_product'))
                         )
                         temp_ids = self.create_presta_product(prod_data_tmpl.get('product'), prestashop)
-                        if temp_ids:
-                            product_ids = product_obj.search(
-                                [('id', '=', self.get_value_data(combination.get('combination').get('id_product')))])
-                            for product_id in product_ids:
-                                if product_id.product_template_attribute_value_ids == prod_attr_val_obj.browse(
-                                        value_list) and product_id.product_tmpl_id == temp_ids[0]:
-                                    product_ids = product_id
-                            if product_ids:
-                                line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
-                            else:
-                                prod_data = prestashop.get('products', self.get_value_data(
-                                    combination.get('combination').get('id_product')))
-                                tmpl_id = self.create_presta_product(prod_data.get('product'), prestashop)[0]
-                                product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id[0].id)])
-                                line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
+                    if temp_ids:
+                        product_ids = product_obj.search([
+                            ('id', '=', self.get_value_data(combination.get('combination').get('id_product')))
+                        ])
+                        for product_id in product_ids:
+                            if product_id.product_template_attribute_value_ids == prod_attr_val_obj.browse(
+                                    value_list) and product_id.product_tmpl_id == temp_ids[0]:
+                                product_ids = product_id
+                        if product_ids:
+                            line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
+                        else:
+                            prod_data = prestashop.get('products', self.get_value_data(
+                                combination.get('combination').get('id_product')))
+                            tmpl_id = self.create_presta_product(prod_data.get('product'), prestashop)[0]
+                            product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id[0].id)])
+                            line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
                 except:
                     logger.info("Atributos no encontrados")
                     pass
