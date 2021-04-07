@@ -1,4 +1,4 @@
-odoo.define('point_of_sale.ReservationModeButton', function(require) {
+odoo.define('aspl_pos_order_reservation_ee.ReservationModeButton', function(require) {
     'use strict';
 
     const PosComponent = require('point_of_sale.PosComponent');
