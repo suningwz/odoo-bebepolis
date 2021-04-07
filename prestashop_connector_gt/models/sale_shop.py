@@ -1792,20 +1792,20 @@ class SaleShop(models.Model):
                 try:
                     logger.info(child)
                     combination = prestashop.get('combinations', self.get_value_data(child.get('product_attribute_id')))
-                    logger.info("Combinación")
-                    logger.info(combination)
                     value_ids = combination.get('combination').get('associations').get('product_option_values').get(
                         'product_option_value')
                     if isinstance(value_ids, list):
                         value_ids = value_ids
                     else:
                         value_ids = [value_ids]
-                    logger.info("Valores")
-                    logger.info(value_ids)
                     for value_id in value_ids:
+                        logger.info("Atributo")
+                        logger.info(value_id)
                         values = self.get_value_data(value_id.get('id'))
+                        logger.info(values)
                         value_ids = prod_attr_val_obj.search([('presta_id', '=', values)])
-                        sa = value_list.append(value_ids.id)
+                        logger.info(value_ids)
+                        value_list.append(value_ids.id)
                     temp_ids = prod_templ_obj.search([
                         ('presta_id', '=', self.get_value_data(combination.get('combination').get('id_product')))
                     ], limit=1)
