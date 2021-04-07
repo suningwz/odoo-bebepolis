@@ -2039,7 +2039,7 @@ class SaleShop(models.Model):
             )
             ctx = {}
             order_data = prestashop.get('orders', options={
-                'filter[date_upd]': self.env.context.get('last_order_import_date'),
+                'filter[date_add]': self.env.context.get('last_order_import_date'),
                 'date': '1'
             })
             if order_data.get('orders') and order_data.get('orders').get('order'):
