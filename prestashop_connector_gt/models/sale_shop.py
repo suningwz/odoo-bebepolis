@@ -1920,12 +1920,23 @@ class SaleShop(models.Model):
             partner_ids = res_partner_obj.search([
                 ('presta_id', '=', id_customer)
             ])
+        if not partner_ids:
+            try:
+                cust_data = prestashop.get('customers', id_customer)
+                customer = self.create_customer(cust_data, prestashop)
+                partner_ids = [customer]
+                order_vals.update({'partner_id': customer[0].id})
+            except:
+                partner_ids = [self.env.ref('base.public_user')]
         if partner_ids:
             order_vals.update({
                 'partner_id': partner_ids[0].id
             })
         else:
-            raise UserError("No hay clientes disponibles")
+            order_vals.update({
+                'partner_id': self.env.ref('base.public_user').id
+            })
+
         state_ids = status_obj.search([
             ('presta_id', '=', self.get_value_data(order_detail.get('current_state')))
         ])
