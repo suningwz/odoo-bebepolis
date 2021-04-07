@@ -1792,6 +1792,7 @@ class SaleShop(models.Model):
                 try:
                     logger.info(child)
                     combination = prestashop.get('combinations', self.get_value_data(child.get('product_attribute_id')))
+                    logger.info("Combinación")
                     logger.info(combination)
                     value_ids = combination.get('combination').get('associations').get('product_option_values').get(
                         'product_option_value')
@@ -1799,6 +1800,7 @@ class SaleShop(models.Model):
                         value_ids = value_ids
                     else:
                         value_ids = [value_ids]
+                    logger.info("Valores")
                     logger.info(value_ids)
                     for value_id in value_ids:
                         values = self.get_value_data(value_id.get('id'))
