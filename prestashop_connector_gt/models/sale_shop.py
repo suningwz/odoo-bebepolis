@@ -1482,36 +1482,29 @@ class SaleShop(models.Model):
         product_temp_obj = self.env['product.template']
         inv_wiz = self.env['stock.change.product.qty']
         quantity = self.get_value_data(inv_res.get('quantity'))
+        if quantity < 0:
+            logger.info("Cantidad negativa")
+            return True
         if self.get_value_data(inv_res.get('id_product_attribute')) == '0':
-            product_ids = product_obj.search(
-                [('product_tmpl_id.presta_id', '=', self.get_value_data(inv_res.get('id_product')))])
+            product_ids = product_obj.search([
+                ('product_tmpl_id.presta_id', '=', self.get_value_data(inv_res.get('id_product')))
+            ])
             if product_ids:
-                child_ids = product_obj.search([('product_tmpl_id', '=', product_ids[0].product_tmpl_id.id)])
+                child_ids = product_obj.search([
+                    ('product_tmpl_id', '=', product_ids[0].product_tmpl_id.id)
+                ])
                 if len(child_ids) > 1:
-                    logger.info("NO 1")
-                    logger.info([('product_tmpl_id.presta_id', '=', self.get_value_data(inv_res.get('id_product')))])
+                    logger.info("Debería tener variantes. No se actualiza el elemento principal.")
                     return True
         else:
-            product_ids = product_obj.search([('combination_id', '=', inv_res.get('id_product_attribute'))])
-        if not product_ids:
-            prod_data_tmpl = prestashop.get('products', self.get_value_data(inv_res.get('id_product')))
-            self.create_presta_product(prod_data_tmpl.get('product'), prestashop)
-            if self.get_value_data(inv_res.get('id_product_attribute')) == '0':
-                product_ids = product_obj.search(
-                    [('product_tmpl_id.id', '=', self.get_value_data(inv_res.get('id_product')))])
-                if product_ids:
-                    child_ids = product_obj.search([('product_tmpl_id', '=', product_ids[0].product_tmpl_id.id)])
-                    if len(child_ids) > 1:
-                        logger.info("NO 2")
-                        logger.info([('product_tmpl_id.id', '=', self.get_value_data(inv_res.get('id_product')))])
-                        return True
-            else:
-                product_ids = product_obj.search(
-                    [('combination_id', '=', self.get_value_data(inv_res.get('id_product_attribute')))])
+            product_ids = product_obj.search([
+                ('combination_id', '=', inv_res.get('id_product_attribute'))
+            ])
         if product_ids:
             self.env.cr.execute(
                 "select product_prod_id from product_prod_shop_rel where product_prod_id = %s and shop_id = %s" % (
-                    product_ids[0].id, self.id))
+                    product_ids[0].id, self.id
+                ))
             prod_data = self.env.cr.fetchone()
             if prod_data is None:
                 self.env.cr.execute(
@@ -1523,8 +1516,10 @@ class SaleShop(models.Model):
                 'product_id': product_ids[0].id,
             })
             inv_wizard.change_product_qty()
-            self.env.cr.commit()
-            return True
+        else:
+            logger.info("No se ha encontrado el producto")
+        self.env.cr.commit()
+        return True
 
     # @api.multi
     def import_product_inventory(self):
