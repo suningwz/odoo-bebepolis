@@ -10,7 +10,8 @@
 
     <t t-name="ReservationMode">
         <div class="control-button js_reservation_mode">
-            Reservation Mode
+            <i class="fa fa-book" role="img" aria-label="Reservation Mode"
+               title="Reservation Mode"/>
         </div>
     </t>
 
@@ -455,9 +456,11 @@
                                             line.product_id[0] != widget.pos.config.refund_amount_product_id[0] ">
                                         <t t-if="line.pack_lot_ids.length > 0 ">
                                             <t t-foreach="widget.get_lots_by_line(line) || []" t-as="lot_line">
-                                                <t t-set="product" t-value="widget.pos.db.get_product_by_id(line.product_id[0])"/>
+                                                <t t-set="product"
+                                                   t-value="widget.pos.db.get_product_by_id(line.product_id[0])"/>
                                                 <t t-set="lot_name" t-value="lot_line.lot_name"/>
-                                                <span class='product product_content' t-att-data-product-id="product.id">
+                                                <span class='product product_content'
+                                                      t-att-data-product-id="product.id">
                                                     <div class="product-img">
                                                         <img t-att-src='widget.get_product_image_url(product.id)'/>
                                                         <t t-if="!product.to_weight">
@@ -472,22 +475,27 @@
                                                         </t>
                                                         <span class="check_box_tag">
                                                             <input class="ac_selected_product" t-att-data-name="line.id"
-                                                                   t-att-data-lot_name="lot_name" t-att-data-product="product.id" type="checkbox"/>
+                                                                   t-att-data-lot_name="lot_name"
+                                                                   t-att-data-product="product.id" type="checkbox"/>
                                                         </span>
                                                         <span class="lot_name" t-att-data-lot_name="lot_name"/>
                                                     </div>
                                                     <div class="product-name">
                                                         <t t-esc="product.display_name"/>
                                                         <br/>
-                                                        <div class="input-group oe_website_spinner" style="margin: auto">
+                                                        <div class="input-group oe_website_spinner"
+                                                             style="margin: auto">
                                                             <span class="input-group-addon">
                                                                 <a t-attf-href="#" class="mb8 js_qty">
                                                                     <i class="fa fa-minus"></i>
                                                                 </a>
                                                             </span>
                                                             <input type="text" class="js_quantity form-control"
-                                                                   data-min="1" t-att-data-max="widget.quantity_by_lot[lot_name]" t-att-name="line.id"
-                                                                   t-att-value="widget.quantity_by_lot[lot_name]" t-att-data-lot_name="lot_name"/>
+                                                                   data-min="1"
+                                                                   t-att-data-max="widget.quantity_by_lot[lot_name]"
+                                                                   t-att-name="line.id"
+                                                                   t-att-value="widget.quantity_by_lot[lot_name]"
+                                                                   t-att-data-lot_name="lot_name"/>
                                                             <span class="input-group-addon">
                                                                 <a t-attf-href="#" class="mb8 float_left js_qty">
                                                                     <i class="fa fa-plus"></i>
@@ -501,7 +509,8 @@
                                             </t>
                                         </t>
                                         <t t-if="line.pack_lot_ids.length == 0">
-                                            <t t-set="product" t-value="widget.pos.db.get_product_by_id(line.product_id[0])"/>
+                                            <t t-set="product"
+                                               t-value="widget.pos.db.get_product_by_id(line.product_id[0])"/>
                                             <span class='product product_content' t-att-data-product-id="product.id">
                                                 <div class="product-img">
                                                     <img t-att-src='widget.get_product_image_url(product.id)'/>
@@ -531,7 +540,9 @@
                                                             </a>
                                                         </span>
                                                         <input type="text" class="js_quantity form-control"
-                                                               data-min="1" t-att-data-max="widget.product_by_quantity[line.product_id[0]]" t-att-name="line.id"
+                                                               data-min="1"
+                                                               t-att-data-max="widget.product_by_quantity[line.product_id[0]]"
+                                                               t-att-name="line.id"
                                                                t-att-value="widget.product_by_quantity[line.product_id[0]]"/>
                                                         <span class="input-group-addon">
                                                             <a t-attf-href="#" class="mb8 float_left js_qty">

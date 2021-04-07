@@ -27,24 +27,6 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
 	    },
 	});
 	
-	var ReservationMode = screens.ActionButtonWidget.extend({
-	    template : 'ReservationMode',
-	    button_click : function() {
-	        var self = this;
-	        var order = self.pos.get_order();
-	        order.set_reservation_mode(!order.get_reservation_mode());
-	        order.get_reservation_mode() ? this.$el.addClass('highlight') : this.$el.removeClass('highlight')
-	    },
-	});
-
-	screens.define_action_button({
-	    'name' : 'ReservationMode',
-	    'widget' : ReservationMode,
-	    'condition': function(){
-	        return this.pos.config.enable_order_reservation
-	    },
-	});
-
     var SaveDraftButton = screens.ActionButtonWidget.extend({
 	    template : 'SaveDraftButton',
 	    button_click : function() {
