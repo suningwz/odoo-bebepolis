@@ -408,8 +408,6 @@ class PrestaShopWebService(object):
         :param url: URL which explicitly set resource type and ID to retrieve
         :return: an ElementTree of the resource
         """
-        import logging
-        logging.info(url)
         return self._parse(self._execute(url, 'GET').content)
 
     def head(self, resource, resource_id=None, options=None):

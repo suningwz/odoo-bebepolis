@@ -1942,16 +1942,17 @@ class SaleShop(models.Model):
         carrier_obj = self.env['delivery.carrier']
         status_obj = self.env['presta.order.status']
         order_vals = {}
+        id_customer = self.get_value_data(order_detail.get('id_customer'))
         partner_ids = res_partner_obj.search([
-            ('presta_id', '=', self.get_value_data(order_detail.get('id_customer')))
+            ('presta_id', '=', id_customer)
         ])
         # print("sale order part>>>>>>>>>>>>>>>>",self.get_value_data(order_detail.get('id_customer')),partner_ids)
 
         if partner_ids:
             order_vals.update({'partner_id': partner_ids[0].id})
         else:
-            # try:
-            cust_data = prestashop.get('customers', self.get_value_data(order_detail.get('id_customer')))
+            logging.info(order_detail)
+            cust_data = prestashop.get('customers', id_customer)
             # print("cust_data========>>>>>>>",cust_data)
             customer = self.create_customer(cust_data, prestashop)
             # except:
