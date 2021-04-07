@@ -1799,16 +1799,15 @@ class SaleShop(models.Model):
                     else:
                         value_ids = [value_ids]
                     for value_id in value_ids:
-                        logger.info("Atributo")
-                        logger.info(value_id)
                         values = self.get_value_data(value_id.get('id'))
-                        logger.info(values)
                         value_ids = prod_attr_val_obj.search([('presta_id', '=', values)])
-                        logger.info(value_ids)
                         value_list.append(value_ids.id)
+                    logger.info("Buscar producto")
+                    logger.info(self.get_value_data(combination.get('combination').get('id_product')))
                     temp_ids = prod_templ_obj.search([
                         ('presta_id', '=', self.get_value_data(combination.get('combination').get('id_product')))
                     ], limit=1)
+                    logger.info(temp_ids)
                     if not temp_ids:
                         prod_data_tmpl = prestashop.get(
                             'products',
