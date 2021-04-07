@@ -2042,6 +2042,7 @@ class SaleShop(models.Model):
                 'filter[date_add]': self.env.context.get('last_order_import_date'),
                 'date': '1'
             })
+            logger.info(self.env.context.get('last_order_import_date'))
             logger.info(order_data)
             if order_data.get('orders') and order_data.get('orders').get('order'):
                 orders = order_data.get('orders').get('order')
