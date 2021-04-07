@@ -1482,9 +1482,11 @@ class SaleShop(models.Model):
         product_temp_obj = self.env['product.template']
         inv_wiz = self.env['stock.change.product.qty']
         quantity = self.get_value_data(inv_res.get('quantity'))
-        if quantity < 0:
+        if float(quantity) < 0:
             logger.info("Cantidad negativa")
             return True
+        else:
+            quantity = float(quantity)
         if self.get_value_data(inv_res.get('id_product_attribute')) == '0':
             product_ids = product_obj.search([
                 ('product_tmpl_id.presta_id', '=', self.get_value_data(inv_res.get('id_product')))
