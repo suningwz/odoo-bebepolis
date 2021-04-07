@@ -1,9 +1,9 @@
 odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
-	var screens = require('point_of_sale.screens');
+	var screens = require('point_of_sale.Screens');
 	var gui = require('point_of_sale.gui');
 	var rpc = require('web.rpc');
 	var utils = require('web.utils');
-	var PopupWidget = require('point_of_sale.popups');
+	var PopupWidget = require('point_of_sale.Popups');
 	var models = require('point_of_sale.models');
 	
 	var core = require('web.core');
