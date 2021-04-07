@@ -235,9 +235,7 @@ class PrestaShopWebService(object):
 
         request_headers = self.client.headers.copy()
         request_headers.update(add_headers)
-        import logging
-        logging.info(url)
-        logging.info(request_headers)
+
         if self.verbose:
             currentlevel = HTTPConnection.debuglevel
             HTTPConnection.debuglevel = 1
@@ -579,6 +577,8 @@ class PrestaShopWebServiceDict(PrestaShopWebService):
         :return: a dict of the response.
             Remove root keys ['prestashop'] from the message
         """
+        import logging
+        logging.info(url)
         response = super(PrestaShopWebServiceDict, self).get_with_url(url)
         if isinstance(response, dict):
             return response['prestashop']
