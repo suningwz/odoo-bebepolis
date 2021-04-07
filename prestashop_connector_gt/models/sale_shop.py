@@ -2049,13 +2049,13 @@ class SaleShop(models.Model):
             )
             ctx = {}
             order_data = prestashop.get('orders', options={
-                'filter[date_add]': "[{},{}]".format(self.env.context.get('last_order_import_date'),
-                                                     str(datetime.now())),
-                'date': '1',
+                'filter[date_upd]': "[{},{}]".format(
+                    self.env.context.get('last_order_import_date'),
+                    str(datetime.now())
+                ),
                 'sort': '[id_DESC]'
             })
             logger.info(self.env.context.get('last_order_import_date'))
-            logger.info(order_data)
             if order_data.get('orders') and order_data.get('orders').get('order'):
                 orders = order_data.get('orders').get('order')
                 if isinstance(orders, list):
