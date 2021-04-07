@@ -1832,6 +1832,7 @@ class SaleShop(models.Model):
                     logger.info("Atributos no encontrados")
                     pass
             else:
+                logger.info(child)
                 temp_ids = prod_templ_obj.search([('presta_id', '=', self.get_value_data(child.get('product_id')))])
                 if temp_ids:
                     product_ids = product_obj.search([('product_tmpl_id', '=', temp_ids[0].id)])
@@ -1844,6 +1845,7 @@ class SaleShop(models.Model):
                             product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id)])
                             line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
                         except:
+                            logger.info("Producto no encontrado")
                             pass
                 else:
                     try:
@@ -1858,7 +1860,6 @@ class SaleShop(models.Model):
                         else:
                             pid = p_ids[0]
                         line.update({'product_id': pid[0].id, 'product_uom': pid[0].uom_id.id})
-                        pass
             sale_order_line_obj.create(line)
 
         if order_detail.get('total_discounts'):
