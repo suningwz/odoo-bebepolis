@@ -51,6 +51,7 @@ class sale_order(models.Model):
     shop_id=fields.Many2one('sale.shop','Shop ID')
     order_status = fields.Many2one('presta.order.status', string="Status")
     presta_order_ref=fields.Char('Order Reference')
+    presta_order_date = fields.Datetime(string="Prestashop Date")
     pretsa_payment_mode=fields.Selection([('bankwire','Bankwire'),('cheque','Payment By Cheque'),('banktran','Bank transfer')],string='Payment mode',default='cheque')
 #                 'total_wght_product':fields.function(total_weight,string='Total weight of Products',store=True),
     carrier_prestashop=fields.Many2one('delivery.carrier',string='Carrier In Prestashop')
