@@ -1790,13 +1790,16 @@ class SaleShop(models.Model):
             if self.get_value_data(child.get('product_attribute_id')) != '0':
                 value_list = []
                 try:
+                    logger.info(child)
                     combination = prestashop.get('combinations', self.get_value_data(child.get('product_attribute_id')))
+                    logger.info(combination)
                     value_ids = combination.get('combination').get('associations').get('product_option_values').get(
                         'product_option_value')
                     if isinstance(value_ids, list):
                         value_ids = value_ids
                     else:
                         value_ids = [value_ids]
+                    logger.info(value_ids)
                     for value_id in value_ids:
                         values = self.get_value_data(value_id.get('id'))
                         value_ids = prod_attr_val_obj.search([('presta_id', '=', values)])
@@ -1826,6 +1829,7 @@ class SaleShop(models.Model):
                                 product_ids = product_obj.search([('product_tmpl_id', '=', tmpl_id[0].id)])
                                 line.update({'product_id': product_ids[0].id, 'product_uom': product_ids[0].uom_id.id})
                 except:
+                    logger.info("Atributos no encontrados")
                     pass
             else:
                 temp_ids = prod_templ_obj.search([('presta_id', '=', self.get_value_data(child.get('product_id')))])
