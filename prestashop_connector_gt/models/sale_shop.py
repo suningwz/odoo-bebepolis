@@ -1775,6 +1775,7 @@ class SaleShop(models.Model):
         else:
             order_rows = [order_rows]
         for child in order_rows:
+            logger.info(child)
             line = {
                 'price_unit': str(self.get_value_data(child.get('unit_price_tax_incl'))),
                 'name': self.get_value_data(child.get('product_name')),
@@ -1796,8 +1797,6 @@ class SaleShop(models.Model):
             if self.get_value_data(child.get('product_attribute_id')) != '0':
                 value_ids = []
                 value_list = []
-                # print("====child.get('product_attribute_id').get('value')========>", child.get('product_attribute_id'))
-                # 			try:
                 combination = prestashop.get('combinations', self.get_value_data(child.get('product_attribute_id')))
                 # print("====combination========>", combination)
                 value_ids = combination.get('combination').get('associations').get('product_option_values').get(
@@ -1936,7 +1935,6 @@ class SaleShop(models.Model):
 
     # @api.one
     def create_presta_order(self, order_detail, prestashop):
-        # gggg
         sale_order_obj = self.env['sale.order']
         res_partner_obj = self.env['res.partner']
         carrier_obj = self.env['delivery.carrier']
@@ -2035,8 +2033,10 @@ class SaleShop(models.Model):
     def import_orders(self):
         print("=======import_orders>>>>>>>>")
         for shop in self:
-            prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,
-                                                  shop.prestashop_instance_id.webservice_key or None)
+            prestashop = PrestaShopWebServiceDict(
+                shop.prestashop_instance_id.location,
+                shop.prestashop_instance_id.webservice_key or None
+            )
             ctx = {}
             order_data = prestashop.get('orders')
             print("==order_data=>", order_data)
@@ -2047,7 +2047,6 @@ class SaleShop(models.Model):
                 else:
                     orders = [orders]
                 for order in orders:
-                    order_vals = {}
                     order_id = self.get_value_data(order.get('attrs').get('id'))
                     if order_id:
                         order_detail = prestashop.get('orders', order_id)
