@@ -1769,7 +1769,7 @@ class SaleShop(models.Model):
         prod_attr_val_obj = self.env['product.attribute.value']
         prod_templ_obj = self.env['product.template']
         product_obj = self.env['product.product']
-        lines = []
+        orderid.line_ids = [(6, 0, 0)]
         order_rows = order_detail.get('associations').get('order_rows').get('order_row')
         if isinstance(order_rows, list):
             order_rows = order_rows
@@ -1777,6 +1777,8 @@ class SaleShop(models.Model):
             order_rows = [order_rows]
         for child in order_rows:
             if child == None or not child:
+                logger.info("Fila Nula")
+                logger.info(order_detail)
                 continue
             line = {
                 'price_unit': str(self.get_value_data(child.get('unit_price_tax_incl'))),
@@ -1786,7 +1788,6 @@ class SaleShop(models.Model):
                 'tax_id': False,
             }
             if self.get_value_data(child.get('product_attribute_id')) != '0':
-                value_ids = []
                 value_list = []
                 try:
                     combination = prestashop.get('combinations', self.get_value_data(child.get('product_attribute_id')))
@@ -1854,13 +1855,7 @@ class SaleShop(models.Model):
                             pid = p_ids[0]
                         line.update({'product_id': pid[0].id, 'product_uom': pid[0].uom_id.id})
                         pass
-            if line.get('product_id'):
-                line_ids = sale_order_line_obj.search([
-                    ('product_id', '=', self.get_value_data(line.get('product_id'))),
-                    ('order_id', '=', orderid.id)
-                ])
-                if not line_ids:
-                    sale_order_line_obj.create(line)
+            sale_order_line_obj.create(line)
 
         if order_detail.get('total_discounts'):
             discoun = order_detail.get('total_discounts')
