@@ -1769,7 +1769,7 @@ class SaleShop(models.Model):
         prod_attr_val_obj = self.env['product.attribute.value']
         prod_templ_obj = self.env['product.template']
         product_obj = self.env['product.product']
-        orderid.line_ids = [(6, 0, 0)]
+        orderid.order_line = [(6, 0, 0)]
         order_rows = order_detail.get('associations').get('order_rows').get('order_row')
         if isinstance(order_rows, list):
             order_rows = order_rows
