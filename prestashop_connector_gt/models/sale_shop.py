@@ -1775,6 +1775,8 @@ class SaleShop(models.Model):
         else:
             order_rows = [order_rows]
         for child in order_rows:
+            if child == None or not child:
+                continue
             logger.info(child)
             line = {
                 'price_unit': str(self.get_value_data(child.get('unit_price_tax_incl'))),
