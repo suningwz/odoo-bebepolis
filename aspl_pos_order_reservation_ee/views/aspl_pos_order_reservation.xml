@@ -3,7 +3,7 @@
 <odoo>
     <data>
 
-        <template id="index" name="aspl_pos_order_reservation index" inherit_id="point_of_sale.indexw">
+        <template id="index" name="aspl_pos_order_reservation index" inherit_id="point_of_sale.index">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="/aspl_pos_order_reservation_ee/static/src/js/models.js"></script>
                 <script type="text/javascript" src="/aspl_pos_order_reservation_ee/static/src/js/popups.js"></script>
