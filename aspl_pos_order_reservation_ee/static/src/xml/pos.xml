@@ -8,7 +8,7 @@
         </div>
     </t>
 
-    <t t-name="ReservationMode">
+    <t t-name="ReservationModeButton" owl="1">
         <div class="control-button js_reservation_mode">
             <i class="fa fa-book" role="img" aria-label="Reservation Mode"
                title="Reservation Mode"/>
