@@ -8,9 +8,9 @@
                 <script type="text/javascript" src="/aspl_pos_order_reservation_ee/static/src/js/models.js"></script>
                 <script type="text/javascript" src="/aspl_pos_order_reservation_ee/static/src/js/popups.js"></script>
                 <script type="text/javascript" src="/aspl_pos_order_reservation_ee/static/src/js/screens.js"></script>
-                <script type="text/javascript"
-                        src="/aspl_pos_order_reservation_ee/static/src/js/Buttons/ReservationMode.js"></script>
                 <script type="text/javascript" src="/aspl_pos_order_reservation_ee/static/src/js/db.js"></script>
+                <script type="text/javascript"
+                        src="/aspl_pos_order_reservation_ee/static/src/js/Buttons/ReservationModeButton.js"></script>
                 <script type="text/javascript"
                         src="/aspl_pos_order_reservation_ee/static/src/js/jquery.simplePagination.js"></script>
                 <link rel="stylesheet" type="text/css" href="/aspl_pos_order_reservation_ee/static/src/css/pos.css"/>
