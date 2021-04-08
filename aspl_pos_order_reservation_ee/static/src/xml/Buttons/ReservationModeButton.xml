@@ -2,7 +2,7 @@
 <templates id="template" xml:space="preserve">
 
     <t t-name="ReservationModeButton" owl="1">
-        <div class="control-button o_reservation_mode_button">
+        <div class="control-button o_reservation_mode_button" t-att-class="is_active()? 'highlight' : ''">
            Reservation Mode
         </div>
     </t>
