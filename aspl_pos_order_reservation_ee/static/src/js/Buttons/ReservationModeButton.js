@@ -17,7 +17,6 @@ odoo.define('aspl_pos_order_reservation_ee.ReservationModeButton', function(requ
         async onClick() {
 	        var order = this.env.pos.get_order();
 	        order.set_reservation_mode(!order.get_reservation_mode());
-	        order.get_reservation_mode() ? this.$el.addClass('highlight') : this.$el.removeClass('highlight')
         }
     }
     ReservationModeButton.template = 'ReservationModeButton';
