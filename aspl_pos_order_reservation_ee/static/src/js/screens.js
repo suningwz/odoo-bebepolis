@@ -1,16 +1,16 @@
 odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
-	var screens = require('point_of_sale.Screens');
-	var { gui } = require('point_of_sale.Gui');
+	var screens = require('point_of_sale.screens');
+	var gui = require('point_of_sale.gui');
 	var rpc = require('web.rpc');
 	var utils = require('web.utils');
-	var PopupWidget = require('point_of_sale.Popups');
+	var PopupWidget = require('point_of_sale.popups');
 	var models = require('point_of_sale.models');
-	
+
 	var core = require('web.core');
 	var QWeb = core.qweb;
 	var round_pr = utils.round_precision;
 	var _t = core._t;
-	
+
 	var ShowOrderList = screens.ActionButtonWidget.extend({
 	    template : 'ShowOrderList',
 	    button_click : function() {
@@ -26,7 +26,25 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
 	        return this.pos.config.enable_order_reservation
 	    },
 	});
-	
+
+	var ReservationMode = screens.ActionButtonWidget.extend({
+	    template : 'ReservationMode',
+	    button_click : function() {
+	        var self = this;
+	        var order = self.pos.get_order();
+	        order.set_reservation_mode(!order.get_reservation_mode());
+	        order.get_reservation_mode() ? this.$el.addClass('highlight') : this.$el.removeClass('highlight')
+	    },
+	});
+
+	screens.define_action_button({
+	    'name' : 'ReservationMode',
+	    'widget' : ReservationMode,
+	    'condition': function(){
+	        return this.pos.config.enable_order_reservation
+	    },
+	});
+
     var SaveDraftButton = screens.ActionButtonWidget.extend({
 	    template : 'SaveDraftButton',
 	    button_click : function() {
@@ -397,7 +415,7 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
 	            }
 	            for(var i = 0, len = Math.min(orders.length,1000); i < len; i++){
 	                var order    = orders[i];
-	                order.amount_total = parseFloat(order.amount_total).toFixed(2); 
+	                order.amount_total = parseFloat(order.amount_total).toFixed(2);
                     	var clientline_html = QWeb.render('OrderlistLine',{widget: this, order:order});
 	                var clientline = document.createElement('tbody');
 	                clientline.innerHTML = clientline_html;
@@ -462,7 +480,7 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
 	    },
 	});
 	gui.define_screen({name:'orderlist', widget: OrderListScreenWidget});
-	
+
 	screens.PaymentScreenWidget.include({
         partial_payment: function() {
             var self = this;
@@ -789,7 +807,7 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
 	    		})
 	    	})
 	    	return only_lines
-	    	
+
 	    },
 	    render_list: function(lines){
 	    	var self = this;

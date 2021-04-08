@@ -32,7 +32,7 @@ This module allows customers to book products and pay partially.
     ],
     'qweb': [
         'static/src/xml/pos.xml',
-        'static/src/xml/Buttons/ReservationModeButton.xml',
+        #'static/src/xml/Buttons/ReservationModeButton.xml',
     ],
     'installable': True,
     'auto_install': False,

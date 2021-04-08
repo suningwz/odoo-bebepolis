@@ -1,11 +1,11 @@
 odoo.define('aspl_pos_order_reservation_ee.popups', function (require) {
 "use strict";
-var { gui } = require('point_of_sale.Gui');
+var gui = require('point_of_sale.gui');
 var keyboard = require('point_of_sale.keyboard').OnscreenKeyboardWidget;
 var rpc = require('web.rpc');
-var chrome = require('point_of_sale.Chrome');
+var chrome = require('point_of_sale.chrome');
 var utils = require('web.utils');
-var PopupWidget = require('point_of_sale.Popups');
+var PopupWidget = require('point_of_sale.popups');
 var models = require('point_of_sale.models');
 var field_utils = require('web.field_utils');
 
