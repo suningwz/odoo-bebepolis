@@ -30,7 +30,10 @@ This module allows customers to book products and pay partially.
         'views/point_of_sale.xml',
         'views/aspl_pos_order_reservation.xml',
     ],
-    'qweb': ['static/src/xml/pos.xml'],
+    'qweb': [
+        'static/src/xml/pos.xml',
+        'static/src/xml/Buttons/ReservationModeButton.xml',
+    ],
     'installable': True,
     'auto_install': False,
 }
