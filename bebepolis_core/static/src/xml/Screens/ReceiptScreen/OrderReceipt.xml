@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="bebepolis_template" xml:space="preserve">
+    <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('orderlines')]" position="replace">
+            <div class="orderlines">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th>UTS</th>
+                            <th>ARTICLE</th>
+                            <th class="pos-receipt-text-right-align">DTO</th>
+                            <th class="pos-receipt-text-right-align">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="receipt.orderlines" t-as="line" t-key="line.id">
+                            <td class="pos-receipt-center-align">
+                                <t t-esc="line.quantity"/></td>
+                            <td>
+                                <t t-esc="line.product_name_wrapped[0]" />
+                            </td>
+                            <td class="pos-receipt-text-right-align">
+                                <t t-if="line.discount !== 0">
+                                    <t t-esc="line.discount" />%
+                                </t>
+                            </td>
+                            <td class="pos-receipt-text-right-align">
+                                <span class="price_display">
+                                    <t t-esc="env.pos.format_currency(line.price_display)"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('pos-receipt')]/t[2]" position="replace">
+
+        </xpath>
+    </t>
+</templates>

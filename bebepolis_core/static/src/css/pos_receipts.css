@@ -1,0 +1,10 @@
+.pos .pos-receipt{
+    font-size: 0.8em;
+}
+.pos .pos-receipt-text-right-align{
+    text-align: right;
+}
+.pos .pos-receipt-container > div {
+    margin: 30px !important;
+    padding: 25px;
+}

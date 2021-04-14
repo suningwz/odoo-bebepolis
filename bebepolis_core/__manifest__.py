@@ -22,7 +22,12 @@
         'stock_enterprise', 'sale_shop',
         'prestashop_connector_gt'
     ],
-    "data": [],
+    "data": [
+        'views/pos_assets_common.xml',
+    ],
+    'qweb': [
+        'static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml',
+    ],
     'installable': True,
     'application': True,
     'auto_install': False,
