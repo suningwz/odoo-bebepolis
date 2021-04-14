@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- QWeb Reports -->
+        <record id="paperformat_euro_no_margin" model="report.paperformat">
+            <field name="name">European A4 without borders</field>
+            <field name="default" eval="False" />
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">1</field>
+            <field name="margin_bottom">1</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+        </record>
+
+        <template id="report_tpv_cash_count" name="bebepolis_core.report_tpv_cash_count">
+            <t t-set="company" t-value="env.company"/>
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="o" t-value="o.with_context(lang=lang)" />
+                    <t t-set="payments_amounts" t-value="o.get_payment_method_amount()" />
+                    <div class="article"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+                        <div class="page">
+                            <div class="col-12 text-left" style="padding: 15px 0 15px 0; border-bottom: 1px dashed #000;">
+                                <b>
+                                    Cierre de Caja
+                                </b>
+                            </div>
+                            <table class="col-12" style="padding: 15px 0 15px 0; border-bottom: 1px dashed #000;width:100%">
+                                <tr>
+                                    <td style="width: 50%">
+                                        <table class="table-borderless" style="width:100% !important" border="0">
+                                            <tr>
+                                                <td style="padding: 2px;"><b>Apertura:</b></td>
+                                                <td style="padding: 2px;"><span t-field="o.cash_register_balance_start" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                                            </tr>
+                                            <tr t-foreach="payments_amounts" t-as="payment_amount">
+                                                <td style="padding: 2px;"><b><t t-esc="payment_amount['name']"/></b></td>
+                                                <td style="padding: 2px;"><span><t t-esc="payment_amount['total']"  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px;"><b>Retirado:</b></td>
+                                                <td style="padding: 2px;"><span t-field="o.amount_taken_from_cash_box" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px;"><b>Cierre:</b></td>
+                                                <td style="padding: 2px;"><span t-field="o.cash_register_balance_end_real" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px;"><b>Movimientos:</b></td>
+                                                <td style="padding: 2px;"><span>0.00</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+
+                                    <td style="width: 50%">
+                                        <table class="table-borderless" style="width:100% !important;" border="0">
+                                            <tr>
+                                                <td style="padding: 2px;" ><b>Tienda:</b></td>
+                                                <td style="padding: 2px;" ><span>Bebépolis</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px;" ><b>Caja:</b></td>
+                                                <td style="padding: 2px;" ><span t-field="o.config_id.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px;" ><b>Cierre:</b></td>
+                                                <td style="padding: 2px;" ><span t-field='o.id'/></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px;" ><b>Fecha (cierre)</b></td>
+                                                <td style="padding: 2px;" ><span t-field="o.stop_at"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px;" ><b>Empleado</b></td>
+                                                <td style="padding: 2px;" ><span t-field="o.user_id"/></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="clear: both"/>
+                            <div class="col-12" style="padding: 15px 0 15px 0; border-bottom: 1px dashed #000;">
+                                <table class="table table-borderless" border="0">
+                                    <thead>
+                                        <th>TICKET</th>
+                                        <th>FECHA</th>
+                                        <th>CLIENTE</th>
+                                        <th>EMPLEADO</th>
+                                        <th>FORMA DE PAGO</th>
+                                        <th>IMPORT</th>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.order_ids" t-as="order">
+                                            <t t-foreach="order.payment_ids" t-as="payment">
+                                                <tr>
+                                                    <td><span t-field="order.name"></span></td>
+                                                    <td><span t-field="order.date_order"></span></td>
+                                                    <td><span t-field="order.partner_id"></span></td>
+                                                    <td><span t-field="order.user_id"></span></td>
+                                                    <td>
+                                                        <span t-field="payment.payment_method_id"/>
+                                                    </td>
+                                                    <td><span t-field="payment.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-12" style="padding: 15px 0 15px 0; border-bottom: 1px dashed #000;">
+                                <table class="table table-borderless" border="0">
+                                    <thead>
+                                        <th>MOV</th>
+                                        <th>FECHA</th>
+                                        <th>CONCEPTO</th>
+                                        <th>EMPLEADO</th>
+                                        <th>TIPO</th>
+                                        <th>IMPORT</th>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.order_ids" t-as="order">
+                                            <!-- t-if="not order.reserved" -->
+                                            <tr t-foreach="order.payment_ids" t-as="payment">
+                                                <td><span t-field="payment.id"></span></td>
+                                                <td><span t-field="payment.payment_date"></span></td>
+                                                <td>
+                                                    <span t-field="payment.pos_order_id"></span>
+                                                    <t t-if="payment.name">
+                                                        <span>(<t t-esc="payment.name"/>)</span>
+                                                    </t>
+                                                </td>
+                                                <td><span t-field="payment.create_uid"></span></td>
+                                                <td>
+                                                    <span t-field="payment.payment_method_id"/>
+                                                </td>
+                                                <td><span t-field="payment.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <record id="tpv_cash_count" model="ir.actions.report">
+            <field name="name">Cierre de Caja</field>
+            <field name="model">pos.session</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bebepolis_core.report_tpv_cash_count</field>
+            <field name="report_file">bebepolis_core.report_tpv_cash_count</field>
+            <field name="print_report_name">(object.name)</field>
+            <field name="attachment">(object.state == 'closed') and ((object.name or 'POS').replace('/','_') + '.pdf')</field>
+            <field name="binding_model_id" ref="point_of_sale.model_pos_session"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="bebepolis_core.paperformat_euro_no_margin"/>
+            <field name="groups_id" eval="[(4, ref('point_of_sale.group_pos_user'))]"/>
+        </record>
+    </data>
+</odoo>

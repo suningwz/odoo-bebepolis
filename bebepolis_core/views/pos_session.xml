@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pos_session_view_form_taken_from_cashbox" model="ir.ui.view">
+            <field name="name">pos.session.view.form.add_taken_from_cashbox</field>
+            <field name="model">pos.session</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='cash_control']//div" position="inside">
+                    <group style="margin:0;padding:0;" attrs="{'invisible' : [('amount_taken_from_cash_box', '=', 0.0)]}">
+                        <field style="text-align:right;margin:0;padding:0;" name="amount_taken_from_cash_box"
+                        widget="monetary" options="{'currency_field': 'currency_id'}" string="=Retiros efectivo"/>
+                    </group>
+                    <group style="margin:0;padding:0;" attrs="{'invisible' : [('amount_added_to_cash_box', '=', 0.0)]}">
+                        <field style="text-align:right;margin:0;padding:0;" name="amount_added_to_cash_box"
+                        widget="monetary" options="{'currency_field': 'currency_id'}" string="=Entrada efectivo"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
