@@ -1,10 +1,46 @@
 .pos .pos-receipt{
-    font-size: 0.8em;
+    font-size: 1.2em !important;
+}
+
+.pos .pos-receipt .pos-receipt-contact{
+    font-size: 1.2em !important;
+}
+
+.pos .pos-receipt .pos-receipt-font-reduce{
+    font-size: 0.8em !important;
+}
+
+.pos .pos-receipt {
+    width: 246px !important;
 }
 .pos .pos-receipt-text-right-align{
     text-align: right;
 }
 .pos .pos-receipt-container > div {
-    margin: 30px !important;
-    padding: 25px;
+    margin: 20px !important;
+    padding: 35px !important;
+}
+.pos .bebepolis-receipt-table{
+    width: 100%;
+    border-collapse: collapse;
+	border-spacing: 0;
+}
+.pos .bebepolis-border-dashed{
+    border-bottom: 1px dashed black;
+}
+.pos .bebepolis-border-solid{
+    border-top: 1px solid black;
+}
+.pos .bebepolis-line-height{
+    line-height: 2.5em;
+}
+.pos .bebepolis-margin-top{
+    margin-top: 30px;
+}
+
+.pos .bebepolis-text-transform{
+    text-transform: uppercase;
+}
+.pos .pos-receipt-amount{
+    font-weight: bold;
 }

@@ -1,0 +1,146 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bebepolis_core
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0+e-20210301\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-14 21:58+0000\n"
+"PO-Revision-Date: 2021-04-14 22:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"X-Generator: Poedit 2.3.1\n"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "ARTICLE"
+msgstr "ARÍCULO"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid ""
+"Bebepolis acepta el cambio y devolución de sus\n"
+"                        productos en un plazo máximo de 15 días desde la\n"
+"                        fecha de compra, siempre que estos no hayan sido\n"
+"                        usados. Imprescindible presentar ticket de compra.\n"
+"                        Las devoluciones se efectuarán solamente por otro\n"
+"                        artículo de igual o mayor valor, o por un vale con\n"
+"                        fecha de caducidad de 6 meses. Para los artículos\n"
+"                        por encargo o a medida, no admitimos devolociones."
+msgstr ""
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "DTO"
+msgstr ""
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "F. SIMPLIFIED:"
+msgstr "F. SIMPLIFICADA"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "F. Simplified:"
+msgstr "F. Simplificada"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "IMP. BASE"
+msgstr "BASE IMP."
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "IVA"
+msgstr ""
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid ""
+"No olvide consultar nuestras promociones en\n"
+"                        bebepolis.es"
+msgstr ""
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "PAYMENT WAY:"
+msgstr "FORMA DE PAGO:"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "QUOTE"
+msgstr "CUOTA"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "SERVED BY:"
+msgstr "LE ATENDIÓ:"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Simplified Invoice"
+msgstr "Factura Simplificada"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "TOTAL"
+msgstr ""
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "TOTAL CHARGED:"
+msgstr "TOTAL COBRADO:"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "TOTAL PENDING:"
+msgstr "TOTAL PENDIENTE:"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "TOTAL:"
+msgstr ""
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "UTS"
+msgstr "UDS"
