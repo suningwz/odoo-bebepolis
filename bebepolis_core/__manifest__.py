@@ -23,9 +23,9 @@
         'prestashop_connector_gt'
     ],
     "data": [
-        #'views/pos_assets_common.xml',
-        #'views/pos_session.xml',
-        #'reports/report_cashcount.xml',
+        'views/pos_assets_common.xml',
+        'views/pos_session.xml',
+        'reports/report_cashcount.xml',
     ],
     'qweb': [
         'static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml',
