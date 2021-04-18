@@ -951,8 +951,6 @@ class SaleShop(models.Model):
         res_partner_obj = self.env['res.partner']
         key_id = self.prestashop_instance_id
         prod_ids = prod_temp_obj.search([('presta_id', '=', self.get_value_data(product.get('id')))])
-        if prod_ids:
-            return prod_ids[0]
         search_sku = prod_temp_obj.sudo().search_count([
             ('sku', '=', self.get_value_data(product.get('reference')))
         ])
@@ -1011,7 +1009,6 @@ class SaleShop(models.Model):
             })
         logger.info('Product Barcode ===> %s', self.get_value_data(product.get('ean13')))
         logger.info('Product ID ===> %s', self.get_value_data(product.get('id')))
-        print("Barcode=========", self.get_value_data(product.get('ean13')))
         manufacturers_ids = res_partner_obj.search([
             ('presta_id', '=', self.get_value_data(product.get('id_manufacturer'))),
             ('manufacturer', '=', True)
@@ -1289,8 +1286,6 @@ class SaleShop(models.Model):
                                 ('product_tmpl_id.presta_id', '=',
                                  self.get_value_data(combination_dict.get('combination').get('id_product')))
                             ])
-                            print("product_idsproduct_idsincombbbbbbbbbb", product_ids)
-                            value_list
                             prod_id_var = False
                             #                     prod_id_var = prd_tmp_vals.pop('barcode', None)
                             if product_ids:
@@ -1309,17 +1304,13 @@ class SaleShop(models.Model):
                                     prod_val_ids = product_data.product_template_attribute_value_ids.product_attribute_value_id
                                     k = []
                                     for red in prod_val_ids:
-                                        print("prod_val_ids===", prod_val_ids)
                                         k.append(red.presta_id)
-                                    # ccccs
-                                    print("check both data---", k, self.get_value_data(value_list))
                                     # cccc
                                     res = k
                                     rles = sorted(res, key=int)
                                     print("res====", rles)
                                     t = self.get_value_data(value_list)
                                     if rles == t:
-                                        print("combination_dict====", combination_dict)
                                         # dddd
                                         c_val.update({
 
@@ -1332,16 +1323,10 @@ class SaleShop(models.Model):
                                                     combination_dict.get('combination').get('reference')),
 
                                         })
-                                        print("c_val=======", c_val)
                                         # if self.get_value_data(combination_dict.get('combination').get('ean13')):
                                         # 	c_val.update({'barcode':self.get_value_data(combination_dict.get('combination').get('ean13'))})
 
                                         product_data.write(c_val)
-                                        print("product_data====11", product_data.combination_id)
-                                        print("product_data====11", product_data.combination_price)
-                                        print("product_data====11", product_data.default_code)
-                                        print("product_data====11", product_data.default_code)
-                                        print("product_data===========orders", product_ids)
                         # if self.get_value_data(combination_dict.get('combination').get('reference')):
                         # c_val.update({'default_code':self.get_value_data(combination_dict.get('combination').get('reference'))})
                         # product_data.write(c_val)
