@@ -1509,9 +1509,6 @@ class SaleShop(models.Model):
                 ('combination_id', '=', inv_res.get('id_product_attribute'))
             ])
         if product_ids:
-            logger.info("quantityquantity====quantity {} {} {}".format(
-                quantity, product_ids[0].id, ",".join(product_ids)
-            ))
             inv_wizard = inv_wiz.create({
                 'product_tmpl_id': product_ids[0].product_tmpl_id.id,
                 'new_quantity': quantity,
