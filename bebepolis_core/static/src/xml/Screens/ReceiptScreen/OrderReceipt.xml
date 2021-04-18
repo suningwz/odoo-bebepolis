@@ -1,4 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="bebepolis_template" xml:space="preserve">
-    
+    <!--
+    <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-if='receipt.total_discount']" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt')]//div[hasclass('receipt-change')]" position="replace">
+            <div class="pos-receipt-amount receipt-change" style="display:none">
+                CHANGE
+                <span t-esc="env.pos.format_currency(receipt.change)" class="pos-receipt-right-align"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-if='receipt.total_rounded != receipt.total_with_tax']" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-key='line.cid']" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt')]//t[@t-if='!isTaxIncluded']" position="replace">
+            <table class="bebepolis-receipt-table bebepolis-margin-top">
+                <thead>
+                    <tr>
+                        <td>IVA</td>
+                        <td class="pos-receipt-center-align">IMP. BASE</td>
+                        <td class="pos-receipt-text-right-align">QUOTE</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="imp_base" t-value="receipt.total_without_tax"/>
+                    <tr>
+                        <td>21%</td>
+                        <td class="pos-receipt-center-align"><t t-esc="env.pos.format_currency(imp_base)"/></td>
+                        <td class="pos-receipt-text-right-align">
+                            <span t-esc='env.pos.format_currency(receipt.total_tax)'/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL</td>
+                        <td class="pos-receipt-center-align"><t t-esc="env.pos.format_currency(imp_base)"/></td>
+                        <td class="pos-receipt-text-right-align">
+                            <span t-esc='env.pos.format_currency(receipt.total_tax)'/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+
+        <xpath expr="//div[hasclass('pos-receipt')]/div[5]" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt')]/div[3]" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt-contact')]" position="replace">
+            <div class="pos-receipt-contact">
+                <div class="pos-receipt-center-align"><b>Simplified Invoice</b></div>
+                <t t-if="receipt.company.company_address">
+                    <div><t t-esc="receipt.company.company_address.street"/></div>
+                    <div>
+                        <span t-esc="receipt.company.company_address.zip"/>-
+                        <span t-esc="receipt.company.company_address.street2"/>
+                    </div>
+                    <div><t t-esc="receipt.company.company_address.city"/></div>
+                </t>
+                <t t-if="receipt.company.vat">
+                    <div><t t-esc="receipt.company.vat"/></div>
+                </t>
+                <t t-if="receipt.company.email">
+                    <div><t t-esc="receipt.company.email" /></div>
+                </t>
+                <t t-if="receipt.company.website">
+                    <div><t t-esc="receipt.company.website" /></div>
+                </t>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('orderlines')]" position="before">
+            <div>
+                <span t-esc="receipt.date.localestring"/>
+                <span class="pos-receipt-right-align">F. SIMPLIFIED:<br/><span t-esc="receipt.order_uid"/></span>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('orderlines')]" position="replace">
+            <div class="orderlines">
+                <table class="bebepolis-receipt-table bebepolis-border-dashed">
+                    <thead>
+                        <tr>
+                            <th>UTS</th>
+                            <th>ARTICLE</th>
+                            <th class="pos-receipt-text-right-align">DTO</th>
+                            <th class="pos-receipt-text-right-align">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="receipt.orderlines" t-as="line" t-key="line.id"
+                            class="bebepolis-border-solid bebepolis-line-height">
+                            <td class="pos-receipt-center-align">
+                                <t t-esc="line.quantity"/></td>
+                            <td>
+                                <t t-esc="line.product_name"/>
+                            </td>
+                            <td class="pos-receipt-text-right-align">
+                                <t t-if="line.discount !== 0">
+                                    <t t-esc="line.discount"/>%
+                                </t>
+                            </td>
+                            <td class="pos-receipt-text-right-align">
+                                <span class="price_display">
+                                    <t t-esc="env.pos.format_currency(line.price_display)"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('pos-receipt-amount')]" position="replace">
+            <div class="pos-receipt-amount">
+                <div class="pos-receipt-text-right-align">
+                    <span>TOTAL:
+                        <span t-esc="env.pos.format_currency(receipt.total_with_tax)"/>
+                    </span><br/><br/>
+                </div>
+                <div class="pos-receipt-text-right-align">
+                    <span>TOTAL CHARGED:
+                        <span t-esc="env.pos.format_currency(receipt.total_paid)"/>
+                    </span><br/><br/>
+                </div>
+                <div class="pos-receipt-text-right-align">
+                    <b>TOTAL PENDING:
+                        <span t-esc="env.pos.format_currency(receipt.change)"/>
+                    </b><br/><br/>
+                </div>
+                <div class="pos-receipt-text-right-align">
+                    <span>PAYMENT WAY:
+                        <t t-foreach="receipt.paymentlines" t-as="line">
+                            <t t-if="line.name">
+                                <span class="pos-receipt-right-align" t-esc="line.name"/><br/>
+                            </t>
+                        </t>
+                    </span><br/>
+                </div>
+                <div class="pos-receipt-text-right-align">
+                    <span t-if="receipt.cashier" class="pos-receipt-font-reduce">
+                        SERVED BY:
+                        <span t-esc="receipt.cashier" class="bebepolis-text-transform"/><br/>
+                    </span>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('after-footer')]" position="replace">
+            <div class="after-footer pos-receipt-center-align">
+                <img t-att-src="'/report/barcode/?type=Code128&amp;value='+receipt.order_uid+'&amp;width=200&amp;height=70'"/>
+                <div>F. Simplified: <span t-esc="receipt.order_uid"></span></div>
+            </div><br/>
+            <div class="after-footer pos-receipt-center-align">
+                <div>
+                    <span>Bebepolis acepta el cambio y devolución de sus
+                        productos en un plazo máximo de 15 días desde la
+                        fecha de compra, siempre que estos no hayan sido
+                        usados. Imprescindible presentar ticket de compra.
+                        Las devoluciones se efectuarán solamente por otro
+                        artículo de igual o mayor valor, o por un vale con
+                        fecha de caducidad de 6 meses. Para los artículos
+                        por encargo o a medida, no admitimos devolociones.
+                    </span>
+                </div><br/><br/>
+                <div>
+                    <span>
+                        No olvide consultar nuestras promociones en
+                        bebepolis.es
+                    </span>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('pos-receipt-order-data')]" position="replace">
+            <div class="pos-receipt-order-data" style="display: none"></div>
+        </xpath>
+    </t>-->
 </templates>
