@@ -1,6 +1,17 @@
 <odoo>
 	<data>
 
+        <record forcecreate="True" id="scedular_prestashop_import_address" model="ir.cron">
+			<field name="name">Prestashop Import Address</field>
+			<field name="model_id" ref="model_sale_shop"/>
+			<field name="state">code</field>
+            <field name="code">model.import_prestashop_import_address_scheduler()</field>
+            <field eval="False" name="active"/>
+			<field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+           <field eval="False" name="doall"/>
+        </record>
 
         <record forcecreate="True" id="scedular_prestashop_import_order" model="ir.cron">
 			<field name="name">Prestashop Import Orders</field>

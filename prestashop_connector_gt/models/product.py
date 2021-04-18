@@ -26,25 +26,21 @@ import psycopg2
 class product_template(models.Model):
     _inherit = 'product.template'
     
-    # prestashop_category_ids = fields.Many2many('product.category','prestashop_category_details','prestashop','category','Prestashop Category')
-    prestashop_product_category=fields.Char('Prestashop Category',size=64)
-    wholesale_price=fields.Float('Whole Sale Price',digits=(16,2))
+    prestashop_product_category = fields.Char('Prestashop Category',size=64)
+    wholesale_price = fields.Float('Whole Sale Price',digits=(16,2))
     combination_price = fields.Float(string="Extra Price of combination")
-    # presta_sku = fields.Char(string='')
-    prdct_unit_price=fields.Float('Unit Price')
-    prestashop_product=fields.Boolean('Prestashop Product')
-    product_onsale=fields.Boolean('On sale')
-    product_instock=fields.Boolean('In Stock')
-    product_img_ids=fields.One2many('product.images','product_t_id','Product Images')
-    prd_label=fields.Char('Label')
-    supplier_id=fields.Many2one('res.partner','Supplier')
-    manufacturer_id=fields.Many2one('res.partner','Manufacturer')
+    prdct_unit_price = fields.Float('Unit Price')
+    prestashop_product = fields.Boolean('Prestashop Product')
+    product_onsale = fields.Boolean('On sale')
+    product_instock = fields.Boolean('In Stock')
+    product_img_ids = fields.One2many('product.images','product_t_id','Product Images')
+    prd_label = fields.Char('Label')
+    supplier_id = fields.Many2one('res.partner','Supplier')
+    manufacturer_id = fields.Many2one('res.partner','Manufacturer')
     product_lngth=fields.Float('Length')
     product_wght=fields.Float('Weight')
     product_hght=fields.Float('Height')
     product_width=fields.Float('Weight')
-    #'feature':fields.char('Feature')
-    # product_description = fields.Text(string="Product Description")
     prd_type_name=fields.Char('Product Type Name')
     prest_active=fields.Boolean('Active')
     prest_img_id=fields.Integer('Imge ID')
@@ -52,10 +48,10 @@ class product_template(models.Model):
     presta_id = fields.Char('Presta ID')
     write_date = fields.Datetime(string="Write Date")
     tmpl_shop_ids = fields.Many2many('sale.shop', 'product_templ_shop_rel', 'product_id', 'shop_id', string="Shop")
+    product_category_ids = fields.Many2many('product.category', 'product_template_categ_relation', 'product_id', 'categ_id', string="Category")
     product_shop_count = fields.Integer(string="Shops",compute = 'get_product_shop_count',default=0)
     product_to_be_exported = fields.Boolean(string="Product to be exported?")
-    presta_categ_id = fields.Many2one('prestashop.category',string="Prestashop Category")
-    sku = fields.Char(string="SKU" )
+    sku = fields.Char(string="SKU")
 
     # @api.multi
     def get_product_shop_count(self):
@@ -109,10 +105,11 @@ class product_images(models.Model):
     _inherit ='product.images'
 
     product_t_id=fields.Many2one('product.template','Product Images')
-    # product_v_id = fields.Many2one('product.product', 'Product Images')
     image_url=fields.Char('Image URL')
     image=fields.Binary('Image')
     prest_img_id=fields.Integer('Img ID')
+    is_default_img=fields.Boolean('Default')
+    prest_product_id=fields.Integer('Presta Product ID')
     shop_ids = fields.Many2many('sale.shop', 'img_shop_rel', 'img_id', 'shop_id', string="Shop")
     write_date = fields.Datetime(string="Write Date")
 
@@ -120,28 +117,31 @@ class product_attribute(models.Model):
     _inherit='product.attribute'
     
     is_presta=fields.Boolean("Is Prestashop")
+    public_name=fields.Boolean("Public Name")
     presta_id = fields.Char(string='Presta Id')
-    prod_attribute = fields.One2many('product.attribute.value','attribute_id',string = 'attribute value')
     shop_ids = fields.Many2many('sale.shop', 'attr_shop_rel', 'attr_id', 'shop_id', string="Shop")
 
 class product_attribute_value(models.Model):
     _inherit= "product.attribute.value"
-    
-    # is_presta=fields.Boolean("Is Prestashop")
+
+    _sql_constraints = [('value_company_uniq', 'CHECK(1=1)', 'You cannot create two values with the same name for the same attribute.')]
+
+    is_presta=fields.Boolean("Is Prestashop")
     presta_id = fields.Char(string='Presta Id')
     write_date = fields.Datetime(string="Write Date")
     shop_ids = fields.Many2many('sale.shop', 'attr_val_shop_rel', 'attr_val_id', 'shop_id', string="Shop")
-    
-    @api.model
-    def create(self,vals):
-        result = super(product_attribute_value, self).create(vals)
-        return result
-        
-    
+
+
 class product_category(models.Model):
     _inherit="product.category"
     presta_id =fields.Char("Presta ID")
+    sequence = fields.Integer(  'Sequence', default=1, help="Assigns the priority to the list of product Category.")
     write_date = fields.Datetime(string="Write Date")
+    is_presta = fields.Boolean("Is Prestashop")
+    active = fields.Boolean("Active")
+    friendly_url = fields.Char("Friendly URL")
+    meta_title = fields.Char("Meta Title", size=70)
+    meta_description = fields.Text("Meta description", )
     shop_id = fields.Many2one('sale.shop', 'Shop ID')
     shop_ids = fields.Many2many('sale.shop', 'categ_shop_rel', 'categ_id', 'shop_id', string="Shop")
     to_be_exported = fields.Boolean(string="To be exported?")
@@ -157,7 +157,17 @@ class stock_warehouse(models.Model):
     presta_id = fields.Char("Presta ID")
     shop_ids = fields.Many2many('sale.shop', 'stockware_shop_rel', 'stockware_id', 'shop_id', string="Shop")
 
-    
-    
+class stock_quant(models.Model):
+    _inherit = 'stock.quant'
+
+    presta_id = fields.Char("Presta ID")
+    is_presta = fields.Char("Presta stock")
+
 
     
+    @api.model
+    def _get_inventory_fields_create(self):
+        res = super(stock_quant, self)._get_inventory_fields_create()
+        res.append('presta_id')
+        res.append('is_presta')
+        return res

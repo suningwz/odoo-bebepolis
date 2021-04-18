@@ -28,7 +28,6 @@ class SaleShop(models.Model):
         cancel_order_ids = order_obj.search([('shop_id','=',self[0].id),('presta_id','!=',False),('state','=','cancel')])
         
         origin_list = [s.name for s in all_order_ids]
-        print ("origin_list", origin_list)
         all_invoice_ids = invoice_obj.search([('is_prestashop','=',True),('invoice_origin', 'in', origin_list)])
         pending_invoice_ids = invoice_obj.search([('is_prestashop','=',True),('invoice_origin', 'in', origin_list),('state','!=','paid')])
         complete_invoice_ids = invoice_obj.search([('is_prestashop','=',True),('invoice_origin', 'in', origin_list),('state','=','paid')])
@@ -206,9 +205,7 @@ class SaleShop(models.Model):
         invoice_obj = self.env['account.move']
         all_order_ids = order_obj.search([('shop_id', '=', self[0].id)])
         origin_list = [s.name for s in all_order_ids]
-        print("origin_list", origin_list)
         invoice_id = invoice_obj.search([('is_prestashop', '=', True), ('origin', 'in', origin_list)])
-        print("invoice_id", invoice_id)
         imd = self.env['ir.model.data']
         action = imd.xmlid_to_object('account.action_view_invoice_tree1')
         list_view_id = imd.xmlid_to_res_id('account.view_invoice_tree')
@@ -222,7 +219,6 @@ class SaleShop(models.Model):
             'context': action.context,
             'res_model': action.res_model,
         }
-        print ("result", result)
         if len(invoice_id) >= 1:
             result['domain'] = "[('id','in',%s)]" % invoice_id.ids
 #         elif len(invoice_id) == 1:
@@ -268,10 +264,8 @@ class SaleShop(models.Model):
         invoice_obj = self.env['account.move']
         all_order_ids = order_obj.search([('shop_id', '=', self[0].id)])
         origin_list = [s.name for s in all_order_ids]
-        print ("origin_list", origin_list)
         invoice_id = invoice_obj.search(
             [('is_prestashop', '=', True), ('state', '=', 'draft'), ('origin', 'in', origin_list)])
-        print ("invoice_id", invoice_id)
         imd = self.env['ir.model.data']
         action = imd.xmlid_to_object('account.action_view_invoice_tree1')
         list_view_id = imd.xmlid_to_res_id('account.view_invoice_tree')

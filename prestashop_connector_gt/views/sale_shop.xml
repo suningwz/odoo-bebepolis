@@ -56,6 +56,12 @@
 									<field name="shipment_fee_product_id" required="True"
 										   class="oe_inline" />
 								</div>
+								<div name="discount_product_id">
+									<label for="discount_product_id" string="Discount"
+										   style="font-weight: bold;" />
+									<field name="discount_product_id" required="True"
+										   class="oe_inline" />
+								</div>
 								<div name="gift_wrapper_fee_product_id">
 									<label for="gift_wrapper_fee_product_id" string="Gift Wrapper Fee"
 										   style="font-weight: bold;" />
@@ -146,19 +152,38 @@
 						<notebook>
 							<page string="Prestashop Information" attrs="{'invisible':[('presta_id','=',False)]}">
 								<group>
+<!--									<group>-->
+
+<!--										<field name="last_presta_product_attrs_import_date"/>-->
+<!--										<field name="last_attr_id"/>-->
+<!--										<field name="last_prestashop_product_import_date"/>-->
+<!--										<field name="last_prestashop_inventory_import_date"/>-->
+<!--										<field name="last_prestashop_order_import_date"/>-->
+<!--										<field name="last_prestashop_msg_import_date"/>-->
+<!--										<field name="last_prestashop_customer_import_date"/>-->
+
+<!--										<field name="last_prestashop_customer_address_import_date"/>-->
+<!--										<field name="last_presta_cart_rule_import_date"/>-->
+<!--										<field name="last_presta_catalog_rule_import_date"/>-->
+<!--										<field name="last_prestashop_carrier_import_date"/>-->
+<!--										<field name="last_prestashop_category_import_date"/>-->
+<!--									</group>-->
 									<group>
-										<field name="last_presta_product_attrs_import_date"/>
-										<field name="last_attr_id"/>
-										<field name="last_prestashop_product_import_date"/>
-										<field name="last_prestashop_inventory_import_date"/>
-										<field name="last_prestashop_order_import_date"/>
-										<field name="last_prestashop_msg_import_date"/>
-										<field name="last_prestashop_customer_import_date"/>
-										<field name="last_prestashop_customer_address_import_date"/>
-										<field name="last_presta_cart_rule_import_date"/>
-										<field name="last_presta_catalog_rule_import_date"/>
-										<field name="last_prestashop_carrier_import_date"/>
-										<field name="last_prestashop_category_import_date"/>
+										<field name="last_country_id_import"/>
+										<field name="last_state_id_import"/>
+										<field name="last_customer_id_import"/>
+										<field name="last_supplier_id_import"/>
+										<field name="last_manufacturers_id_import"/>
+										<field name="last_address_id_import"/>
+										<field name="last_product_attrs_id_import"/>
+										<field name="last_product_attrs_values_id_import"/>
+										<field name="last_product_category_id_import"/>
+										<field name="last_product_id_import"/>
+										<field name="last_product_inventory_import"/>
+										<field name="last_order_id_id_import"/>
+										<field name="last_delivery_carrier_import"/>
+										<field name="last_catalog_rule_id_import"/>
+										<field name="last_cart_rule_id_import"/>
 									</group>
 								</group>
 							</page>

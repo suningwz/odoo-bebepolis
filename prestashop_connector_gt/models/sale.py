@@ -51,10 +51,9 @@ class sale_order(models.Model):
     shop_id=fields.Many2one('sale.shop','Shop ID')
     order_status = fields.Many2one('presta.order.status', string="Status")
     presta_order_ref=fields.Char('Order Reference')
-    presta_order_date = fields.Datetime(string="Prestashop Date")
-    pretsa_payment_mode=fields.Selection([('bankwire','Bankwire'),('cheque','Payment By Cheque'),('banktran','Bank transfer')],string='Payment mode',default='cheque')
-#                 'total_wght_product':fields.function(total_weight,string='Total weight of Products',store=True),
+    pretsa_payment_mode=fields.Selection([('bankwire','Bankwire'),('cheque','Payment By Cheque'),('banktran','Bank transfer'),('cod','Cash on delivery  (COD)')],string='Payment mode',default='cheque')
     carrier_prestashop=fields.Many2one('delivery.carrier',string='Carrier In Prestashop')
+    workflow_order_id=fields.Many2one('import.order.workflow',string='Order Work Flow')
     prestashop_order=fields.Boolean('Prestashop Order')
     message_order_ids=fields.One2many('order.message','new_id','Message Info')
     token=fields.Char('Token')
@@ -71,7 +70,31 @@ class sale_order_line(models.Model):
     gift=fields.Boolean('Gift')
     gift_message=fields.Char('Gift Message')
     wrapping_cost=fields.Float('Wrapping Cost')
+    presta_id = fields.Char('presta_id')
+    presta_line = fields.Boolean('Is Presta line')
     # shop_ids = fields.Many2many('sale.shop', 'orderline_shop_rel', 'line_id', 'shop_id', string="Shop")
+
+    @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'order_id.state','order_id.workflow_order_id')
+    def _get_to_invoice_qty(self):
+        """
+        Compute the quantity to invoice. If the invoice policy is order, the quantity to invoice is
+        calculated from the ordered quantity. Otherwise, the quantity delivered is used.
+        """
+        for line in self:
+
+            if line.order_id.state in ['sale', 'done']:
+                if not line.order_id.workflow_order_id:
+                    if line.product_id.invoice_policy == 'order':
+                        line.qty_to_invoice = line.product_uom_qty - line.qty_invoiced
+                    else:
+                        line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
+                else:
+                    if line.order_id.workflow_order_id.invoice_policy == 'order':
+                        line.qty_to_invoice = line.product_uom_qty - line.qty_invoiced
+                    elif line.order_id.workflow_order_id.invoice_policy == 'delivery':
+                        line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
+            else:
+                line.qty_to_invoice = 0
     
 class prestaOrderStatus(models.Model):
     _name = 'presta.order.status'
@@ -79,9 +102,7 @@ class prestaOrderStatus(models.Model):
     name = fields.Char(string="Status")
     presta_id = fields.Char(string="Presta ID")
 
-    
-    
-    
+
     
     
     

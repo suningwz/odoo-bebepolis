@@ -41,6 +41,8 @@ class delivery_carrier(models.Model):
     _inherit = 'delivery.carrier'
 
     presta_id = fields.Char(string="Presta ID")
+    delay_comment = fields.Char(string="Delay")
+    is_presta = fields.Boolean(string="Presta")
     shop_ids = fields.Many2many('sale.shop', 'carrier_shop_rel', 'product_id', 'shop_id', string="Shop")
     
     

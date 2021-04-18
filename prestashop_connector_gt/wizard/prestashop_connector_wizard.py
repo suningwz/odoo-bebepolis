@@ -18,11 +18,14 @@ class PrestashopConnectorWizard(models.Model):
     shop_ids = fields.Many2many('sale.shop', string="Select Shops")
     #import fields
     import_orders = fields.Boolean('Import Orders')
+    import_country_state = fields.Boolean('Import Country/State')
     last_order_import_date = fields.Datetime('Last presta order Import Date')
     import_products = fields.Boolean('Import Products')
     import_products_images = fields.Boolean('Import Products Images')
     import_categories = fields.Boolean('Import Categories')
-    import_customers = fields.Boolean('Import Customers')
+    import_customers = fields.Boolean('Import Customers',help='Import 2000 customer from prestashop to odoo at time and last import prestashop customer id store in shop. ')
+    count_import=fields.Integer('Total Import Record',default=0)
+    last_customer_id_import=fields.Integer('Last ID Import',default=0)
     import_suppliers = fields.Boolean('Import Suppliers')
     import_manufacturers = fields.Boolean('Import Manufacturers')
     # import_taxes = fields.Boolean('Import Taxes')
@@ -78,6 +81,8 @@ class PrestashopConnectorWizard(models.Model):
         if self.import_manufacturers:
             self.shop_ids.import_manufacturers()
 
+        if self.import_country_state:
+            self.shop_ids.import_country_state()
         # if self.import_taxes:
         #     self.shop_ids.import_taxes()
         #

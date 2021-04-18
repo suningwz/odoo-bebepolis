@@ -8,8 +8,9 @@
         <menuitem id="menu_partner_form" parent="sale_presta_menu" action="action_partner_form" name="Customers" sequence="1"/>
         <menuitem id="menu_vendor_form" parent="sale_presta_menu" action="action_partner_form_supplier" name="Suppliers" sequence="2"/>
 
+        <menuitem id="menu_partner_address_form" parent="sale_presta_menu" action="action_partner_address_form" name="Address" sequence="3"/>
         <menuitem id="menu_manufacturer_form" parent="sale_presta_menu" action="action_partner_form_manufacturer" name="Manufacturers" sequence="3"/>
-        <menuitem id="product_presta_menu" name="Product" action="inherit_product_template_action" parent="sale_presta_menu" sequence="4"/>
+<!--        <menuitem id="product_presta_menu" name="Product" action="inherit_product_template_action" parent="sale_presta_menu" sequence="4"/>-->
         <menuitem id="quotation_presta_menu" action="inherit_action_quotations" parent="sale_presta_menu" name="Quotation" sequence="5"/>
         <menuitem id="sale_order_presta_menu" action="inherit_action_orders" parent="sale_presta_menu" name="Sale Orders" sequence="6"/>
         <menuitem id="messages_presta_menu" action="action_order_messages" parent="sale_presta_menu" name="Messages" sequence="7"/>
@@ -38,11 +39,12 @@
 
 
         <menuitem name="All Delivery Orders" action="inherit_action_picking_tree_all" id="all_delivery_presta_menu" parent="delivery_presta_menu" sequence="1"/>
-        <menuitem name="Prestashop Attributes" id="product_attribute_menu_presta" parent="prestashop_ecommerce" sequence="2"/>
-        <menuitem action="attribute_action_inherit" id="menu_attribute_action_inherit" parent="product_attribute_menu_presta" />
-        <menuitem action="variants_action_inherit" id="menu_variants_action_inherit" parent="product_attribute_menu_presta" />
-        <menuitem name="Prestashop Categories" id="product_categ_menu_presta" parent="prestashop_ecommerce" sequence="3"/>
-        <menuitem action="prestashop_category_action_presta" name="Categories" id="menu_product_category_presta" parent="product_categ_menu_presta" />
+        <menuitem name="Catalog" id="catalog_menu_presta" parent="prestashop_ecommerce" sequence="2"/>
+        <menuitem id="product_presta_menu" name="Product" action="inherit_product_template_action" parent="catalog_menu_presta" sequence="1"/>
+        <menuitem action="preatashop_category_action_inherit" name="Categories" id="menu_product_category_presta" parent="catalog_menu_presta" sequence="2" />
+        <menuitem action="attribute_action_inherit" id="menu_attribute_action_inherit" parent="catalog_menu_presta" sequence="3"/>
+        <menuitem action="variants_action_inherit" id="menu_variants_action_inherit" parent="catalog_menu_presta" sequence="4"/>
+
 
         <!-- <menuitem id="customer_presta_menu" action="inherit_action_partner_form" parent="sale_presta_menu" name="Customers" sequence="1"/> -->
 

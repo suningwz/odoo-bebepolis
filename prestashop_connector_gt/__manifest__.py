@@ -5,10 +5,10 @@
 
 {
     "name" : "Prestashop Connector",
-    "version" : "1.0",
+    "version" : "1.1.0",
     "depends" : ["sale_stock",'delivery','account','sale_shop','product_images_olbs'],
     "author" : "Globalteckz",
-    'summary': 'Manage all your prestashop operations in Odoo Amazon Odoo Bridge(AOB) Amazon Odoo connector Odoo Amazon bridge Odoo amazon connector Connectors Odoo bridge Amazon to odoo Manage orders Manage products Import products Import customers Import orders Ebay to Odoo Odoo multi-channel bridge Multi channel connector Multi platform connector Multiple platforms bridge Connect Amazon with odoo Amazon bridge Flipkart Bridge Magento Odoo Bridge Odoo magento bridge Woocommerce odoo bridge Odoo woocommerce bridge Ebay odoo bridge Odoo ebay bridge Multi channel bridge Prestashop odoo bridge Odoo prestahop Akeneo bridge Marketplace bridge Multi marketplace connector Multiple marketplace platform  odoo shopify shopify connector shopify bridge shipstation connector shipstation integration shipstation bridge',
+    'summary': 'Manage all your prestashop operations in Odoo',
     'images': ['static/description/Banner.gif'],
     "license" : "Other proprietary",
     "price": "350.00",

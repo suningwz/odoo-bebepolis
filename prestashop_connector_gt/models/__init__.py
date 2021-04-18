@@ -11,6 +11,8 @@ from . import prestashop_dashboard
 from . import sale_shop
 from . import import_order_workflow
 from . import prestashop_logs 
-from . import prestashop_category
 from . import prestashop_language
 from . import presta_schedular
+from . import res_lang
+from . import res_country
+from . import res_country_state

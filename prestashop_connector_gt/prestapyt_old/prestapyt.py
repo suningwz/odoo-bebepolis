@@ -20,18 +20,15 @@ from which I also inspired my library.
 Questions, comments? guewen.baconnier@gmail.com
 """
 
-from future.standard_library import install_aliases
-install_aliases()
-
-from urllib.parse import urlencode
-
+import urllib
+# import urllib.parse
 import warnings
 import requests
 import mimetypes
-import base64
 from . import xml2dict
 from . import dict2xml
-import json
+
+# from urllib.request import urlopen
 from xml.parsers.expat import ExpatError
 from distutils.version import LooseVersion
 try:
@@ -49,8 +46,7 @@ try:  # for Python 3
 except ImportError:
     from httplib import HTTPConnection
 
-from .version import __author__
-from .version import __version__
+from .version import __author__, __version__  # noqa
 
 
 class PrestaShopWebServiceError(Exception):
@@ -81,10 +77,10 @@ class PrestaShopWebService(object):
     """Interact with the PrestaShop WebService API, use XML for messages."""
 
     MIN_COMPATIBLE_VERSION = '1.4.0.17'
-    MAX_COMPATIBLE_VERSION = '1.7.5.2'
+    MAX_COMPATIBLE_VERSION = '1.5.9.0'
 
     def __init__(self, api_url, api_key, debug=False, session=None,
-                 verbose=False):
+                 verbose=False, physical_url= None):
         """
         Create an instance of PrestashopWebService.
 
@@ -121,7 +117,13 @@ class PrestaShopWebService(object):
 
         # add a trailing slash to the url if there is not one
         if not self._api_url.endswith('/'):
-            self._api_url += '/'
+            if physical_url != None:
+                self._api_url += '/' + physical_url + '/'
+            else:
+                self._api_url += '/'
+        else:
+            if physical_url != None:
+                self._api_url +=  physical_url + '/'
 
         # add a trail /api/ if there is not
         if not self._api_url.endswith('/api/'):
@@ -171,6 +173,7 @@ class PrestaShopWebService(object):
         :param status_code: status code returned by the server
         :return: True or raise an exception PrestaShopWebServiceError
         """
+
         message_by_code = {204: 'No content',
                            400: 'Bad Request',
                            401: 'Unauthorized',
@@ -178,6 +181,7 @@ class PrestaShopWebService(object):
                            405: 'Method Not Allowed',
                            500: 'Internal Server Error',
                            }
+
         if status_code in (200, 201):
             return True
         elif status_code == 401:
@@ -188,11 +192,14 @@ class PrestaShopWebService(object):
             )
         elif status_code in message_by_code:
             ps_error_code, ps_error_msg = self._parse_error(content)
+
             raise PrestaShopWebServiceError(
                 message_by_code[status_code],
                 status_code,
+
                 ps_error_msg=ps_error_msg,
                 ps_error_code=ps_error_code,
+
             )
         else:
             ps_error_code, ps_error_msg = self._parse_error(content)
@@ -293,22 +300,9 @@ class PrestaShopWebService(object):
                 'Parameters must be a instance of dict'
             )
         supported = (
-            'filter', 'display', 'sort','ws_key',
-            'limit', 'schema', 'date', 'id_shop', 'id_group_shop',
+            'filter', 'display', 'sort',
+            'limit', 'schema', 'date', 'id_shop'
         )
-        # supported = ('description_short', 'visibility', 'isbn', 'supplier_reference', 'manufacturer_name', 'delivery_in_stock',
-        #  'available_for_order', 'width', 'quantity_discount', 'additional_shipping_cost', 'unit_price_ratio',
-        #  'low_stock_alert', 'id_supplier', 'state', 'id_tax_rules_group', 'additional_delivery_times',
-        #  'cache_has_attachments', 'text_fields', 'reference', 'available_now', 'available_later', 'is_virtual',
-        #  'pack_stock_type', 'description', 'online_only', 'uploadable_files', 'advanced_stock_management',
-        #  'show_condition', 'cache_is_pack', 'price', 'id_category_default', 'type', 'ean13', 'id_default_combination',
-        #  'wholesale_price', 'meta_keywords', 'weight', 'delivery_out_stock', 'id_shop_default', 'id_default_image',
-        #  'date_add', 'on_sale', 'link_rewrite', 'show_price', 'condition', 'low_stock_threshold',
-        #  'cache_default_attribute', 'customizable', 'indexed', 'date_upd', 'meta_title', 'id_manufacturer', 'active',
-        #  'height', 'redirect_type', 'id_type_redirected', 'unity', 'upc', 'ecotax', 'new', 'associations',
-        #  'available_date', 'depth', 'id', 'location', 'name', 'quantity', 'minimal_quantity', 'position_in_category',
-        #  'meta_description''filter', 'display', 'sort', 'ws_key',
-        #  'limit', 'schema', 'date', 'id_shop', 'id_group_shop',)
         # filter[firstname] (as e.g.) is allowed
         # so check only the part before a [
         unsupported = set([
@@ -338,9 +332,10 @@ class PrestaShopWebService(object):
         """
         if self.debug:
             options.update({'debug': True})
-        return urlencode(options)
+        # return urllib.urlencode(options)
+        return urllib.parse.urlencode(options)
 
-    def add(self, resource, content=None, files=None, options=None):
+    def add(self, resource, content=None, files=None):
         """Add (POST) a resource. Content can be a dict of values to create.
 
         :param resource: type of resource to create
@@ -352,11 +347,7 @@ class PrestaShopWebService(object):
             for data to be uploaded as files.
         :return: an ElementTree of the response from the web service
         """
-        full_url = self._api_url + resource
-        if options is not None:
-            self._validate_query_options(options)
-            full_url += "?%s" % (self._options_to_querystring(options),)
-        return self.add_with_url(full_url, content, files)
+        return self.add_with_url(self._api_url + resource, content, files)
 
     def add_with_url(self, url, xml=None, files=None):
         """Add (POST) a resource.
@@ -413,7 +404,6 @@ class PrestaShopWebService(object):
         if options is not None:
             self._validate_query_options(options)
             full_url += "?%s" % (self._options_to_querystring(options),)
-        print(self.get_with_url(full_url))
         return self.get_with_url(full_url)
 
     def get_with_url(self, url):
@@ -449,7 +439,7 @@ class PrestaShopWebService(object):
         """
         return self._execute(url, 'HEAD').headers
 
-    def edit(self, resource, content, options=None):
+    def edit(self, resource, content):
         """Edit (PUT) a resource.
 
         :param resource: type of resource to edit
@@ -457,9 +447,6 @@ class PrestaShopWebService(object):
         :return: an ElementTree of the Webservice's response
         """
         full_url = "%s%s" % (self._api_url, resource)
-        if options:
-            self._validate_query_options(options)
-            full_url += "?%s" % (self._options_to_querystring(options),)
         return self.edit_with_url(full_url, content)
 
     def edit_with_url(self, url, content):
@@ -507,7 +494,7 @@ class PrestaShopWebService(object):
         :return: headers and body.
         """
         BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
-        CRLF = b'\r\n'
+        CRLF = '\r\n'
         L = []
         for (key, filename, value) in files:
             L.append('--' + BOUNDARY)
@@ -519,7 +506,6 @@ class PrestaShopWebService(object):
             L.append(value)
         L.append('--' + BOUNDARY + '--')
         L.append('')
-        L = map(lambda l: l if isinstance(l, bytes) else l.encode('utf-8'), L)
         body = CRLF.join(L)
         headers = {
             'Content-Type': 'multipart/form-data; boundary=%s' % BOUNDARY
@@ -576,7 +562,6 @@ class PrestaShopWebServiceDict(PrestaShopWebService):
 
         elems = dive(response, level=2)
         # when there is only 1 resource, we do not have a list in the response
-        print('elems---',elems)
         if not elems:
             return []
         elif isinstance(elems, list):
@@ -720,25 +705,3 @@ if __name__ == '__main__':
                                     'postcode': '95014',
                                     'vat_number': ''})
     prestashop.add('addresses', address_data)
-
-class PrestaShopWebServiceImage(PrestaShopWebServiceDict):
-
-    def get_image(self,url):
-        res={}
-        try:
-            response = self._execute(url, 'GET')
-            if response.content:
-                image_content = base64.b64encode(response.content)
-            else:
-                image_content = ''
-            if str(response.headers['content-type']) == 'image/jpeg':
-                extension = '.jpg'
-            else:
-                extension=str(response.headers['content-type']).split('/')[1]
-            res.update({
-                    'image_content':image_content,
-                    'type': extension
-                 })
-        except Exception as e:
-            print('e----------',e)
-        return res

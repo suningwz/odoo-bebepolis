@@ -37,21 +37,18 @@ import random
 class sale_order_messages(models.Model):
     _name='order.message'
 
-    # def get_customer(self):
-    #
-    #     return True
-    # customer_id=fields.Many2one('res.partner','Customer' ,default=lambda self:self.get_customer())
-    customer_id=fields.Many2one('res.partner','Customer')
-    # onchange_customer_id
-    email=fields.Char('Email')
+
     employee_id=fields.Many2one('res.partner','Employee')
-    token=fields.Char('Token')
+    customer_id=fields.Many2one('res.partner', related='thread_id.customer_id')
+    thread_id=fields.Many2one('customer.threads','Thread')
+    email = fields.Char(related='thread_id.email')
+    token = fields.Char(related='thread_id.token')
+    status = fields.Char(related='thread_id.status')
+    status = fields.Char(related='thread_id.status')
     msg_prest_id=fields.Integer('MSG ID')
     message=fields.Text('Message')
     private=fields.Boolean('Private')
-    status=fields.Char('Status')
     new_id = fields.Many2one('sale.order','Order')
-    presta_id = fields.Char('Presta ID')
     shop_ids = fields.Many2many('sale.shop', 'message_shop_rel', 'mess_id', 'shop_id', string="Shop")
     to_be_exported = fields.Boolean(string="To be exported?")
 
@@ -64,9 +61,7 @@ class sale_order_messages(models.Model):
     def upload_customer_message(self):
         # prestashop=self.new_id.shop_id.presta_connect_json()
         prestashop=self.new_id.shop_id.presta_connect()
-        print ("prestashoppppppppppppppp",prestashop)
         thread_schema=prestashop.get('customer_threads',options={'schema':'blank'})
-        print ("thread_schemaaaaaaaaaaaaaaa",thread_schema)
         shop_id=prestashop.search('shops',options={'filter[name]':self.new_id.shop_id.name})
         order_id=prestashop.search('orders',options={'filter[reference]':self.new_id.presta_order_ref})
         customr_id=prestashop.search('customers',options={'filter[email]':self.new_id.partner_id.email})
@@ -124,3 +119,15 @@ class sale_order_messages(models.Model):
         return True
         
 sale_order_messages()
+
+class customer_threads(models.Model):
+    _name = 'customer.threads'
+
+    presta_id = fields.Char('Presta ID')
+    id_shop = fields.Char('Shop ID')
+    order_id = fields.Many2one('sale.order')
+    customer_id = fields.Many2one('res.partner', 'Customer')
+    status = fields.Char('Status')
+    email = fields.Char('Email')
+    employee_id = fields.Many2one('res.partner', 'Employee')
+    token = fields.Char('Token')

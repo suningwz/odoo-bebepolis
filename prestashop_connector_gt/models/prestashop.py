@@ -48,8 +48,8 @@ class prestashop_instance(models.Model):
     location = fields.Char('Location',default='http://localhost/prestashop',required=True)
     webservice_key = fields.Char('Webservice key',help="You have to put it in 'username' of the PrestaShop ""Webservice api path invite",required=True)
     warehouse_id=fields.Many2one('stock.warehouse','Warehouse', help='Warehouse used to compute the stock quantities.')
-    company_id= fields.Many2one('res.company', 'Company', default=lambda s: s.env['res.company']._company_default_get('stock.warehouse'))
-    shipping_product_id=fields.Many2one('product.product', 'Shipping Product', select=1)
+    company_id= fields.Many2one('res.company', 'Company', default=lambda self: self.env.company)
+    shipping_product_id=fields.Many2one('product.product', 'Shipping Product')
 
 #     Count Button For Sale Shop
     presta_id = fields.Char(string='shop Id')
@@ -86,7 +86,6 @@ class prestashop_instance(models.Model):
 
     # @api.one
     def create_shop(self, shop_val):
-        print( "======shop_valshop_valshop_valshop_valshop_val==>",shop_val)
         sale_shop_obj = self.env['sale.shop']
         price_list_obj = self.env['product.pricelist']
         journal_obj = self.env['account.journal']
@@ -110,8 +109,6 @@ class prestashop_instance(models.Model):
         def_gift_ids = product_prod_obj.search([('type', '=', 'service'), ('name', 'like', '%Gift%')])
         def_warehouse_ids = warehouse_obj.search([])
 
-        print("self.get_value_data(shop_val.get('name'))[0]===",self.get_value_data(shop_val.get('name'))[0],self.get_value_data(shop_val.get('name')))
-        
         shop_vals = {
             # 'name' : shop_val.get('name').get('value'),
             'name' : self.get_value_data(shop_val.get('name')),
@@ -134,8 +131,6 @@ class prestashop_instance(models.Model):
             'partner_id' : def_partner_ids and def_partner_ids[0].id,
             'workflow_id': def_workflow_ids and def_workflow_ids[0].id,
         }
-        print("shop_vals newwwwwww===============>",shop_vals)
-        
         # shop_ids = sale_shop_obj.search([('prestashop_instance_id', '=', self[0].id), ('name', '=', shop_val.get('name').get('value'))])
         shop_ids = sale_shop_obj.search([('prestashop_instance_id', '=', self[0].id),('name', '=',  self.get_value_data(shop_val.get('name'))[0])])
 
@@ -161,9 +156,7 @@ class prestashop_instance(models.Model):
        shop_ids = []
        for instance in self:
            prestashop = PrestaShopWebServiceDict(instance.location, instance.webservice_key)
-           print ("prestashopp=====>",prestashop)
            shops = prestashop.get('shops')
-           print ("get shops=====>",shops)
            # print "instance.shop_physical_url=====>",instance.shop_physical_url
 
            if shops.get('shops') and shops.get('shops').get('shop'):
@@ -174,7 +167,6 @@ class prestashop_instance(models.Model):
                    shops_val = [shops]
 
                for shop_id in shops_val:
-                   print ("====shop_id====>",shop_id)
                    id = shop_id.get('attrs').get('id')
                    data = prestashop.get('shops', id)
                    if data.get('shop'):
@@ -191,7 +183,6 @@ class prestashop_instance(models.Model):
                for lang in lan_vals:
                    logger.info('lang ===> %s', lang)
                    lang_vals = prestashop.get('languages', lang.get('attrs').get('id'))
-                   print ("=====lang_vals=====>",lang_vals)
                    logger.info('lang_vals===> %s', lang_vals)
                    # vals = {
                    #     'name': lang_vals.get('language').get('name').get('value'),

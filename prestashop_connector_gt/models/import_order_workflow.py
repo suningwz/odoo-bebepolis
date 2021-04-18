@@ -14,8 +14,7 @@ class ImportOrderWorkflow(models.Model):
     complete_shipment = fields.Boolean(string="Complete Shipment")
     invoice_policy = fields.Selection(
         [('order', 'Ordered quantities'),
-         ('delivery', 'Delivered quantities'),
-         ('cost', 'Invoice based on time and material')],
+         ('delivery', 'Delivered quantities')],
         string='Invoicing Policy', default='order')
     picking_policy = fields.Selection([
         ('direct', 'Deliver each product when available'),

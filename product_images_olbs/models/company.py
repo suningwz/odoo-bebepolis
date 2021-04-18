@@ -33,7 +33,6 @@ class ResCompany(models.Model):
     
 #    @api.multi
     def get_local_media_repository(self):
-        print('---------get_local_media_repository----')
         if self.id:
             return self.local_media_repository
 #         user_obj = self.env['res.users'].browse(self.end.uid)

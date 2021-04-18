@@ -11,16 +11,19 @@
 				<group name="operations">
 					<group name="import" string="Import" invisible="context.get('from_export', False) or context.get('from_update', False)">
 						<!--invisible="context.get('from_export', False) or context.get('from_update', False)">-->
-						<field name="import_product_attributes" />
-						<label for="import_product_attributes" string="(Please Import just the attributes first in start)"></label>
-						<newline/>
-						<field name="import_categories"/>
+						<field name="import_country_state" />
+
 						<field name="import_customers"/>
 						<field name="import_suppliers"/>
 						<field name="import_manufacturers"/>
 						<!--<field name="import_taxes"/>-->
 						<!--<field name="import_tax_rules"/>-->
 						<field name="import_addresses"/>
+						<label for="import_addresses" string="(Please Import Country/State/Customer/Supplier/Manufacturers before importing Adddress)"></label>
+						<newline/>
+						<field name="import_product_attributes" />
+						<newline/>
+						<field name="import_categories"/>
 						<field name="import_products"/>
 						<field name="import_inventory"/>
 						<field name="import_carriers"/>

@@ -32,7 +32,7 @@ class product_images(models.Model):
     "Products Image gallery"
     _name = "product.images"
     _description = __doc__
-    # _table = "product_images"
+    _table = "product_images"
     
     @api.model
     def unlink(self):
@@ -41,7 +41,7 @@ class product_images(models.Model):
             for image in self:
                 path = os.path.join(local_media_repository, image.product_id.default_code, image.name)
                 if os.path.isfile(path):
-                    os.remove(path)
+                    os.remove(path)          
         return super(product_images, self).unlink()
 
     @api.model
@@ -71,7 +71,7 @@ class product_images(models.Model):
                         else:
                             #we have to rename the image on the file system
                             if os.path.isfile(old_path):
-                                os.rename(old_path, os.path.join(local_media_repository, old_image.product_id.default_code, '%s%s' %(old_image.name, old_image.extention)))
+                                os.rename(old_path, os.path.join(local_media_repository, old_image.product_id.default_code, '%s%s' %(old_image.name, old_image.extention)))      
                 return res
         return super(product_images, self).write(vals)
 
@@ -80,13 +80,9 @@ class product_images(models.Model):
         product_product_obj = self.env['product.product']
         product_template_obj = self.env['product.template']
         for rec in self:
-            print('----------------test1111---------',rec)
-            # each = rec.sudo().read(['link', 'url', 'name', 'file_db_store', 'product_id', 'product_t_id', 'name', 'extention'])[0]
-            print('----------------test22222---------')
-            # if each['link']:
-            if rec.link:
-                # filename = BytesIO(requests.get(each['url']).content)
-                filename = BytesIO(requests.get(rec.url).content)
+            each = rec.read(['link', 'url', 'name', 'file_db_store', 'product_id', 'product_t_id', 'name', 'extention'])[0]
+            if each['link']:
+                filename = BytesIO(requests.get(each['url']).content)
                 img = base64.b64encode(filename.getvalue())
 
                 #(filename, header) = urllib.request.urlretrieve(each['url'])
@@ -97,33 +93,24 @@ class product_images(models.Model):
             else:
                 local_media_repository = self.env['res.company'].get_local_media_repository()
                 if local_media_repository:
-                    # if each['product_t_id']:
-                    if rec.product_t_id:
-                        # product_id = product_template_obj.browse(rec.product_t_id[0])
-                        # product_id = product_template_obj.browse(each['product_t_id'][0])
-                        # product_id = product_template_obj.browse(each['product_t_id'][0])
-                        # product_code = product_id.read(['default_code'])[0]['default_code']
-                        product_code = rec.product_t_id.default_code
+                    if each['product_t_id']:
+                        product_id = product_template_obj.browse(each['product_t_id'][0])
+                        product_code = product_id.read(['default_code'])[0]['default_code']
                     else:
-                        # product_id = product_product_obj.browse(each['product_id'][0])
-                        # product_code = product_id.read(['default_code'])[0]['default_code']
-                        product_code = rec.product_id.default_code
-                    # full_path = os.path.join(local_media_repository, product_code, '%s%s'%(each['name'], each['extention']))
-                    print('product_code----------',product_code)
-                    full_path = os.path.join(local_media_repository, product_code, '%s%s'%(rec.name, rec.extention))
-                    print('full_path-------',full_path)
+                        product_id = product_product_obj.browse(each['product_id'][0])
+                        product_code = product_id.read(['default_code'])[0]['default_code']
+                    full_path = os.path.join(local_media_repository, product_code, '%s%s'%(each['name'], each['extention']))
                     if os.path.exists(full_path):
                         try:
-                            with open(full_path, 'rb') as image:
-                                    img = image.read().encode("base64")
-                                # f.close()
+                            f = open(full_path, 'rb')
+                            img = base64.encodestring(f.read())
+                            f.close()
                         except Exception as e:
                            return False
                     else:
                         return False
                 else:
-                    img = rec.file_db_store
-                    # img = each['file_db_store']
+                    img = each['file_db_store']
                     rec.file = img
 
 #    @api.multi
@@ -173,7 +160,7 @@ class product_images(models.Model):
     url = fields.Char('File Location', size=250)
     comments = fields.Text('Comments')
     product_id = fields.Many2one('product.product', 'Product')
-    product_t_id = fields.Many2one('product.template', 'Product Images')
+
 
     _sql_constraints = [('uniq_name_product_id', 'UNIQUE(product_id, name)',
                 _('A product can have only one image with the same name'))]

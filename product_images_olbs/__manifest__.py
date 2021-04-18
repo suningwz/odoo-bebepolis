@@ -32,7 +32,7 @@
     """,
     "init_xml": [],
     "data": [
-        'security/ir.model.access.csv',
+        #'security/ir.model.access.csv',
         'views/product_images_view.xml',
         'views/company_view.xml'
     ],

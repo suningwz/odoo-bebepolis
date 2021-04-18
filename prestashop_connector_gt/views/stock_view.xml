@@ -84,6 +84,7 @@
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='company_id']" position="after">
 					<field name="presta_id"/>
+					<field name="delay_comment"/>
 				</xpath>
             </field>
         </record>

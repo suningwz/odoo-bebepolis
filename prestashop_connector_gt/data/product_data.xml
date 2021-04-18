@@ -6,6 +6,7 @@
             <field name="standard_price">0.0</field>
             <field name="list_price">2.0</field>
             <field name="type">service</field>
+            <field name="default_code">Shipping</field>
             <field name="description_sale">Shipping and Handling</field>
         </record>
 
@@ -14,6 +15,7 @@
             <field name="standard_price">0.0</field>
             <field name="list_price">2.0</field>
             <field name="type">service</field>
+            <field name="default_code">Gift</field>
             <field name="description_sale">Gift Wrapping</field>
         </record>
 

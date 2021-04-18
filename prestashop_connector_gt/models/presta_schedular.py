@@ -62,6 +62,12 @@ class SaleShop(models.Model):
 		search_ids.import_orders()
 		return True
 
+	def import_prestashop_import_address_scheduler(self, cron_mode=True):
+		instance_obj = self.env['sale.shop']
+		search_ids = self.search([])
+		search_ids.import_addresses()
+		return True
+
 	# @api.multi
 	def import_prestashop_product_scheduler(self, cron_mode=True):
 		instance_obj = self.env['sale.shop']
