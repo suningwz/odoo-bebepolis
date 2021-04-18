@@ -20,7 +20,7 @@
         'point_of_sale', 'stock_barcode', 'maintenance',
         'sale_enterprise', 'purchase_enterprise', 'web_enterprise',
         'stock_enterprise', 'sale_shop',
-        'prestashop_connector_gt'
+        'prestashop_connector_gt', 'aspl_pos_order_reservation_ee'
     ],
     "data": [
         'views/pos_assets_common.xml',
