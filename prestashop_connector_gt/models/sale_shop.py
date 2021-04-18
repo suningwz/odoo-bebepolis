@@ -982,15 +982,18 @@ class SaleShop(models.Model):
             'product_hght': self.get_value_data(product.get('height')),
             'presta_id': self.get_value_data(product.get('id')),
         }
-        # if int(self.get_value_data(product.get('id_category_default'))) > 0:
-        # 	cat_ids = category_obj.search(
-        # 		[('presta_id', '=', self.get_value_data(product.get('id_category_default')))])
-        # 	if cat_ids:
-        # 		categ_id = cat_ids[0]
-        # 	else:
-        # 		vals = prestashop.get('categories', self.get_value_data(product.get('id_category_default')))
-        # 		categ_id = self.create_presta_category(prestashop, vals)
-        # 	prd_tmp_vals.update({'presta_categ_id': categ_id.id})
+        if int(self.get_value_data(product.get('id_category_default'))) > 0:
+            cat_ids = category_obj.search([
+                ('presta_id', '=', self.get_value_data(product.get('id_category_default')))
+            ])
+            if cat_ids:
+                categ_id = cat_ids[0]
+            else:
+                vals = prestashop.get('categories', self.get_value_data(product.get('id_category_default')))
+                categ_id = self.create_presta_category(prestashop, vals)
+            prd_tmp_vals.update({
+                'presta_categ_id': categ_id.id
+            })
         logger.info("===========>prd_tmp_vals>>>>>>>>>>>", prd_tmp_vals)
         if self.get_value_data(product.get('ean13')):
             search_barcode = prod_temp_obj.sudo().search_count([
