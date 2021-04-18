@@ -580,8 +580,8 @@ class pos_order(models.Model):
                                         to_be_cancelled_items[item_id] = to_be_cancelled_items[
                                                                              item_id] + origin_line.qty
                 order_ids.append(pos_order)
-
-        return self.env['pos.order'].search_read(domain=[('id', 'in', order_ids)], fields=['id', 'pos_reference'])
+        return super(pos_order, self).create_from_ui()
+        #return self.env['pos.order'].search_read(domain=[('id', 'in', order_ids)], fields=['id', 'pos_reference'])
 
 
 class PosConfig(models.Model):
