@@ -6,7 +6,7 @@
             <field name="model">pos.session</field>
             <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[0]//div" position="inside">
+                <xpath expr="//page[0]/div" position="inside">
                     <group style="margin:0;padding:0;" attrs="{'invisible' : [('amount_taken_from_cash_box', '=', 0.0)]}">
                         <field style="text-align:right;margin:0;padding:0;" name="amount_taken_from_cash_box"
                         widget="monetary" options="{'currency_field': 'currency_id'}" string="=Retiros efectivo"/>
