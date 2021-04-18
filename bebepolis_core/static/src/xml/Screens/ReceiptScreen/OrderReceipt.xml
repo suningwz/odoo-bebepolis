@@ -9,9 +9,7 @@
                 <span t-esc="env.pos.format_currency(receipt.change)" class="pos-receipt-right-align"/>
             </div>
         </xpath>
-
-        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-if='receipt.total_rounded != receipt.total_with_tax']" position="replace"/>
-
+        
         <xpath expr="//div[hasclass('pos-receipt')]/t[@t-key='line.cid']" position="replace"/>
 
         <xpath expr="//div[hasclass('pos-receipt')]//t[@t-if='!isTaxIncluded']" position="replace">
