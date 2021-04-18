@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
-<odoo>
+<openerp>
     <data noupdate="0">
+
         <record id="product_paid" model="product.product">
             <field name="name">Paid Amount</field>
             <field name="sale_ok" eval="True"/>
@@ -38,4 +39,4 @@
         </record>
 
     </data>
-</odoo>
+</openerp>

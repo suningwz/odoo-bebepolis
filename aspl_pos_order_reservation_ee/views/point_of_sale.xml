@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <record model="ir.ui.view" id="ace_view_pos_config_form">
             <field name="name">pos.config.form.view.inherit</field>
             <field name="model">pos.config</field>
