@@ -135,7 +135,7 @@
     </t>
 
     <t t-extend="OrderReceipt">
-        <t t-jquery="[t-if='receipt.company.logo']" t-operation="before">
+        <!-- <t t-jquery="[t-if='receipt.company.logo']" t-operation="before">
             <div style="text-align:center;">
                 <t t-esc="order.get_pos_reference() ? order.get_pos_reference() : order.name"/>
                 <br/>
@@ -143,7 +143,7 @@
                     Delivery Date: <t t-esc="moment(order.get_delivery_date()).format('L')"/>
                 </t>
             </div>
-        </t>
+        </t> -->
         <t t-jquery="[t-esc='moment().format(\'L LT\')']" t-operation="replace">
             <t t-esc="order.get_date_order() ? order.get_date_order() : moment().format('L LT')"/>
         </t>
@@ -208,7 +208,7 @@
                 </tr>
             </t>
         </t>
-        <t t-jquery=".receipt-change" t-operation="before">
+        <!-- <t t-jquery=".receipt-change" t-operation="before">
             <table style="width:100%;">
                 <tr>
                     <td>Amount Due:</td>
@@ -217,7 +217,7 @@
                     </td>
                 </tr>
             </table>
-    	</t>
+    	</t> -->
         <t t-jquery="[t-foreach='paymentlines']" t-operation="after">
             <t t-if="order.get_journal()">
                <tr t-foreach="order.get_journal()" t-as="line">
