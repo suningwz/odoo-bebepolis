@@ -11,9 +11,7 @@
             </div>
         </xpath>
 
-        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-if='receipt.total_rounded != receipt.total_with_tax']" position="replace"/>
-
-        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-key='line.cid']" position="replace"/>
+        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-foreach='paymentlines']" position="replace"/>
 
         <xpath expr="//div[hasclass('pos-receipt')]//t[@t-if='!isTaxIncluded']" position="replace">
             <table class="bebepolis-receipt-table bebepolis-margin-top">
@@ -25,7 +23,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <t t-set="imp_base" t-value="receipt.total_without_tax"/>
+                    <t t-set="imp_base" t-value="receipt.subtotal"/>
                     <tr>
                         <td>21%</td>
                         <td class="pos-receipt-center-align"><t t-esc="env.pos.format_currency(imp_base)"/></td>
@@ -37,16 +35,12 @@
                         <td>TOTAL</td>
                         <td class="pos-receipt-center-align"><t t-esc="env.pos.format_currency(imp_base)"/></td>
                         <td class="pos-receipt-text-right-align">
-                            <span t-esc='env.pos.format_currency(receipt.total_tax)'/>
+                            <span t-esc='env.pos.format_currency(receipt.total_with_tax)'/>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </xpath>
-
-        <xpath expr="//div[hasclass('pos-receipt')]/div[5]" position="replace"/>
-
-        <xpath expr="//div[hasclass('pos-receipt')]/div[3]" position="replace"/>
 
         <xpath expr="//div[hasclass('pos-receipt-contact')]" position="replace">
             <div class="pos-receipt-contact">
@@ -74,7 +68,7 @@
         <xpath expr="//div[hasclass('orderlines')]" position="before">
             <div>
                 <span t-esc="receipt.date.localestring"/>
-                <span class="pos-receipt-right-align">F. SIMPLIFIED:<br/><span t-esc="receipt.order_uid"/></span>
+                <span class="pos-receipt-right-align">F. SIMPLIFIED:<br/><span t-esc="receipt.order.name"/></span>
             </div>
         </xpath>
 
