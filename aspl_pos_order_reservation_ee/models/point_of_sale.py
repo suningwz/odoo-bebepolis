@@ -709,7 +709,7 @@ class PosSession(models.Model):
         # in the self.order_ids with group key of the `payment_method_id`
         # field of the pos.payment record.
         if not self.config_id.enable_order_reservation:
-            super(PosSession, self)._accumulate_amounts(data)
+            return super(PosSession, self)._accumulate_amounts(data)
         amounts = lambda: {'amount': 0.0, 'amount_converted': 0.0}
         tax_amounts = lambda: {'amount': 0.0, 'amount_converted': 0.0, 'base_amount': 0.0, 'base_amount_converted': 0.0}
         split_receivables = defaultdict(amounts)
