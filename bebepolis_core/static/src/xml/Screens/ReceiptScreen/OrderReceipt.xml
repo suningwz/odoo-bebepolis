@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="bebepolis_template" xml:space="preserve">
-    <!--
     <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
         <xpath expr="//div[hasclass('pos-receipt')]/t[@t-if='receipt.total_discount']" position="replace"/>
 
-        <xpath expr="//div[hasclass('pos-receipt')]//div[hasclass('receipt-change')]" position="replace">
-            <div class="pos-receipt-amount receipt-change" style="display:none">
-                CHANGE
-                <span t-esc="env.pos.format_currency(receipt.change)" class="pos-receipt-right-align"/>
-            </div>
-        </xpath>
+        <xpath expr="//div[hasclass('pos-receipt')]//div[hasclass('receipt-change')]" position="replace"/>
+<!--            <div class="pos-receipt-amount receipt-change" style="display:none">-->
+<!--                CHANGE-->
+<!--                <span t-esc="widget.format_currency(receipt.change)" class="pos-receipt-right-align"/>-->
+<!--            </div>-->
+<!--        </xpath>-->
 
         <xpath expr="//div[hasclass('pos-receipt')]/t[@t-foreach='paymentlines']" position="replace"/>
 
-        <xpath expr="//div[hasclass('pos-receipt')]//t[@t-if='!isTaxIncluded']" position="replace">
+        <xpath expr="//div[hasclass('pos-receipt')]/t[@t-if='taxincluded']" position="replace">
+            <div style="display:none">
+                <t t-if='taxincluded'>
+                    <t t-foreach='receipt.tax_details' t-as='tax'>
+                        <div>
+                            <t t-esc='tax.name' />
+                            <span t-esc='widget.format_currency_no_symbol(tax.amount)' class="pos-receipt-right-align"/>
+                        </div>
+                    </t>
+                    <div>
+                        Total Taxes
+                        <span t-esc='widget.format_currency(receipt.total_tax)' class="pos-receipt-right-align"/>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('pos-receipt')]//t[@t-if='!taxincluded']" position="replace">
             <table class="bebepolis-receipt-table bebepolis-margin-top">
                 <thead>
                     <tr>
@@ -26,16 +42,16 @@
                     <t t-set="imp_base" t-value="receipt.subtotal"/>
                     <tr>
                         <td>21%</td>
-                        <td class="pos-receipt-center-align"><t t-esc="env.pos.format_currency(imp_base)"/></td>
+                        <td class="pos-receipt-center-align"><t t-esc="widget.format_currency(imp_base)"/></td>
                         <td class="pos-receipt-text-right-align">
-                            <span t-esc='env.pos.format_currency(receipt.total_tax)'/>
+                            <span t-esc='widget.format_currency(receipt.total_tax)'/>
                         </td>
                     </tr>
                     <tr>
                         <td>TOTAL</td>
-                        <td class="pos-receipt-center-align"><t t-esc="env.pos.format_currency(imp_base)"/></td>
+                        <td class="pos-receipt-center-align"><t t-esc="widget.format_currency(imp_base)"/></td>
                         <td class="pos-receipt-text-right-align">
-                            <span t-esc='env.pos.format_currency(receipt.total_with_tax)'/>
+                            <span t-esc='widget.format_currency(receipt.total_with_tax)'/>
                         </td>
                     </tr>
                 </tbody>
@@ -68,7 +84,7 @@
         <xpath expr="//div[hasclass('orderlines')]" position="before">
             <div>
                 <span t-esc="receipt.date.localestring"/>
-                <span class="pos-receipt-right-align">F. SIMPLIFIED:<br/><span t-esc="receipt.order.name"/></span>
+                <span class="pos-receipt-right-align">F. SIMPLIFIED:<br/><span t-esc="receipt.order_uid"/></span>
             </div>
         </xpath>
 
@@ -78,9 +94,9 @@
                     <thead>
                         <tr>
                             <th>UTS</th>
-                            <th>ARTICLE</th>
+                            <th width="50%" class="padding-line">ARTICLE</th>
                             <th class="pos-receipt-text-right-align">DTO</th>
-                            <th class="pos-receipt-text-right-align">TOTAL</th>
+                            <th width="20%" class="pos-receipt-text-right-align">TOTAL</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,7 +104,7 @@
                             class="bebepolis-border-solid bebepolis-line-height">
                             <td class="pos-receipt-center-align">
                                 <t t-esc="line.quantity"/></td>
-                            <td>
+                            <td class="padding-line">
                                 <t t-esc="line.product_name"/>
                             </td>
                             <td class="pos-receipt-text-right-align">
@@ -98,7 +114,7 @@
                             </td>
                             <td class="pos-receipt-text-right-align">
                                 <span class="price_display">
-                                    <t t-esc="env.pos.format_currency(line.price_display)"/>
+                                    <t t-esc="widget.format_currency(line.price_display)"/>
                                 </span>
                             </td>
                         </tr>
@@ -111,24 +127,24 @@
             <div class="pos-receipt-amount">
                 <div class="pos-receipt-text-right-align">
                     <span>TOTAL:
-                        <span t-esc="env.pos.format_currency(receipt.total_with_tax)"/>
+                        <span t-esc="widget.format_currency(receipt.total_with_tax)"/>
                     </span><br/><br/>
                 </div>
                 <div class="pos-receipt-text-right-align">
                     <span>TOTAL CHARGED:
-                        <span t-esc="env.pos.format_currency(receipt.total_paid)"/>
+                        <span t-esc="widget.format_currency(receipt.total_paid)"/>
                     </span><br/><br/>
                 </div>
                 <div class="pos-receipt-text-right-align">
                     <b>TOTAL PENDING:
-                        <span t-esc="env.pos.format_currency(receipt.change)"/>
+                        <span t-esc="widget.format_currency(receipt.change)"/>
                     </b><br/><br/>
                 </div>
                 <div class="pos-receipt-text-right-align">
                     <span>PAYMENT WAY:
                         <t t-foreach="receipt.paymentlines" t-as="line">
-                            <t t-if="line.name">
-                                <span class="pos-receipt-right-align" t-esc="line.name"/><br/>
+                            <t t-if="line.payment_method">
+                                <span class="pos-receipt-right-align" t-esc="line.payment_method"/><br/>
                             </t>
                         </t>
                     </span><br/>
@@ -142,9 +158,25 @@
             </div>
         </xpath>
 
+        <xpath expr="//div[@t-if='receipt.footer_html']" position="replace">
+            <div t-if='receipt.footer_html' style="display: none;" class="pos-receipt-center-align">
+                <t t-raw='receipt.footer_html'/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@t-if='!receipt.footer_html and receipt.footer']" position="replace">
+            <div t-if='!receipt.footer_html and receipt.footer'  class="pos-receipt-center-align" style="display: none;white-space:pre-line">
+                <t t-esc='receipt.footer'/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('before-footer')]" position="replace">
+            <div class='before-footer' style="display: none;"/>
+        </xpath>
+
         <xpath expr="//div[hasclass('after-footer')]" position="replace">
             <div class="after-footer pos-receipt-center-align">
-                <img t-att-src="'/report/barcode/?type=Code128&amp;value='+receipt.order_uid+'&amp;width=200&amp;height=70'"/>
+                <img t-att-src="'/report/barcode/?type=Code128&amp;value='+receipt.order_uid+'&amp;width=250&amp;height=60'"/>
                 <div>F. Simplified: <span t-esc="receipt.order_uid"></span></div>
             </div><br/>
             <div class="after-footer pos-receipt-center-align">
@@ -171,5 +203,5 @@
         <xpath expr="//div[hasclass('pos-receipt-order-data')]" position="replace">
             <div class="pos-receipt-order-data" style="display: none"></div>
         </xpath>
-    </t>-->
+    </t>
 </templates>
