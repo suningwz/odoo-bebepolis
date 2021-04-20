@@ -22,7 +22,7 @@ import psycopg2
 _logger = logging.getLogger(__name__)
 
 
-class pos_order(models.Model):
+class PosOrder(models.Model):
     _inherit = "pos.order"
 
     def update_delivery_date(self, delivery_date):
@@ -46,7 +46,7 @@ class pos_order(models.Model):
         return True
 
     def _order_fields(self, ui_order):
-        res = super(pos_order, self)._order_fields(ui_order)
+        res = super(PosOrder, self)._order_fields(ui_order)
         res.update({
             'order_booked': ui_order.get('reserved', False),
             'reserved': ui_order.get('reserved', False),
@@ -65,9 +65,12 @@ class pos_order(models.Model):
         for order in self:
             if order.name == '/':
                 vals['name'] = self.env['ir.sequence'].next_by_code('aspl.pos.order')
-        return super(pos_order, self).write(vals)
+        return super(PosOrder, self).write(vals)
 
     def action_pos_order_paid(self):
+        if 'enable_order_reservation' in self._context and not self._context['enable_order_reservation']:
+            return super(PosOrder, self).action_pos_order_paid()
+        
         if not self._is_pos_order_paid():
             if self.reserved:
                 return self.do_internal_transfer()
@@ -92,6 +95,9 @@ class pos_order(models.Model):
 
     @api.model
     def _process_order(self, order, draft, existing_order):
+        if 'enable_order_reservation' in self._context and not self._context['enable_order_reservation']:
+            return super(PosOrder, self)._process_order(order, draft, existing_order)
+
         if order.get('data').get('old_order_id'):
             pos_line_obj = self.env['pos.order.line']
             order = order['data']
@@ -493,7 +499,7 @@ class pos_order(models.Model):
         """Create a new payment for the order"""
         if data['amount'] == 0.0:
             return
-        return super(pos_order, self).add_payment(data)
+        return super(PosOrder, self).add_payment(data)
 
     def send_reserve_mail(self):
         if self and self.customer_email and self.reserved and self.fresh_order:
@@ -548,6 +554,12 @@ class pos_order(models.Model):
     @api.model
     def create_from_ui(self, orders, draft=False):
         order_ids = []
+        if orders:
+            pos_session = self.env['pos.session'].search(
+                [('id', '=', orders[0]['data']['pos_session_id'])], limit=1)
+            if not pos_session.config_id.enable_order_reservation:
+                return super(PosOrder, self.with_context({'enable_order_reservation': False})).create_from_ui(orders, draft)
+        
         for order in orders:
             existing_order = False
             if 'server_id' in order['data']:
@@ -696,6 +708,8 @@ class PosSession(models.Model):
         # E.g. `combine_receivables` is derived from pos.payment records
         # in the self.order_ids with group key of the `payment_method_id`
         # field of the pos.payment record.
+        if not self.config_id.enable_order_reservation:
+            super(PosSession, self)._accumulate_amounts(data)
         amounts = lambda: {'amount': 0.0, 'amount_converted': 0.0}
         tax_amounts = lambda: {'amount': 0.0, 'amount_converted': 0.0, 'base_amount': 0.0, 'base_amount_converted': 0.0}
         split_receivables = defaultdict(amounts)
