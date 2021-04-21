@@ -1652,8 +1652,18 @@ class SaleShop(models.Model):
 		try:
 			for shop in self:
 				prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,shop.prestashop_instance_id.webservice_key or None)
-				filters = {'display': 'full', 'filter[id]': '=[%s]' % shop.last_order_id_id_import, 'limit': 100}
-				prestashop_order_data = prestashop.get('orders', options=filters)
+				if 'last_order_import_date' in self._context: 
+					prestashop_order_data = prestashop.get('orders', options={
+					'display': 'full',
+					'filter[date_upd]': "[{},{}]".format(self.env.context.get('last_order_import_date'), str(datetime.now())),
+					'date': '1',
+					'sort': '[id_DESC]',
+					'limit': 100,
+					})
+				else:
+					filters = {'display': 'full', 'filter[id]': '=[%s]' % shop.last_order_id_id_import, 'limit': 100}
+					prestashop_order_data = prestashop.get('orders', options=filters)
+				
 				if prestashop_order_data.get('orders') and prestashop_order_data.get('orders').get('order'):
 					orders =  prestashop_order_data.get('orders').get('order')
 					if isinstance(orders, list):
