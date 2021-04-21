@@ -729,7 +729,7 @@ class SaleShop(models.Model):
 				if not parent_id:
 					try:
 						cust_data = prestashop.get('customers', address_dict.get('id_customer'))
-						partner_id = self.create_customer(cust_data.get('customer'), prestashop)
+						parent_id = self.create_customer(cust_data.get('customer'), prestashop)
 					except Exception as e:
 						logger.info('Error/Warning '+ str(e))
 			elif address_dict.get('id_supplier') != '0':
