@@ -2452,23 +2452,23 @@ class SaleShop(models.Model):
 						})
 
 					product_schema.get('product').update({
-						'name': {'language': {'attrs': {'id': '1'}, 'value': product.name}},
-						'link_rewrite': {'language': {'attrs': {'id': '1'}, 'value': product.name.replace(' ', '-')}},
+						#'name': {'language': {'attrs': {'id': '1'}, 'value': product.name}},
+						#'link_rewrite': {'language': {'attrs': {'id': '1'}, 'value': product.name.replace(' ', '-')}},
 						'reference': product.default_code,
-						'wholesale_price': str(product.wholesale_price),
-						'depth': str(product.product_lngth),
-						'width': str(product.product_width),
-						'weight': str(product.product_wght),
-						'height': str(product.product_hght),
-						'price': product.list_price and str(product.list_price) or '0.00',
+						#'wholesale_price': str(product.wholesale_price),
+						#'depth': str(product.product_lngth),
+						#'width': str(product.product_width),
+						#'weight': str(product.product_wght),
+						#'height': str(product.product_hght),
+						#'price': product.list_price and str(product.list_price) or '0.00',
 						'date_upd': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
 						'date_add': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
 						'active': 1,
 	# 					'state': {'value': '1'},
-						'type': {'attrs': {'notFilterable': 'true'}, 'value': 'simple'},
-						'id_supplier': product.supplier_id and product.supplier_id.presta_id or '0',
-						'id_manufacturer': product.manufacturer_id and product.manufacturer_id.presta_id or '0',
-						'id_shop_default':self.id
+						#'type': {'attrs': {'notFilterable': 'true'}, 'value': 'simple'},
+						#'id_supplier': product.supplier_id and product.supplier_id.presta_id or '0',
+						#'id_manufacturer': product.manufacturer_id and product.manufacturer_id.presta_id or '0',
+						#'id_shop_default':self.id
 					})
 					p_ids = prdct_obj.search([('product_tmpl_id', '=' ,product[0].id)])
 					product_var_ids = prdct_obj.search([('product_tmpl_id','=',product.id)])
@@ -2490,10 +2490,10 @@ class SaleShop(models.Model):
 						})
 						product_comb_schema.get('combination').update({
 								'id_product' : presta_id,
-								'price' : prod_var.combination_price and str(prod_var.combination_price) or '0.00',
+								#'price' : prod_var.combination_price and str(prod_var.combination_price) or '0.00',
 								'reference': prod_var.default_code,
 								'quantity': str(int(prod_var.qty_available)),
-								'minimal_quantity': '1',
+								#'minimal_quantity': '1',
 						})
 						combination_resp = prestashop.add('combinations', product_comb_schema)
 						c_presta_id = self.get_value_data(combination_resp.get('prestashop').get('combination').get('id'))
