@@ -1464,12 +1464,12 @@ class SaleShop(models.Model):
 							[('product_tmpl_id.presta_id', '=', self.get_value_data(child.get('product_id')))])
 						line.update({'product_id': new_product_ids[0].id, 'product_uom': new_product_ids[0].uom_id.id})
 					except:
-						product_id = self.remove_record_prestashop_checked(prod_templ_obj, 'Removed Product',
-																		   {'name': 'Removed Product'})
+						# product_id = self.remove_record_prestashop_checked(prod_templ_obj, 'Removed Product', {'name': 'Removed Product'})
+						product_id = self.remove_record_prestashop_checked(product_obj, 'Removed Product', {'name': 'Removed Product'})
 						line.update({'product_id': product_id.id, 'product_uom': product_id.uom_id.id})
 			if 'product_id' not in line:
-				product_id = self.remove_record_prestashop_checked(prod_templ_obj, 'Removed Product',
-																   {'name': 'Removed Product'})
+				# product_id = self.remove_record_prestashop_checked(prod_templ_obj, 'Removed Product', {'name': 'Removed Product'})
+				product_id = self.remove_record_prestashop_checked(product_obj, 'Removed Product', {'name': 'Removed Product'})
 				line.update({'product_id': product_id.id, 'product_uom': product_id.uom_id.id})
 			if child.get('id'):
 				line_ids = sale_order_line_obj.search(
@@ -1599,7 +1599,8 @@ class SaleShop(models.Model):
 						'order_status' : state_id.id,
 						'shop_id': self.id,
 						'prestashop_order': True,
-						'presta_order_date': self.get_value_data(order_detail.get('date_add')),
+						'date_order': self.get_value_data(order_detail.get('date_add')),
+						# 'presta_order_date': self.get_value_data(order_detail.get('date_add')),
 						})
 			if self.workflow_id.picking_policy:
 				order_vals.update({'picking_policy' : self.workflow_id.picking_policy})
