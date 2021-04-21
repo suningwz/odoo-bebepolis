@@ -124,7 +124,7 @@
         </xpath>
 
         <xpath expr="//div[hasclass('pos-receipt-amount')]" position="replace">
-            <div class="pos-receipt-amount">
+            <div class="pos-receipt-amount" style="padding-left: 5em">
                 <div class="pos-receipt-text-right-align">
                     <span>TOTAL:
                         <span t-esc="widget.format_currency(receipt.total_with_tax)"/>
@@ -137,7 +137,8 @@
                 </div>
                 <div class="pos-receipt-text-right-align">
                     <b>TOTAL PENDING:
-                        <span t-esc="widget.format_currency(receipt.change)"/>
+                        <!-- <span t-esc="widget.format_currency(receipt.change)"/> -->
+                        <t t-esc="widget.format_currency(order.get_due())"/>
                     </b><br/><br/>
                 </div>
                 <div class="pos-receipt-text-right-align">
