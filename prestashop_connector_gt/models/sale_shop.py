@@ -360,7 +360,7 @@ class SaleShop(models.Model):
 											shop.create_presta_category(parent_presta_categ_data.get('category'), prestashop)
 											self.env.cr.commit()
 										except Exception as e:
-											logger.info('Parent category ===> %s' % (e))
+											logger.info('Parent category no found in prestashop ===> %s' % (e))
 							shop.create_presta_category(category, prestashop)
 						shop.write({'last_product_category_id_import':int(category.get('id'))})
 		except Exception as e:

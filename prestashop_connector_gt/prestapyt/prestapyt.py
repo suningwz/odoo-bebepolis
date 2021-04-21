@@ -413,8 +413,9 @@ class PrestaShopWebService(object):
         if options is not None:
             self._validate_query_options(options)
             full_url += "?%s" % (self._options_to_querystring(options),)
-        print(self.get_with_url(full_url))
-        return self.get_with_url(full_url)
+        get_with_url = self.get_with_url(full_url)
+        print(get_with_url)
+        return get_with_url
 
     def get_with_url(self, url):
         """Retrieve (GET) a resource from a full URL.
