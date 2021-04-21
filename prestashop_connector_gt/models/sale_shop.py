@@ -178,8 +178,10 @@ class SaleShop(models.Model):
 			prod_att_obj = self.env['product.attribute']
 			prod_attr_vals_obj = self.env['product.attribute.value']
 			attribute_value = {
-							'name':attribute.get('name').get('language')[0].get('value'),
-							'public_name':attribute.get('public_name').get('language')[0].get('value'),
+							# 'name':attribute.get('name').get('language')[0].get('value'),
+							'name':attribute.get('name').get('language').get('value'),
+							# 'public_name':attribute.get('public_name').get('language')[0].get('value'),
+							'public_name':attribute.get('public_name').get('language').get('value'),
 							'presta_id': attribute.get('id'),
 							'display_type': attribute.get('group_type'),
 							'is_presta': True
@@ -218,7 +220,8 @@ class SaleShop(models.Model):
 					attribute_dict = prestashop.get('product_options', attributes_vlaue.get('id_attribute_group'))
 					attribute_id = self.create_attribute(attribute_dict.get('product_option'),prestashop)
 			attribute_value = {
-							'name':attributes_vlaue.get('name').get('language')[0].get('value'),
+							# 'name':attributes_vlaue.get('name').get('language')[0].get('value'),
+							'name':attributes_vlaue.get('name').get('language').get('value'),
 							'presta_id': attributes_vlaue.get('id'),
 							'attribute_id': attribute_id.id,
 							'html_color': attributes_vlaue.get('color'),
@@ -233,6 +236,7 @@ class SaleShop(models.Model):
 			attr_vals_data = self.env.cr.fetchone()
 			if attr_vals_data == None:
 				self.env.cr.execute("insert into attr_val_shop_rel values(%s,%s)" % (attrs_value_id.id, self.id))
+				logger.info("Attribute value created ==> %s ==> att_id ==> %d" % (attribute_value['name'], attribute_value['attribute_id']))
 			self.env.cr.commit()
 		except Exception as e:
 			if self.env.context.get('log_id'):
@@ -262,6 +266,7 @@ class SaleShop(models.Model):
 					for attribute in attributes:
 						shop.create_attribute(attribute, prestashop)
 						shop.write({'last_product_attrs_id_import': int(attribute.get('id'))})
+						logger.info('Product Attribute created ===> %s' % attribute.get('id'))
 						self.env.cr.commit()
 
 				value_filters = {'display': 'full', 'filter[id]': '>[%s]' % self.last_product_attrs_values_id_import, 'limit': 2000}
