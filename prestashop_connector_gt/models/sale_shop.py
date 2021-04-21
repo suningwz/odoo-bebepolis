@@ -907,8 +907,10 @@ class SaleShop(models.Model):
 					if check_barcode:
 						prd_tmp_vals.update({'barcode': prd_tmp_vals['barcode'] + prd_tmp_vals['presta_id']})
 				prod_id = prod_temp_obj.create(prd_tmp_vals)
+				logger.info('Product created %s' % 	prod_id.name)
 			else:
 				prod_id.write(prd_tmp_vals)
+				logger.info('Product updated %s' % 	prod_id.name)
 			self.env.cr.commit()
 			if prod_id:
 				# Image create/write
@@ -935,7 +937,8 @@ class SaleShop(models.Model):
 										is_default_img=True
 										prod_id.write({'image_1920':img_test})
 									img_vals = ({'is_default_img':is_default_img,'extention':extention,'image_url': url, 'image': img_test, 'prest_img_id': int(image.get('id')),'name':' ','product_t_id': prod_id.id})
-									product_image_obj.create(img_vals)
+									_img_created = product_image_obj.create(img_vals)
+									logger.info('Product Image created %s' % _img_created.id)
 			# 	# write attributes
 				if prd_tmp_vals.get('attribute_line_ids'):
 					for each in prd_tmp_vals.get('attribute_line_ids'):
@@ -952,6 +955,7 @@ class SaleShop(models.Model):
 				if 'message_follower_ids' in prd_tmp_vals:
 					prd_tmp_vals.pop('message_follower_ids')
 				prod_id.write(prd_tmp_vals)
+				logger.info('Product comb updated %s' % prod_id.name)
 				self.env.cr.execute("select product_id from product_templ_shop_rel where product_id = %s and shop_id = %s" % (prod_id.id, self.id))
 				prod_data = self.env.cr.fetchone()
 				if prod_data == None:
@@ -1021,7 +1025,6 @@ class SaleShop(models.Model):
 													'default_code':self.get_value_data(combination_dict.get('combination').get('reference')),
 													'barcode': product_barcode,
 													'combination_id':self.get_value_data(combination_dict.get('combination').get('id')),
-
 												})
 												if imag_odoo_data:
 													c_val.update({
@@ -1029,6 +1032,7 @@ class SaleShop(models.Model):
 													})
 												product_data.product_template_attribute_value_ids.write({'price_extra':self.get_value_data(combination_dict.get('combination').get('price'))})
 												product_data.write(c_val)
+												logger.info('Product comb updated %s' % product_data.name)
 							except Exception as e:
 								continue
 					self.env.cr.commit()
