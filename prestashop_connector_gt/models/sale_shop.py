@@ -903,7 +903,12 @@ class SaleShop(models.Model):
 			prod_id = prod_temp_obj.search([('presta_id', '=', self.get_value_data(product_dict.get('id'))),('prestashop_product','=',True)],limit=1)
 			
 			if 'barcode' in prd_tmp_vals and prd_tmp_vals['barcode']:
-				check_barcode = prod_temp_obj.search([('barcode', '=', prd_tmp_vals['barcode'])], limit=1)
+				if not prod_id:
+					check_barcode = prod_temp_obj.search([('barcode', '=', prd_tmp_vals['barcode'])], limit=1)
+				else:
+					check_barcode = prod_temp_obj.search(
+						[('barcode', '=', prd_tmp_vals['barcode']), ('id', '!=', prod_id.id)], limit=1)
+				
 				if check_barcode and check_barcode.id != prod_id.id:
 					while check_barcode:
 						prd_tmp_vals.update(
@@ -1022,13 +1027,13 @@ class SaleShop(models.Model):
 													product_barcode = self.get_value_data(combination_dict.get('combination').get('ean13'))
 													# Add estas lineas para asegurarnos que el barcode sea único del lado de Odoo
 													if product_barcode:
-														check_barcode = prod_temp_obj.search([('barcode', '=', product_barcode)], limit=1)
+														check_barcode = prod_prod_obj.search(
+															[('barcode', '=', product_barcode)], limit=1)
 														if check_barcode:
 															while check_barcode:
 																product_barcode += combination_dict.get('combination').get('id')
-																check_barcode = prod_temp_obj.search(
+																check_barcode = prod_prod_obj.search(
 																	[('barcode', '=', product_barcode)], limit=1)
-
 												c_val.update({
 													'default_code':self.get_value_data(combination_dict.get('combination').get('reference')),
 													'barcode': product_barcode,
