@@ -1162,7 +1162,8 @@ class SaleShop(models.Model):
 					'is_presta': True,
 					'inventory_quantity': quantity,
 				})
-				self.env.cr.commit()
+				if id:
+					logger.info("Inventario importado")
 				return True
 		except Exception as e:
 			if self.env.context.get('log_id'):
@@ -1181,7 +1182,7 @@ class SaleShop(models.Model):
 		for shop in self:
 			try:
 				prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,shop.prestashop_instance_id.webservice_key or None)
-				filters = {'display': 'full', 'filter[id]': '>[%s]' % self.last_product_inventory_import, 'limit': 10}
+				filters = {'display': 'full', 'filter[id]': '>[%s]' % self.last_product_inventory_import, 'limit': 100}
 				prestashop_stock_data = prestashop.get('stock_availables', options=filters)
 				if prestashop_stock_data.get('stock_availables') and 'stock_available' in prestashop_stock_data.get('stock_availables'):
 					stocks = prestashop_stock_data.get('stock_availables').get('stock_available')
@@ -1194,6 +1195,7 @@ class SaleShop(models.Model):
 						if not stock_id:
 							shop.createInventory(stock,shop.warehouse_id.lot_stock_id.id, prestashop)
 						shop.write({'last_product_inventory_import': stock.get('id')})
+						self.env.cr.commit()
 			except Exception as e:
 				raise ValidationError(_(str(e)))
 		return True
