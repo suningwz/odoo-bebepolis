@@ -813,7 +813,8 @@ class SaleShop(models.Model):
 		try:
 			manufacturers_id = supplier_id = False
 			prd_tmp_vals = {
-				'name': product_dict.get('name').get('language')[0].get('value'),
+				# 'name': product_dict.get('name').get('language')[0].get('value'),
+				'name': product_dict.get('name').get('language').get('value'),
 				'type': 'product',
 				'list_price': product_dict.get('price'),
 				'default_code': product_dict.get('reference'),
@@ -834,6 +835,7 @@ class SaleShop(models.Model):
 				if cate_id:
 					prd_tmp_vals.update({'categ_id': cate_id.id})
 			if product_dict.get('ean13') not in ['0','']:
+				# Aqui barcode
 				prd_tmp_vals.update({'barcode': product_dict.get('ean13')})
 			# get manufacturer id if not in odoo create
 			if product_dict.get('id_manufacturer') != '0':
@@ -900,6 +902,10 @@ class SaleShop(models.Model):
 						prd_tmp_vals.update({'attribute_line_ids': attribute_line_ids})
 			prod_id = prod_temp_obj.search([('presta_id', '=', self.get_value_data(product_dict.get('id'))),('prestashop_product','=',True)],limit=1)
 			if not prod_id:
+				if 'barcode' in prd_tmp_vals and prd_tmp_vals['barcode']:
+					check_barcode = prod_temp_obj.search([('barcode', '=', prd_tmp_vals['barcode'])],limit=1)
+					if check_barcode:
+						prd_tmp_vals.update({'barcode': prd_tmp_vals['barcode'] + prd_tmp_vals['presta_id']})
 				prod_id = prod_temp_obj.create(prd_tmp_vals)
 			else:
 				prod_id.write(prd_tmp_vals)
@@ -1003,7 +1009,14 @@ class SaleShop(models.Model):
 														imag_odoo_data=self.return_image_data(prestashop,product_data.product_tmpl_id.id, prest_product_id, image.get('id'))
 												product_barcode=False
 												if self.get_value_data(combination_dict.get('combination').get('ean13')) not in ['','0']:
+													# Aqui Barcode
 													product_barcode = self.get_value_data(combination_dict.get('combination').get('ean13'))
+													# Add estas lineas para asegurarnos que el barcode sea único del lado de Odoo
+													if product_barcode:
+														check_barcode = prod_temp_obj.search([('barcode', '=', product_barcode)], limit=1)
+														if check_barcode:
+															product_barcode += combination_dict.get('combination').get('id')
+
 												c_val.update({
 													'default_code':self.get_value_data(combination_dict.get('combination').get('reference')),
 													'barcode': product_barcode,
