@@ -7,27 +7,27 @@
                   name="Documentos y Manuales"
                   action="mk_manual_docs.action_mk_doc_doc"
                   web_icon="mk_manual_docs,static/description/icon.png"
-                  sequence="100" groups="group_lector_chariots_documentos"/>
+                  sequence="100" groups="group_lector_documentos"/>
 
         <menuitem id="menu_item_mk_doc_doc"
                   parent="menu_item_principal_mk_doc_doc"
                   sequence="1" action="mk_manual_docs.action_mk_doc_doc"
-                  name="Documentos" groups="group_lector_chariots_documentos"/>
+                  name="Documentos" groups="group_lector_documentos"/>
         
         <menuitem id="menu_item_mk_doc_settings"
                   parent="menu_item_principal_mk_doc_doc"
                   sequence="2"
-                  name="Ajustes" groups="group_editor_chariots_documentos"/>
+                  name="Ajustes" groups="group_editor_documentos"/>
 
        
         <menuitem id="menu_item_mk_doc_area"
                   parent="menu_item_mk_doc_settings"
                   sequence="1" action="mk_manual_docs.action_mk_doc_area"
-                  name="Áreas" groups="group_editor_chariots_documentos"/>
+                  name="Áreas" groups="group_editor_documentos"/>
 
         <menuitem id="menu_item_mk_doc_category"
                   parent="menu_item_mk_doc_settings"
                   sequence="2" action="mk_manual_docs.action_mk_doc_category"
-                  name="Categorías" groups="group_editor_chariots_documentos"/>
+                  name="Categorías" groups="group_editor_documentos"/>
     </data>
 </odoo>
