@@ -265,6 +265,7 @@ class PrestaShopWebService(object):
             raise PrestaShopWebServiceError('HTTP response is empty')
 
         try:
+            print('XML: %s' % content)
             parsed_content = ElementTree.fromstring(content)
         except ExpatError as err:
             raise PrestaShopWebServiceError(
