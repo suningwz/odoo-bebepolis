@@ -26,6 +26,7 @@
         'views/pos_assets_common.xml',
         'views/pos_session.xml',
         'reports/report_cashcount.xml',
+        'reports/product_product_templates.xml',
     ],
     'qweb': [
         'static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml',
