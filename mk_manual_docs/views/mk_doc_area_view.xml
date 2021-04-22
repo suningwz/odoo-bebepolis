@@ -30,7 +30,6 @@
         <record id="action_mk_doc_area" model="ir.actions.act_window">
             <field name="name">Áreas</field>
             <field name="res_model">mk.doc.area</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
             <field name="help" type="html">

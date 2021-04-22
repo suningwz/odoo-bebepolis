@@ -30,7 +30,6 @@
         <record id="action_mk_doc_category" model="ir.actions.act_window">
             <field name="name">Categorías</field>
             <field name="res_model">mk.doc.category</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
             <field name="help" type="html">
