@@ -403,7 +403,7 @@
                     <field name="presta_id"/>
                     <field name="shop_ids" widget="many2many_tags"/>
                     <field name="to_be_exported"/>
-                    <field name="friendly_url" attrs="{'required':[('is_presta','=', True)]}"/>
+                    <field name="friendly_url" />
                     <field name="meta_title" />
                     <field name="meta_description" />
                     <field name="is_presta" invisible="1"/>
