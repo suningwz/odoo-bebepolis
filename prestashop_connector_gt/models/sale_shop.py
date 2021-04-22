@@ -1258,6 +1258,7 @@ class SaleShop(models.Model):
 						if not carrier_id:
 							shop.create_carrier(carrier)
 						shop.write({'last_delivery_carrier_import': carrier.get('id')})
+						self.env.cr.commit()
 				return True
 			except Exception as e:
 				raise ValidationError(_(str(e)))
