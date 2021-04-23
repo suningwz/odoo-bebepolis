@@ -514,10 +514,7 @@ class PosOrder(models.Model):
     @api.model
     def ac_pos_search_read(self, domain):
         get_domain = domain.get('domain')
-        search_vals = self.search_read(get_domain,
-                                       ['create_date', 'state', 'date_order', 'name', 'pos_reference', 'reserved',
-                                        'write_date', 'id', 'partner_id', 'lines', 'delivery_date', 'amount_total',
-                                        'amount_due'])
+        search_vals = self.search_read(get_domain, self.get_pos_order_fields())
 
         user_id = self.env['res.users'].browse(self._uid)
         tz = False
@@ -550,6 +547,10 @@ class PosOrder(models.Model):
             if line_dict:
                 res['lines'] = line_dict.read()
         return result
+
+    def get_pos_order_fields(self):
+        return ['create_date', 'state', 'date_order', 'name', 'pos_reference', 'reserved', 'write_date', 'id',
+                'partner_id', 'lines', 'delivery_date', 'amount_total', 'amount_due']
 
     @api.model
     def create_from_ui(self, orders, draft=False):

@@ -205,4 +205,37 @@
             <div class="pos-receipt-order-data" style="display: none"></div>
         </xpath>
     </t>
+
+    <t t-name="DeliveryDatePopup" t-inherit="aspl_pos_order_reservation_ee.DeliveryDatePopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//p[hasclass('title')]" position="replace">
+            <p class="title">Delivery Data</p>
+        </xpath>
+        <xpath expr="//div[hasclass('footer')]" position="before">
+            <div>
+                <textarea rows="2" class="textarea-bebepolis" placeholder="Observations" type="text" id="delivery_note"/>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="OrderDetailScreenWidget" t-inherit="aspl_pos_order_reservation_ee.OrderDetailScreenWidget" t-inherit-mode="extension" owl="1">
+        <xpath expr="//table[hasclass('paymentline-list')]" position="after">
+            <t t-set="note" t-if="widget.clicked_order" t-value="widget.clicked_order.note"/>
+            <table width="100%" t-if="note">
+                <tr>
+                    <td width="10%">
+                        <div class="order-detail order-details-box">
+                            <span class="label">Observations:</span>
+                        </div>
+                    </td>
+                    <td>
+                        <t>
+                            <div class="order-detail order-details-box">
+                                <span t-esc="note"/>
+                            </div>
+                        </t>
+                    </td>
+                </tr>
+            </table>
+        </xpath>
+    </t>
 </templates>

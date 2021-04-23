@@ -854,4 +854,14 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
         },
     });
     gui.define_screen({name:'reserved_items_list', widget: ReservedItemListScreenWidget});
+
+    return {
+        ShowOrderList: ShowOrderList,
+        ReservationMode: ReservationMode,
+        SaveDraftButton: SaveDraftButton,
+        ShowReservedItemsList: ShowReservedItemsList,
+        OrderListScreenWidget: OrderListScreenWidget,
+        OrderDetailScreenWidget: OrderDetailScreenWidget,
+        ReservedItemListScreenWidget: ReservedItemListScreenWidget,
+    }
 });

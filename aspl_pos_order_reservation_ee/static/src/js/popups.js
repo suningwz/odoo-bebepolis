@@ -478,4 +478,9 @@ var MaxCreditExceedPopupWidget = PopupWidget.extend({
     },
 });
 gui.define_popup({name:'max_limit', widget: MaxCreditExceedPopupWidget});
+
+return {'DeliveryDatePopup': DeliveryDatePopup,
+        'CancelOrderPopup': CancelOrderPopup,
+        'MaxCreditExceedPopupWidget': MaxCreditExceedPopupWidget};
+
 });
