@@ -1104,7 +1104,7 @@ class SaleShop(models.Model):
 			try:
 				product_categ_obj = self.env['product.category']
 				prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,shop.prestashop_instance_id.webservice_key or None)
-				filters = {'display': 'full', 'filter[id]': '>[%s]' % self.last_product_id_import, 'limit': 2000}
+				filters = {'display': 'full', 'filter[id]': '>[%s]' % self.last_product_id_import, 'limit': 1000}
 				prestashop_product_data = prestashop.get('products', options=filters)
 				if prestashop_product_data.get('products') and prestashop_product_data.get('products').get('product'):
 					prestashop_product_list = prestashop_product_data.get('products').get('product')
@@ -1258,6 +1258,7 @@ class SaleShop(models.Model):
 						if not carrier_id:
 							shop.create_carrier(carrier)
 						shop.write({'last_delivery_carrier_import': carrier.get('id')})
+						self.env.cr.commit()
 				return True
 			except Exception as e:
 				raise ValidationError(_(str(e)))
