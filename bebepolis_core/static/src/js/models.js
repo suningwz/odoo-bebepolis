@@ -28,6 +28,13 @@ models.Order = models.Order.extend({
     export_for_printing: function () {
         var result = _super_order.export_for_printing.apply(this, arguments);
         var company = this.pos.company;
+        var order = this.pos.get_order();
+        if (order.attributes && order.attributes.reservation_mode){
+            result.reservation_mode = true;
+            result.delivery_date = order.attributes.delivery_date;
+            result.paying_due = order.attributes.paying_due;
+            result.note = order.attributes.note;
+        }
         result.company.company_address = company;
         result.order_uid = this.uid
         return result;

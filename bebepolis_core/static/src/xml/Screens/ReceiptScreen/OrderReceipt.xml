@@ -124,7 +124,7 @@
         </xpath>
 
         <xpath expr="//div[hasclass('pos-receipt-amount')]" position="replace">
-            <div class="pos-receipt-amount" style="padding-left: 5em">
+            <div class="pos-receipt-amount">
                 <div class="pos-receipt-text-right-align">
                     <span>TOTAL:
                         <span t-esc="widget.format_currency(receipt.total_with_tax)"/>
@@ -197,6 +197,26 @@
                         No olvide consultar nuestras promociones en
                         bebepolis.es
                     </span>
+                </div>
+                <div t-if="receipt.reservation_mode" class="bebepolis-margin-top">
+                    <h3>Reserved</h3>
+                    <table class="bebepolis-receipt-table">
+                        <tr>
+                            <td>Delivery Date</td>
+                            <td><t t-esc="receipt.delivery_date"/></td>
+                        </tr>
+                        <tr>
+                            <td>Paying Due</td>
+                            <td><t t-if="receipt.paying_due" t-esc="receipt.paying_due"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><span><b>Observations:</b><t t-esc="receipt.note"/></span></td>
+                        </tr>
+                    </table>
+                    <div class="bebepolis-margin-top">
+                        <span>According Customer: </span>
+                        <span>______________</span>
+                    </div>
                 </div>
             </div>
         </xpath>
