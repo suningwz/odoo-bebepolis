@@ -13,7 +13,9 @@ var EditProductDescription = screens.ActionButtonWidget.extend({
     button_click : function() {
         var self = this;
         var order = self.pos.get_order();
-        self.gui.show_popup("edit_product_description_popup");
+        if(order.get_selected_orderline()){
+            self.gui.show_popup("edit_product_description_popup");
+        }
         return;
     },
 });
