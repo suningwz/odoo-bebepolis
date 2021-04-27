@@ -1,0 +1,12 @@
+.pos .clientlist-screen .new-address-buttons .button{
+    display: inline-block;
+    margin-left: 16px;
+    color: rgb(128,128,128);
+    cursor: pointer;
+    font-size: 36px;
+}
+.pos .clientlist-screen .new-address-buttons {
+    position: absolute;
+    right: 55px;
+    top: 10px;
+}

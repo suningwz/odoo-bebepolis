@@ -287,4 +287,25 @@
             </div>
          </div>
     </t>
+
+    <t t-name="ClientDetails" t-inherit="point_of_sale.ClientDetails" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('edit-buttons')]" position="before">
+            <div class="new-address-buttons" t-if="!partner.parent_id">
+                <div class='button new-address' t-att-data-id="partner.id"><i class='fa fa-address-book' role="img" aria-label="New Address" title="New Address"/></div>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="ClientDetailsEdit" t-inherit="point_of_sale.ClientDetailsEdit" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('client-details-right')]" position="inside">
+            <div class='client-detail' style="display: none;">
+                <span class='label'>Parent</span>
+                <input class='detail' name='parent_id' t-att-value='partner.parent_id'/>
+            </div>
+            <div class='client-detail' style="display: none;">
+                <span class='label'>Type</span>
+                <input class='detail' name='type' t-att-value='partner.type'/>
+            </div>
+        </xpath>
+    </t>
 </templates>

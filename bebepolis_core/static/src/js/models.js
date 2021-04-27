@@ -12,6 +12,10 @@ models.PosModel = models.PosModel.extend({
             throw new Error("res.company model not found");
         }
         this.models[1].fields.push('street', 'street2', 'city', 'zip');
+        if (!this.models[4].model || (this.models[4].model && this.models[4].model != 'res.partner')){
+            throw new Error("res.partner model not found");
+        }
+        this.models[4].fields.push('parent_id', 'type');
         return _super_pos_model.load_server_data.apply(this, arguments);
     },
 });
