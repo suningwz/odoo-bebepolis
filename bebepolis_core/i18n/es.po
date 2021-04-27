@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-23 22:47+0000\n"
-"PO-Revision-Date: 2021-04-23 22:50+0000\n"
+"POT-Creation-Date: 2021-04-27 03:45+0000\n"
+"PO-Revision-Date: 2021-04-27 03:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,9 +29,6 @@ msgid ""
 "                                    Cierre de Caja\n"
 "                                </b>"
 msgstr ""
-"<b>\n"
-"                                    Cierre de Caja\n"
-"                                </b>"
 
 #. module: bebepolis_core
 #: model_terms:ir.ui.view,arch_db:bebepolis_core.report_tpv_cash_count
@@ -101,6 +98,13 @@ msgid "ARTICLE"
 msgstr "ARTÍCULO"
 
 #. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "According Customer:"
+msgstr "Conforme Cliente:"
+
+#. module: bebepolis_core
 #: model:ir.model.fields,field_description:bebepolis_core.field_pos_session__amount_added_to_cash_box
 msgid "Add to cashbox"
 msgstr "Añadir a cajero"
@@ -141,6 +145,13 @@ msgid "CONCEPTO"
 msgstr ""
 
 #. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: bebepolis_core
 #: model:ir.actions.report,name:bebepolis_core.tpv_cash_count
 msgid "Cierre de Caja"
 msgstr ""
@@ -160,9 +171,42 @@ msgid "Delivery Data"
 msgstr "Datos de Entrega"
 
 #. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Delivery Date"
+msgstr "Fecha de Entrega"
+
+#. module: bebepolis_core
+#: model:ir.model.fields,field_description:bebepolis_core.field_pos_order_line__product_description
+msgid "Description"
+msgstr "Descripción"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Done"
+msgstr "Hecho"
+
+#. module: bebepolis_core
 #: model_terms:ir.ui.view,arch_db:bebepolis_core.report_tpv_cash_count
 msgid "EMPLEADO"
 msgstr ""
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Edit Description"
+msgstr "Editar Descripción"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Edit Product Description"
+msgstr "Editar Descripción del Producto"
 
 #. module: bebepolis_core
 #. openerp-web
@@ -186,6 +230,12 @@ msgstr ""
 #. module: bebepolis_core
 #: model_terms:ir.ui.view,arch_db:bebepolis_core.report_tpv_cash_count
 msgid "FORMA DE PAGO"
+msgstr ""
+
+#. module: bebepolis_core
+#: model:product.product,name:bebepolis_core.editable_generic_pos_product
+#: model:product.template,name:bebepolis_core.editable_generic_pos_product_product_template
+msgid "Genérico Editable"
 msgstr ""
 
 #. module: bebepolis_core
@@ -248,6 +298,18 @@ msgid "POS session"
 msgstr "Sesión POS"
 
 #. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Paying Due"
+msgstr "Fecha de Pago"
+
+#. module: bebepolis_core
+#: model:ir.model,name:bebepolis_core.model_pos_order_line
+msgid "Point of Sale Order Lines"
+msgstr "Líneas de Orden de Punto de Venta"
+
+#. module: bebepolis_core
 #: model:ir.model,name:bebepolis_core.model_pos_order
 msgid "Point of Sale Orders"
 msgstr "Pedidos del TPV"
@@ -261,8 +323,22 @@ msgstr "Sesión TPV"
 #. openerp-web
 #: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
 #, python-format
+msgid "Product Description"
+msgstr "Descripción del Producto"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
 msgid "QUOTE"
 msgstr "CUOTA"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "Reserved"
+msgstr "Reservado"
 
 #. module: bebepolis_core
 #. openerp-web
@@ -334,3 +410,16 @@ msgstr "Total de Impuestos"
 #, python-format
 msgid "UTS"
 msgstr "UDS"
+
+#. module: bebepolis_core
+#: model:product.product,uom_name:bebepolis_core.editable_generic_pos_product
+#: model:product.template,uom_name:bebepolis_core.editable_generic_pos_product_product_template
+msgid "Units"
+msgstr "Unidades"
+
+#. module: bebepolis_core
+#. openerp-web
+#: code:addons/bebepolis_core/static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml:0
+#, python-format
+msgid "______________"
+msgstr ""
