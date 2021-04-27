@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="editable_generic_pos_product" model="product.product">
+            <field name="name">Genérico Editable</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="True"/>
+        </record>
+    </data>
+</odoo>

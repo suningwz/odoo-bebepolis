@@ -22,7 +22,7 @@ models.Order = models.Order.extend({
     initialize: function(attributes,options){
         var self = this;
         var order_super = _super_order.initialize.apply(this, arguments);
-            this.set({'note': false,});
+        this.set({'note': false,});
         return order_super;
     },
     export_for_printing: function () {
@@ -47,6 +47,37 @@ models.Order = models.Order.extend({
     },
     set_observations: function (value) {
         this.set('note', value);
+    },
+});
+
+var _super_order_line = models.Orderline.prototype;
+
+models.Orderline = models.Orderline.extend({
+    initialize: function(attr,options){
+        var order_line_super = _super_order_line.initialize.apply(this, arguments);
+        if (options.json) {
+            this.set_product_description(options.json.product_description || '');
+        }else{
+            this.set_product_description(options.product.display_name);
+        }
+        return order_line_super;
+    },
+    set_product_description: function(description){
+        this.product_description = description;
+        this.trigger('change',this);
+    },
+    get_product_description: function(){
+        return this.product_description;
+    },
+    export_as_JSON: function() {
+        var order_line_super = _super_order_line.export_as_JSON.apply(this, arguments);
+        order_line_super.product_description = this.get_product_description();
+        return order_line_super;
+    },
+    export_for_printing: function(){
+        var order_line_super = _super_order_line.export_for_printing.apply(this, arguments);
+        order_line_super.product_description = this.get_product_description();
+        return order_line_super;
     },
 });
 });

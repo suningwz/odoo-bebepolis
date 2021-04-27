@@ -7,7 +7,7 @@
                 <link rel="stylesheet" href="/bebepolis_core/static/src/css/pos_popup.css"/>
                 <script type="text/javascript" src="/bebepolis_core/static/src/js/models.js"></script>
                 <script type="text/javascript" src="/bebepolis_core/static/src/js/popups.js"></script>
-<!--                <script type="text/javascript" src="/bebepolis_core/static/src/js/screens.js"></script>-->
+                <script type="text/javascript" src="/bebepolis_core/static/src/js/screens.js"></script>
             </xpath>
         </template>
     </data>

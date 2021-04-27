@@ -1,6 +1,8 @@
 odoo.define('bebepolis_core.popups', function (require) {
 "use strict";
 
+var gui = require('point_of_sale.gui');
+var PopupWidget = require('point_of_sale.popups');
 var DeliveryDatePopup = require('aspl_pos_order_reservation_ee.popups').DeliveryDatePopup;
 
 DeliveryDatePopup.include({
@@ -72,9 +74,13 @@ DeliveryDatePopup.include({
         var self = this;
         this._super(options);
         var order = self.pos.get_order();
-        $('#delivery_note').val(order.get_observations() || '');
-        $('#delivery_note').keydown(function (ev){self._onKeydownDeliveryNote(ev);});
-        $('#delivery_note').keyup(function (ev){self._onKeyupDeliveryNote(ev);});
+        this.$('#delivery_note').val(order.get_observations() || '');
+        if(this.pos.config.iface_vkeyboard && this.chrome.widget.keyboard){
+            this.chrome.widget.keyboard.connect($(this.el.querySelector('#delivery_note')));
+        }else{
+            this.$('#delivery_note').keydown(function (ev){self._onKeydownDeliveryNote(ev);});
+            this.$('#delivery_note').keyup(function (ev){self._onKeyupDeliveryNote(ev);});
+        }
     },
     click_confirm: function(){
         var self = this;
@@ -83,4 +89,37 @@ DeliveryDatePopup.include({
         self._super();
     },
 });
+
+var EditProductDescriptionPopup = PopupWidget.extend({
+    template: 'EditProductDescriptionPopup',
+    show: function(options){
+        this._super();
+        var order = this.pos.get_order();
+        this.description = order.get_selected_orderline().get_product_description();
+        this.renderElement();
+    },
+    click_confirm: function(){
+        var self = this;
+        var order = this.pos.get_order();
+        var description = this.$('#bebepolis_product_description').val();
+        if(description != this.description){
+            var order = this.pos.get_order();
+            order.get_selected_orderline().set_product_description(description);
+        }
+        this.gui.close_popup();
+    },
+    renderElement: function(){
+        var self = this;
+        this._super();
+        var order = this.pos.get_order();
+        var description = order.get_selected_orderline().get_product_description();
+        this.$('#bebepolis_product_description').val(description);
+    },
+});
+
+gui.define_popup({name:'edit_product_description_popup', widget: EditProductDescriptionPopup});
+
+return {
+    'EditProductDescriptionPopup': EditProductDescriptionPopup,
+}
 });

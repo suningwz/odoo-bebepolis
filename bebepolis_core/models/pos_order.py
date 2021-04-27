@@ -19,3 +19,9 @@ class PosOrder(models.Model):
             order_id.write({'note': order['data']['note']})
         return res
 
+
+class PosOrderLine(models.Model):
+    _inherit = "pos.order.line"
+
+    product_description = fields.Char(string="Description")
+

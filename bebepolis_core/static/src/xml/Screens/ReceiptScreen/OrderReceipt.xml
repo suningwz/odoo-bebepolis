@@ -105,7 +105,7 @@
                             <td class="pos-receipt-center-align">
                                 <t t-esc="line.quantity"/></td>
                             <td class="padding-line">
-                                <t t-esc="line.product_name"/>
+                                <t t-esc="line.product_description"/>
                             </td>
                             <td class="pos-receipt-text-right-align">
                                 <t t-if="line.discount !== 0">
@@ -153,7 +153,7 @@
                 <div class="pos-receipt-text-right-align">
                     <span t-if="receipt.cashier" class="pos-receipt-font-reduce">
                         SERVED BY:
-                        <span t-esc="receipt.cashier" class="bebepolis-text-transform"/><br/>
+                        <span t-esc="receipt.cashier" class="bebepolis-text-transform"/>
                     </span>
                 </div>
             </div>
@@ -237,5 +237,34 @@
                 </tr>
             </table>
         </xpath>
+    </t>
+
+    <t t-name="Orderline" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension" owl="1">
+        <xpath expr="//t[@t-esc='line.get_product().display_name']" position="replace">
+            <t t-esc="line.get_product_description()"/>
+        </xpath>
+    </t>
+
+    <t t-name="EditProductDescription">
+        <div class="control-button edit_product_description">
+            <i class="fa fa-edit" aria-hidden="true" data-mode="description"></i>
+            Edit Description
+        </div>
+    </t>
+
+    <t t-name="EditProductDescriptionPopup">
+        <div class="modal-dialog">
+            <div class="popup" style="height:300px;">
+                <p class="title">Edit Product Description</p>
+                <div style="margin-top: 20px;">
+                    <textarea rows="2" class="textarea-bebepolis" placeholder="Product Description" type="text"
+                              id="bebepolis_product_description"/>
+                </div>
+                <div class="footer">
+                    <div class="button confirm">Done</div>
+                    <div class="button cancel">Cancel</div>
+                </div>
+            </div>
+         </div>
     </t>
 </templates>

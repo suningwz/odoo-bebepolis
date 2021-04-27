@@ -23,8 +23,10 @@
         'prestashop_connector_gt', 'aspl_pos_order_reservation_ee'
     ],
     "data": [
+        'data/product_product.xml',
         'views/pos_assets_common.xml',
         'views/pos_session.xml',
+        'views/pos_order.xml',
         'reports/report_cashcount.xml',
         'reports/product_product_templates.xml',
     ],

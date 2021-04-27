@@ -775,7 +775,7 @@ class PosSession(models.Model):
                             # for taxes
                             tuple((tax['id'], tax['account_id'], tax['tax_repartition_line_id']) for tax in
                                   line['taxes']),
-                            line['base_tags'],
+                            # line.get('base_tags', tuple([])),
                         )
                         sales[sale_key] = self._update_amounts(sales[sale_key], {'amount': line['amount']},
                                                                line['date_order'])
@@ -826,7 +826,7 @@ class PosSession(models.Model):
                             # for taxes
                             tuple((tax['id'], tax['account_id'], tax['tax_repartition_line_id']) for tax in
                                   line['taxes']),
-                            line['base_tags'],
+                            # line.get('base_tags', tuple([])),
                         )
                         sales[sale_key] = self._update_amounts(sales[sale_key], {'amount': line['amount']},
                                                                line['date_order'])
