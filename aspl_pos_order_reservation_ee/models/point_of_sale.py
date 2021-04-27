@@ -767,7 +767,7 @@ class PosSession(models.Model):
                     for order_line in order.lines:
                         line = self._prepare_line(order_line)
                         # Combine sales/refund lines
-                        sale_key = (
+                        sale_key = [
                             # account
                             line['income_account_id'],
                             # sign
@@ -775,8 +775,10 @@ class PosSession(models.Model):
                             # for taxes
                             tuple((tax['id'], tax['account_id'], tax['tax_repartition_line_id']) for tax in
                                   line['taxes']),
-                            # line.get('base_tags', tuple([])),
-                        )
+                        ]
+                        if 'base_tags' in line:
+                            sale_key.append(line['base_tags'])
+                        sale_key = tuple(sale_key)
                         sales[sale_key] = self._update_amounts(sales[sale_key], {'amount': line['amount']},
                                                                line['date_order'])
                         # Combine tax lines
@@ -818,7 +820,7 @@ class PosSession(models.Model):
                     for order_line in order.lines:
                         line = self._prepare_line(order_line)
                         # Combine sales/refund lines
-                        sale_key = (
+                        sale_key = [
                             # account
                             line['income_account_id'],
                             # sign
@@ -826,8 +828,10 @@ class PosSession(models.Model):
                             # for taxes
                             tuple((tax['id'], tax['account_id'], tax['tax_repartition_line_id']) for tax in
                                   line['taxes']),
-                            # line.get('base_tags', tuple([])),
-                        )
+                        ]
+                        if 'base_tags' in line:
+                            sale_key.append(line['base_tags'])
+                        sale_key = tuple(sale_key)
                         sales[sale_key] = self._update_amounts(sales[sale_key], {'amount': line['amount']},
                                                                line['date_order'])
                         # Combine tax lines
