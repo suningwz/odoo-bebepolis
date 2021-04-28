@@ -39,8 +39,20 @@ models.Order = models.Order.extend({
             result.paying_due = order.attributes.paying_due;
             result.note = order.attributes.note;
         }
+        if (order.attributes && order.attributes.client) {
+            result.client_data = {
+                street: order.attributes.client.street,
+                city: order.attributes.client.city,
+                state_id: order.attributes.client.state_id,
+                country_id: order.attributes.client.country_id,
+                zip: order.attributes.client.zip,
+                vat: order.attributes.client.vat,
+                parent_id: order.attributes.client.parent_id,
+                type: order.attributes.client.type,
+            };
+        }
         result.company.company_address = company;
-        result.order_uid = this.uid
+        result.order_uid = this.uid;
         return result;
     },
     export_as_JSON: function() {

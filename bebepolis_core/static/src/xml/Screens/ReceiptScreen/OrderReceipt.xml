@@ -79,6 +79,29 @@
                     <div><t t-esc="receipt.company.website" /></div>
                 </t>
             </div>
+            <div t-if="receipt.client_data" class="bebepolis-margin-top pos-receipt-center-align">
+                <h3>Customer</h3>
+                <table class="bebepolis-receipt-table">
+                    <tr>
+                        <td t-if="receipt.client_data.type != 'invoice'"><t t-esc="receipt.client"/></td>
+                        <td t-if="receipt.client_data.type == 'invoice' &amp;&amp; receipt.client_data.parent_id">
+                            <t t-esc="receipt.client_data.parent_id[1]"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span t-if="receipt.client_data.street" t-esc="receipt.client_data.street"/>
+                            <span t-if="receipt.client_data.city" t-esc="receipt.client_data.city"/>
+                            <span t-if="receipt.client_data.state_id[1]" t-esc="receipt.client_data.state_id[1]"/>
+                            <span t-if="receipt.client_data.country_id[1]" t-esc="receipt.client_data.country_id[1]"/>
+                            <span t-if="receipt.client_data.zip" t-esc="receipt.client_data.zip"/>
+                        </td>
+                    </tr>
+                    <tr t-if="receipt.client_data.vat">
+                        <td><span>NIF/VAT: </span><span t-esc="receipt.client_data.vat"/></td>
+                    </tr>
+                </table>
+            </div>
         </xpath>
 
         <xpath expr="//div[hasclass('orderlines')]" position="before">
