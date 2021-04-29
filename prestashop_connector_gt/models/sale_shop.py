@@ -1089,39 +1089,27 @@ class SaleShop(models.Model):
 	def import_products(self):
 		product_brows = self.env['product.template']
 		for shop in self:
-			try:
-				product_categ_obj = self.env['product.category']
-				prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,shop.prestashop_instance_id.webservice_key or None)
-				filters = {'display': 'full', 'filter[id]': '>[%s]' % self.last_product_id_import, 'limit': 1000}
-				prestashop_product_data = prestashop.get('products', options=filters)
-				if prestashop_product_data.get('products') and prestashop_product_data.get('products').get('product'):
-					prestashop_product_list = prestashop_product_data.get('products').get('product')
-					prestashop_product_list =  self.action_check_isinstance(prestashop_product_list)
-					for product_dict in prestashop_product_list:
-						if product_dict.get('id_category_default'):
-							domain_categ = [('presta_id', '=', product_dict.get('id_category_default')),('is_presta', '=', True)]
-							cate_id = self.search_record_in_odoo(product_categ_obj, domain_categ)
-							if not cate_id:
-								try:
-									parent_presta_categ_data = prestashop.get('categories', product_dict.get('id_category_default'))
-									shop.create_presta_category(parent_presta_categ_data.get('category'), prestashop)
-									self.env.cr.commit()
-								except Exception as e:
-									logger.info('Parent category ===> %s' % (e))
-						shop.create_presta_product(product_dict, prestashop)
-						shop.write({'last_product_id_import': product_dict.get('id')})
-						self.env.cr.commit()
-			except Exception as e:
-				if self.env.context.get('log_id'):
-					log_id = self.env.context.get('log_id')
-					self.env['log.error'].create({'log_description': str(e), 'log_id': log_id})
-				else:
-					log_id_obj = self.env['prestashop.log'].create(
-						{'all_operations': 'import_products', 'error_lines': [(0, 0, {'log_description': str(e), })]})
-					log_id = log_id_obj.id
-				new_context = dict(self.env.context)
-				new_context.update({'log_id': log_id})
-				self.env.context = new_context
+			product_categ_obj = self.env['product.category']
+			prestashop = PrestaShopWebServiceDict(shop.prestashop_instance_id.location,shop.prestashop_instance_id.webservice_key or None)
+			filters = {'display': 'full', 'filter[id]': '>[%s]' % self.last_product_id_import, 'limit': 1000}
+			prestashop_product_data = prestashop.get('products', options=filters)
+			if prestashop_product_data.get('products') and prestashop_product_data.get('products').get('product'):
+				prestashop_product_list = prestashop_product_data.get('products').get('product')
+				prestashop_product_list =  self.action_check_isinstance(prestashop_product_list)
+				for product_dict in prestashop_product_list:
+					if product_dict.get('id_category_default'):
+						domain_categ = [('presta_id', '=', product_dict.get('id_category_default')),('is_presta', '=', True)]
+						cate_id = self.search_record_in_odoo(product_categ_obj, domain_categ)
+						if not cate_id:
+							try:
+								parent_presta_categ_data = prestashop.get('categories', product_dict.get('id_category_default'))
+								shop.create_presta_category(parent_presta_categ_data.get('category'), prestashop)
+								self.env.cr.commit()
+							except Exception as e:
+								logger.info('Parent category ===> %s' % (e))
+					shop.create_presta_product(product_dict, prestashop)
+					shop.write({'last_product_id_import': product_dict.get('id')})
+					self.env.cr.commit()
 		return True
 
 
