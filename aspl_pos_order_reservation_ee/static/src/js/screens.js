@@ -486,8 +486,8 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
             var self = this;
             var currentOrder = this.pos.get_order();
             var client = currentOrder.get_client() || false;
-
-            if(currentOrder.get_total_with_tax() > 0 && currentOrder.get_due() != 0){
+            var total_tax = currentOrder.get_total_with_tax();
+            if(total_tax > 0 && currentOrder.get_due() < total_tax){
 				if(currentOrder.get_total_with_tax() > currentOrder.get_total_paid()
         			&& currentOrder.get_total_paid() != 0){
 					var credit = currentOrder.get_total_with_tax() - currentOrder.get_total_paid();
@@ -538,10 +538,10 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
             var total = order ? order.get_total_with_tax() : 0;
             if(!order){
             	return
-            } else if(order.get_due() == total || order.get_due() == 0){
+            } else if(order.get_due() == total){
             	self.$('#partial_pay').removeClass('highlight');
             } else {
-            	self.$('#partial_pay').addClass('highlight');
+                self.$('#partial_pay').addClass('highlight');
             }
         },
         validate_order: function(force_validation){
@@ -553,6 +553,7 @@ odoo.define('aspl_pos_order_reservation_ee.screens', function (require) {
             self._super();
             var order = self.pos.get_order();
             if(order.get_reservation_mode()){
+                self.$('#partial_pay').text("Reserve");
                 self.$('#partial_pay').show();
             } else {
                 self.$('#partial_pay').text("Partial Pay");

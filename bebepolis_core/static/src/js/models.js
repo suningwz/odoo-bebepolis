@@ -3,6 +3,7 @@ odoo.define('bebepolis_core.models', function (require) {
 
 var models = require('point_of_sale.models');
 var rpc = require('web.rpc');
+var ajax = require('web.ajax');
 
 var _super_pos_model = models.PosModel.prototype;
 
@@ -27,7 +28,23 @@ models.Order = models.Order.extend({
         var self = this;
         var order_super = _super_order.initialize.apply(this, arguments);
         this.set({'note': false,});
+        self.toDataUrl();
         return order_super;
+    },
+    toDataUrl: function() {
+        var self = this;
+        var url = "/report/barcode/?type=Code128&value="+this.uid+"&width=250&height=60";
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                self.bebepolis_order_barcode = e.target.result;
+            }
+            reader.readAsDataURL(xhr.response);
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
     },
     export_for_printing: function () {
         var result = _super_order.export_for_printing.apply(this, arguments);
@@ -51,6 +68,7 @@ models.Order = models.Order.extend({
                 type: order.attributes.client.type,
             };
         }
+        result.bebepolis_order_barcode = this.bebepolis_order_barcode;
         result.company.company_address = company;
         result.order_uid = this.uid;
         return result;

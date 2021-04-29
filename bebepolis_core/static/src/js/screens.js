@@ -3,6 +3,15 @@ odoo.define('bebepolis_core.screens', function (require) {
 
 var screens = require('point_of_sale.screens');
 
+screens.ReceiptScreenWidget.include({
+    handle_auto_print: function() {
+        var _super=this._super.bind(this);
+        setTimeout(function () {
+            _super();
+        }, 50);
+    },
+});
+
 screens.ClientListScreenWidget.include({
     init: function(parent, options){
         this._super(parent, options);

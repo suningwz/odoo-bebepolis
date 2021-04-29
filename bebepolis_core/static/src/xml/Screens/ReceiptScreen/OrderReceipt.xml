@@ -62,12 +62,12 @@
             <div class="pos-receipt-contact">
                 <div class="pos-receipt-center-align"><b>Simplified Invoice</b></div>
                 <t t-if="receipt.company.company_address">
-                    <div><t t-esc="receipt.company.company_address.street"/></div>
+                    <div t-if="receipt.company.company_address.street"><t t-esc="receipt.company.company_address.street"/></div>
                     <div>
-                        <span t-esc="receipt.company.company_address.zip"/>-
-                        <span t-esc="receipt.company.company_address.street2"/>
+                        <span t-if="receipt.company.company_address.zip" t-esc="receipt.company.company_address.zip"/>-
+                        <span t-if="receipt.company.company_address.street2" t-esc="receipt.company.company_address.street2"/>
                     </div>
-                    <div><t t-esc="receipt.company.company_address.city"/></div>
+                    <div t-if="receipt.company.company_address.city"><t t-esc="receipt.company.company_address.city"/></div>
                 </t>
                 <t t-if="receipt.company.vat">
                     <div><t t-esc="receipt.company.vat"/></div>
@@ -200,7 +200,7 @@
 
         <xpath expr="//div[hasclass('after-footer')]" position="replace">
             <div class="after-footer pos-receipt-center-align">
-                <img t-att-src="'/report/barcode/?type=Code128&amp;value='+receipt.order_uid+'&amp;width=250&amp;height=60'"/>
+                <img style="width: 100%; height: 60px;" t-att-src="receipt.bebepolis_order_barcode"/>
                 <div>F. Simplified: <span t-esc="receipt.order_uid"></span></div>
             </div><br/>
             <div class="after-footer pos-receipt-center-align">
@@ -224,15 +224,15 @@
                 <div t-if="receipt.reservation_mode" class="bebepolis-margin-top">
                     <h3>Reserved</h3>
                     <table class="bebepolis-receipt-table">
-                        <tr>
+                        <tr t-if="receipt.delivery_date">
                             <td>Delivery Date</td>
                             <td><t t-esc="receipt.delivery_date"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="receipt.paying_due">
                             <td>Paying Due</td>
                             <td><t t-if="receipt.paying_due" t-esc="receipt.paying_due"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="receipt.note">
                             <td colspan="2"><span><b>Observations:</b><t t-esc="receipt.note"/></span></td>
                         </tr>
                     </table>
