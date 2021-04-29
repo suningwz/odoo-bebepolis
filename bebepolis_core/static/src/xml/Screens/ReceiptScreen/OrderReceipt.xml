@@ -147,7 +147,7 @@
         </xpath>
 
         <xpath expr="//div[hasclass('pos-receipt-amount')]" position="replace">
-            <div class="pos-receipt-amount">
+            <div class="pos-receipt-amount" style="padding: 0 !important;">
                 <div class="pos-receipt-text-right-align">
                     <span>TOTAL:
                         <span t-esc="widget.format_currency(receipt.total_with_tax)"/>
