@@ -31,7 +31,7 @@
         'reports/product_product_templates.xml',
     ],
     'qweb': [
-        'static/src/xml/Screens/ReceiptScreen/OrderReceipt.xml',
+        'static/src/xml/pos.xml',
     ],
     'installable': True,
     'application': True,

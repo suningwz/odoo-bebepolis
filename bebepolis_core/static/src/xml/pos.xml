@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="bebepolis_template" xml:space="preserve">
     <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('pos-receipt')]/div[hasclass('pos-receipt-right-align')]" position="replace"/>
+        
+        <xpath expr="//div[hasclass('pos-receipt')]/br[7]" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt')]/br[6]" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt')]/br[5]" position="replace"/>
+
+        <xpath expr="//div[hasclass('pos-receipt')]/br[4]" position="replace"/>
+            
         <xpath expr="//div[hasclass('pos-receipt')]/t[@t-if='receipt.total_discount']" position="replace"/>
 
         <xpath expr="//div[hasclass('pos-receipt')]//div[hasclass('receipt-change')]" position="replace"/>
@@ -30,7 +40,7 @@
         </xpath>
 
         <xpath expr="//div[hasclass('pos-receipt')]//t[@t-if='!taxincluded']" position="replace">
-            <table class="bebepolis-receipt-table bebepolis-margin-top">
+            <table class="bebepolis-receipt-table bebepolis-margin-top" t-if="!printGift">
                 <thead>
                     <tr>
                         <td>IVA</td>
@@ -60,7 +70,8 @@
 
         <xpath expr="//div[hasclass('pos-receipt-contact')]" position="replace">
             <div class="pos-receipt-contact">
-                <div class="pos-receipt-center-align"><b>Simplified Invoice</b></div>
+                <div class="pos-receipt-center-align" t-if="!printGift"><b>Simplified Invoice</b></div>
+                <div class="pos-receipt-center-align" t-if="printGift"><b>Gift Ticket</b></div>
                 <t t-if="receipt.company.company_address">
                     <div t-if="receipt.company.company_address.street"><t t-esc="receipt.company.company_address.street"/></div>
                     <div>
@@ -113,7 +124,25 @@
 
         <xpath expr="//div[hasclass('orderlines')]" position="replace">
             <div class="orderlines">
-                <table class="bebepolis-receipt-table bebepolis-border-dashed">
+                <table class="bebepolis-receipt-table bebepolis-border-dashed" t-if="printGift">
+                    <thead>
+                        <tr>
+                            <th class="padding-line">ARTICLE</th>
+                            <th  width="20%" class="pos-receipt-text-right-align">UTS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="receipt.orderlines" t-as="line" t-key="line.id"
+                            class="bebepolis-border-solid bebepolis-line-height">
+                            <td class="padding-line">
+                                <t t-esc="line.product_description"/>
+                            </td>
+                            <td class="pos-receipt-text-right-align">
+                                x<t t-esc="line.quantity"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="bebepolis-receipt-table bebepolis-border-dashed" t-if="!printGift">
                     <thead>
                         <tr>
                             <th>UTS</th>
@@ -147,7 +176,7 @@
         </xpath>
 
         <xpath expr="//div[hasclass('pos-receipt-amount')]" position="replace">
-            <div class="pos-receipt-amount" style="padding: 0 !important;">
+            <div class="pos-receipt-amount" style="padding: 0 !important;" t-if="!printGift">
                 <div class="pos-receipt-text-right-align">
                     <span>TOTAL:
                         <span t-esc="widget.format_currency(receipt.total_with_tax)"/>
@@ -256,6 +285,14 @@
         <xpath expr="//div[hasclass('footer')]" position="before">
             <div>
                 <textarea rows="2" class="textarea-bebepolis" placeholder="Observations" type="text" id="delivery_note"/>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="ReceiptScreenWidget" t-inherit="point_of_sale.ReceiptScreenWidget" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('pos-receipt-container')]" position="before">
+            <div class="button print-gift-ticket">
+                <i class='fa fa-print'></i> Print Gift Ticket
             </div>
         </xpath>
     </t>
