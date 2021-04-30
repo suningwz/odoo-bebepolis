@@ -1,0 +1,1160 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* aspl_pos_order_reservation_ee
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-30 15:54+0000\n"
+"PO-Revision-Date: 2021-04-30 15:54+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:mail.template,body_html:aspl_pos_order_reservation_ee.email_template_pos_ereceipt
+msgid ""
+"\n"
+"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
+"\n"
+"    <p>Hello ${object.partner_id and object.partner_id.name or ''},</p>\n"
+"\n"
+"    <p style=\"border-left: 1px solid #8e0000; margin-left: 30px;\">\n"
+"       &nbsp;&nbsp;<strong>REFERENCES</strong><br />\n"
+"       &nbsp;&nbsp;Order number: <strong>${object.name}</strong><br />\n"
+"       &nbsp;&nbsp;Order total: <strong>${object.amount_total} ${object.company_id.currency_id.name}</strong><br />\n"
+"       &nbsp;&nbsp;Order date: ${object.date_order}<br />\n"
+"       &nbsp;&nbsp;Delivery date: ${object.delivery_date}<br />\n"
+"       % if object.user_id:\n"
+"       &nbsp;&nbsp;Cashier: ${object.user_id.name}\n"
+"       % endif\n"
+"    </p>\n"
+"    <p> Product Details </p>\n"
+"    % if object.lines:\n"
+"        <table border=1>\n"
+"            <tbody border=1>\n"
+"                <tr>\n"
+"                    <th>Product Name</th>\n"
+"                    <th>Quantity</th>\n"
+"                    <th>Unit Price</th>\n"
+"                    <th>Discount %</th>\n"
+"                    <th>Total(${object.company_id.currency_id.name})</td>\n"
+"                <tr>\n"
+"                % for line in object.lines:\n"
+"                    <tr>\n"
+"                        <td>${line.product_id.name}</td>\n"
+"                        <td style=\"text-align:right\">${line.qty}</td>\n"
+"                        <td style=\"text-align:right\">${line.price_unit}</td>\n"
+"                        <td style=\"text-align:right\">${line.discount}</td>\n"
+"                        <td style=\"text-align:right\">${line.price_subtotal_incl}</td>\n"
+"                    </tr>\n"
+"                % endfor\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Tax</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_tax}</td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Amount Paid</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_paid}</td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Amount Due</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_due}</td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Total Amount</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_total}</td>\n"
+"                </tr>\n"
+"            </tbody>\n"
+"        </table>\n"
+"    % endif\n"
+"    <br/>\n"
+"    <p>Thank you for choosing ${object.company_id.name or 'us'} !</p>\n"
+"    <br/>\n"
+"    <br/>\n"
+"    <div style=\"width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;\">\n"
+"        <h3 style=\"margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;\">\n"
+"            <strong style=\"text-transform:uppercase;\">${object.company_id.name}</strong></h3>\n"
+"    </div>\n"
+"    <div style=\"width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;\">\n"
+"        <span style=\"color: #222; margin-bottom: 5px; display: block; \">\n"
+"        % if object.company_id.street:\n"
+"            ${object.company_id.street}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.street2:\n"
+"            ${object.company_id.street2}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.city or object.company_id.zip:\n"
+"            ${object.company_id.zip} ${object.company_id.city}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.country_id:\n"
+"            ${object.company_id.state_id and ('%s, ' % object.company_id.state_id.name) or ''} ${object.company_id.country_id.name or ''}<br/>\n"
+"        % endif\n"
+"        </span>\n"
+"        % if object.company_id.phone:\n"
+"            <div style=\"margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; \">\n"
+"                Phone:&nbsp; ${object.company_id.phone}\n"
+"            </div>\n"
+"        % endif\n"
+"        % if object.company_id.website:\n"
+"            <div>\n"
+"                Web :&nbsp;<a href=\"${object.company_id.website}\">${object.company_id.website}</a>\n"
+"            </div>\n"
+"        %endif\n"
+"        <p></p>\n"
+"    </div>\n"
+"</div>\n"
+"            "
+msgstr ""
+"\n"
+"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
+"\n"
+"    <p>Hola ${object.partner_id and object.partner_id.name or ''},</p>\n"
+"\n"
+"    <p style=\"border-left: 1px solid #8e0000; margin-left: 30px;\">\n"
+"       &nbsp;&nbsp;<strong>REFERENCIAS</strong><br />\n"
+"       &nbsp;&nbsp;Número pedido: <strong>${object.name}</strong><br />\n"
+"       &nbsp;&nbsp;Total pedido: <strong>${object.amount_total} ${object.company_id.currency_id.name}</strong><br />\n"
+"       &nbsp;&nbsp;Fecha Pedido ${object.date_order}<br />\n"
+"       &nbsp;&nbsp;Fecha estimada de recogida: ${object.delivery_date}<br />\n"
+"       % if object.user_id:\n"
+"       &nbsp;&nbsp;Cajero: ${object.user_id.name}\n"
+"       % endif\n"
+"    </p>\n"
+"    <p> Detalles de Productos </p>\n"
+"    % if object.lines:\n"
+"        <table border=1>\n"
+"            <tbody border=1>\n"
+"                <tr>\n"
+"                    <th>Nombre del Producto</th>\n"
+"                    <th>Cantidad</th>\n"
+"                    <th>Precio Unitario</th>\n"
+"                    <th>Discount %</th>\n"
+"                    <th>Total(${object.company_id.currency_id.name})</td>\n"
+"                <tr>\n"
+"                % for line in object.lines:\n"
+"                    <tr>\n"
+"                        <td>${line.product_id.name}</td>\n"
+"                        <td style=\"text-align:right\">${line.qty}</td>\n"
+"                        <td style=\"text-align:right\">${line.price_unit}</td>\n"
+"                        <td style=\"text-align:right\">${line.discount}</td>\n"
+"                        <td style=\"text-align:right\">${line.price_subtotal_incl}</td>\n"
+"                    </tr>\n"
+"                % endfor\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Impuesto</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_tax}</td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Importe Pagdo</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_paid}</td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Importe Pendiente</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_due}</td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td colspan=\"4\"><strong>Importe Total</strong></td>\n"
+"                    <td style=\"text-align:right\">${object.amount_total}</td>\n"
+"                </tr>\n"
+"            </tbody>\n"
+"        </table>\n"
+"    % endif\n"
+"    <br/>\n"
+"    <p>Gracias por preferirnos ${object.company_id.name or 'us'} !</p>\n"
+"    <br/>\n"
+"    <br/>\n"
+"    <div style=\"width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;\">\n"
+"        <h3 style=\"margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;\">\n"
+"            <strong style=\"text-transform:uppercase;\">${object.company_id.name}</strong></h3>\n"
+"    </div>\n"
+"    <div style=\"width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;\">\n"
+"        <span style=\"color: #222; margin-bottom: 5px; display: block; \">\n"
+"        % if object.company_id.street:\n"
+"            ${object.company_id.street}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.street2:\n"
+"            ${object.company_id.street2}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.city or object.company_id.zip:\n"
+"            ${object.company_id.zip} ${object.company_id.city}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.country_id:\n"
+"            ${object.company_id.state_id and ('%s, ' % object.company_id.state_id.name) or ''} ${object.company_id.country_id.name or ''}<br/>\n"
+"        % endif\n"
+"        </span>\n"
+"        % if object.company_id.phone:\n"
+"            <div style=\"margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; \">\n"
+"                Teléfono:&nbsp; ${object.company_id.phone}\n"
+"            </div>\n"
+"        % endif\n"
+"        % if object.company_id.website:\n"
+"            <div>\n"
+"                Web :&nbsp;<a href=\"${object.company_id.website}\">${object.company_id.website}</a>\n"
+"            </div>\n"
+"        %endif\n"
+"        <p></p>\n"
+"    </div>\n"
+"</div>\n"
+"            "
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "% discount"
+msgstr "% descuento"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "(+)Cancellation Charge"
+msgstr "(+)Cargo de Cancelación"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "(-)Amount Paid"
+msgstr "(-)Importe Pagado"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "(-)Cancel Order Total"
+msgstr "(-)Total Pedido Cancelado"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "(=)New Amount Due"
+msgstr "(=)Nuevo Importe Pendiente"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "(=)New Order Total"
+msgstr "(=)Nuevo Total de Pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "(=)Refund Amount"
+msgstr "(=)Importe Reembolsado"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__allow_reservation_with_no_amount
+msgid "Allow Reservation With 0 Amount"
+msgstr "Permitir Reservación con Importe 0"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Allow Reservation With No Amount"
+msgstr "Permitir Reservación sin Importe"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Amount"
+msgstr "Importe"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__amount_due
+msgid "Amount Due"
+msgstr "Importe Pendiente"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Amount due"
+msgstr "Importe pendiente"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Back"
+msgstr "Atrás"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model,name:aspl_pos_order_reservation_ee.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Línea de extracto bancario"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__order_booked
+msgid "Booked"
+msgstr "Reservado"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Booked Orders"
+msgstr "Pedidos Reservados"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order_line__cancel_item
+msgid "Cancel Item"
+msgstr "Cancelar Producto"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__cancel_order
+msgid "Cancel Order"
+msgstr "Cancelar Pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Cancellation Charge:"
+msgstr "Cargo de Cancelación:"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__cancellation_charges
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+#: model:product.product,name:aspl_pos_order_reservation_ee.product_cancellation
+#: model:product.template,name:aspl_pos_order_reservation_ee.product_cancellation_product_template
+msgid "Cancellation Charges"
+msgstr "Cargos de Cancelación"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__cancellation_charges_product_id
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Cancellation Charges Product"
+msgstr "Producto Cargos de Cancelación"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__cancellation_charges_type
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Cancellation Charges Type"
+msgstr "Tipo de Cargos de Cancelación"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#, python-format
+msgid "Cannot Find Cancellation Product"
+msgstr "No se encuentra el Producto de Cancelación"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#, python-format
+msgid "Cannot Find Refund Product"
+msgstr "No se encuentra el Reembolso de Producto"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Client:"
+msgstr "Cliente:"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model,name:aspl_pos_order_reservation_ee.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Credit Limit"
+msgstr "Límite de Crédito"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__customer_email
+msgid "Customer Email"
+msgstr "Email Cliente"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Date"
+msgstr "Fecha"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__delivery_date
+#, python-format
+msgid "Delivery Date"
+msgstr "Fecha de Entrega"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Delivery Date:"
+msgstr "Fecha estimada de recogida:"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#, python-format
+msgid "Discard Sale Order"
+msgstr "Descartar Pedido de Venta"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#, python-format
+msgid "Do you want to discard the payment of POS  ?"
+msgstr "¿Desea descartar el pago de POS?"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Done"
+msgstr "Hecho"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Due"
+msgstr "Vencido"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Due:"
+msgstr "Vencido:"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__enable_order_reservation
+msgid "Enable Order Reservation"
+msgstr "Habilitar Reservación de Pedidos"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Enable Welcome Mail"
+msgstr "Habilitar Mail de Bienvenida"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Enable to use Order Reservation with Points in Sale Interface."
+msgstr ""
+"Habilitar para usar la Reservación de pedidos con interfaz de Punto de "
+"Venta."
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_config__cancellation_charges_type__fixed
+msgid "Fixed"
+msgstr "Fijo"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__fresh_order
+msgid "Fresh Order"
+msgstr "Pedido Fresh"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_order__order_status__full
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_order_line__line_status__full
+msgid "Fully Cancelled"
+msgstr "Totalmente Cancelado"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__is_cancel_order
+msgid "Is Cancel Order"
+msgstr "Esta cancelado el pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Journal"
+msgstr "Diario"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__last_days
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Last Days"
+msgstr "Últimos Días"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Last Paid Amount:"
+msgstr "Último Importe Pagado:"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Max Credit Exceeded"
+msgstr "Crédito Máximo Excedido"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "N/A"
+msgstr ""
+
+#. module: aspl_pos_order_reservation_ee
+#: code:addons/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#, python-format
+msgid ""
+"No cash statement found for this session. Unable to record returned cash."
+msgstr ""
+"No se ha encontrado ningún extracto de caja para esta sesión. Imposible "
+"registrar el efectivo devuelto."
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_order__order_status__not_applied
+msgid "Not-Applicable"
+msgstr "No-Aplicable"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_order_line__line_status__nothing
+msgid "Nothing"
+msgstr "Nada"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "OK"
+msgstr ""
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_payment__old_session_id
+msgid "Old session Id"
+msgstr "ID sesión antigua"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__old_session_ids
+msgid "Old sessions"
+msgstr "Sesión antigua"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Order"
+msgstr "Pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#: code:addons/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#, python-format
+msgid "Order %s is not fully paid."
+msgstr "El pedido %s no está totalmente pagado."
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Order Date"
+msgstr "Fecha de pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Order Date:"
+msgstr "Fecha de Pedido:"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Order Ref"
+msgstr "Ref Pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:mail.template,subject:aspl_pos_order_reservation_ee.email_template_pos_ereceipt
+msgid "Order Reference ${object.name or ''}"
+msgstr "Referencia de Pedido ${object.name or ''}"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Order Reservation"
+msgstr "Reservación de Pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__order_status
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order_line__line_status
+msgid "Order Status"
+msgstr "Estado de Pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Order Total"
+msgstr "Total Pedido"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:mail.template,report_name:aspl_pos_order_reservation_ee.email_template_pos_ereceipt
+msgid "Order_${object.name or ''}"
+msgstr "Pedido_${object.name or ''}"
+
+#. module: aspl_pos_order_reservation_ee
+#: code:addons/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#, python-format
+msgid "Orders"
+msgstr "Pedidos"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Override Payment"
+msgstr "Anular pago"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:product.product,name:aspl_pos_order_reservation_ee.product_paid
+#: model:product.template,name:aspl_pos_order_reservation_ee.product_paid_product_template
+msgid "Paid Amount"
+msgstr "Importe Pagado"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__prod_for_payment
+msgid "Paid Amount Product"
+msgstr "Importe del Producto Pagado"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Paid Product"
+msgstr "Producto Pagado"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__partial_pay
+#, python-format
+msgid "Partial Pay"
+msgstr "Pago parcial"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_order__order_status__partial
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_order_line__line_status__partial
+msgid "Partially Cancelled"
+msgstr "Cancelado Parcialmente"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Pay"
+msgstr "Pagar"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.order_inherited_form_view
+msgid "Payment"
+msgstr "Pago"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Payment History"
+msgstr "Histórico de Pagos"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields.selection,name:aspl_pos_order_reservation_ee.selection__pos_config__cancellation_charges_type__percentage
+msgid "Percentage"
+msgstr "Porcentage"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order_line__picking_id
+msgid "Picking Id"
+msgstr "Id de Albarán"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#, python-format
+msgid "Please configure Cancellation product from Point of Sale Configuration"
+msgstr ""
+"Por favor configure la Cancelación de producto en la configuración del Punto"
+" de Venta"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#, python-format
+msgid "Please configure Paid Amount product from Point of Sale Configuration"
+msgstr ""
+"Por favor configure el Importe pagado de producto en la configuración del "
+"Punto de Venta"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/popups.js:0
+#, python-format
+msgid "Please configure Refund product from Point of Sale Configuration"
+msgstr ""
+"Por favor configure el reembolso de producto en la configuración del Punto "
+"de Venta"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model,name:aspl_pos_order_reservation_ee.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Configuración del TPV"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model,name:aspl_pos_order_reservation_ee.model_pos_order_line
+msgid "Point of Sale Order Lines"
+msgstr "Líneas de Orden de Punto de Venta"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model,name:aspl_pos_order_reservation_ee.model_pos_order
+msgid "Point of Sale Orders"
+msgstr "Pedidos del TPV"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model,name:aspl_pos_order_reservation_ee.model_pos_payment
+msgid "Point of Sale Payments"
+msgstr "Pagos en puntos de venta"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model,name:aspl_pos_order_reservation_ee.model_pos_session
+msgid "Point of Sale Session"
+msgstr "Sesión TPV"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Product"
+msgstr "Producto"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "QTY:"
+msgstr "CANT:"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Qty"
+msgstr "Cant"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Receipt Ref"
+msgstr "Ref Recibo"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Receipt:"
+msgstr "Recibo:"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__record_per_page
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Record Per Page"
+msgstr "Registro Por Página"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:product.product,name:aspl_pos_order_reservation_ee.refund_amount
+#: model:product.template,name:aspl_pos_order_reservation_ee.refund_amount_product_template
+msgid "Refund Amount"
+msgstr "Importe Reembolsado"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__refund_amount_product_id
+msgid "Refund Amount Product"
+msgstr "Reembolso de Importe de Producto"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Refund Amount:"
+msgstr "Importe Reembolso:"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Refund Product"
+msgstr "Reembolso Producto"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Remaining Credit"
+msgstr "Crédito Restante"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_res_partner__remaining_credit_limit
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_res_users__remaining_credit_limit
+msgid "Remaining Credit Limit"
+msgstr "Límite de Crédito"
+
+#. module: aspl_pos_order_reservation_ee
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Reservation Location"
+msgstr "Ubicación de Reserva"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Reservation Mode"
+msgstr "Modo Reserva"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/js/screens.js:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Reserve"
+msgstr "Reserva"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__reserve_stock_location_id
+msgid "Reserve Stock Location"
+msgstr "Almacén de Reserva"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__reserved
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.view_pos_order_filter_inherit
+#, python-format
+msgid "Reserved"
+msgstr "Reservado"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Reserved Items"
+msgstr "Productos Reservados"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Search Reserved Items"
+msgstr "Buscar Productos Reservados"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Search orders"
+msgstr "Buscar pedidos"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Select all"
+msgstr "Seleccionar todos"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__enable_pos_welcome_mail
+msgid "Send Welcome Mail"
+msgstr "Enviar email de bienvenida"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Show Customers"
+msgstr "Mostrar Clientes"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Show History"
+msgstr "Mostrar Historial"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Status:"
+msgstr "Estados:"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_config__stock_location_id
+#: model_terms:ir.ui.view,arch_db:aspl_pos_order_reservation_ee.ace_view_pos_config_form
+msgid "Stock Location"
+msgstr "Almacén"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:product.product,description:aspl_pos_order_reservation_ee.refund_amount
+#: model:product.template,description:aspl_pos_order_reservation_ee.refund_amount_product_template
+msgid "This is a dummy product used as a refund amount product."
+msgstr ""
+"Este es un producto ficticio que se utiliza para el reembolso de productos."
+
+#. module: aspl_pos_order_reservation_ee
+#: model:product.product,description:aspl_pos_order_reservation_ee.product_cancellation
+#: model:product.product,description:aspl_pos_order_reservation_ee.product_paid
+#: model:product.template,description:aspl_pos_order_reservation_ee.product_cancellation_product_template
+#: model:product.template,description:aspl_pos_order_reservation_ee.product_paid_product_template
+msgid ""
+"This is a dummy product used when a customer pays partially. This is a workaround\n"
+"                to the fact that Odoo needs to have at least one product on the order to validate the transaction.\n"
+"            "
+msgstr ""
+"Este es un producto ficticio que se utiliza cuando un cliente paga parcialmente. Esta es una solución\n"
+"                al hecho de que Odoo necesita tener al menos un producto en el pedido para validar la transacción.\n"
+"           "
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,help:aspl_pos_order_reservation_ee.field_pos_config__prod_for_payment
+msgid ""
+"This is a dummy product used when a customer pays partially. This is a "
+"workaround to the fact that Odoo needs to have at least one product on the "
+"order to validate the transaction."
+msgstr ""
+"Este es un producto ficticio que se utiliza cuando un cliente paga "
+"parcialmente. Esta es una solución al hecho de que Odoo necesita tener al "
+"menos un producto en el pedido para validar la transacción."
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Total"
+msgstr ""
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Total:"
+msgstr ""
+
+#. module: aspl_pos_order_reservation_ee
+#: model:product.product,uom_name:aspl_pos_order_reservation_ee.product_cancellation
+#: model:product.product,uom_name:aspl_pos_order_reservation_ee.product_paid
+#: model:product.product,uom_name:aspl_pos_order_reservation_ee.refund_amount
+#: model:product.template,uom_name:aspl_pos_order_reservation_ee.product_cancellation_product_template
+#: model:product.template,uom_name:aspl_pos_order_reservation_ee.product_paid_product_template
+#: model:product.template,uom_name:aspl_pos_order_reservation_ee.refund_amount_product_template
+msgid "Units"
+msgstr "Unidades"
+
+#. module: aspl_pos_order_reservation_ee
+#: model:ir.model.fields,field_description:aspl_pos_order_reservation_ee.field_pos_order__unreserved
+msgid "Unreserved"
+msgstr "No reservado"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Update"
+msgstr "Actualizar"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Validate"
+msgstr "Validar"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "With a"
+msgstr "Con un"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "Your remaining credit limit is only"
+msgstr "Tu límite de crédito es de"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "and you are trying to credit"
+msgstr "y estás dando un crédito de"
+
+#. module: aspl_pos_order_reservation_ee
+#: code:addons/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/models/point_of_sale.py:0
+#, python-format
+msgid "return"
+msgstr "devolver"
+
+#. module: aspl_pos_order_reservation_ee
+#. openerp-web
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#: code:addons/odoo-bebepolis/aspl_pos_order_reservation_ee/static/src/xml/pos.xml:0
+#, python-format
+msgid "yyyy-mm-dd"
+msgstr ""
