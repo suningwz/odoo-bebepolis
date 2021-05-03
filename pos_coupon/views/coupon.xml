@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_coupon_form" model="ir.ui.view">
+        <field name="name">POS Coupon</field>
+        <field name="model">pos.coupon</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <h1><field name="short_description"/></h1>
+                    <group name="coupon_base_info">
+                        <group>
+                            <field name="coupon_type" widget="radio"/>
+                            <field name="partner_id"/>
+                            <field name="coupon_code"/>
+                        </group>
+                        <group>
+                            <field name="amount" />
+                            <field name="available_amount" />
+                            <field name="valid_date" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                    <group name="coupon_logs" string="Use's logs">
+                        <field name="coupon_history_ids" nolabel="1">
+                            <tree create="false" edit="false">
+                                <field name="name" />
+                                <field name="debit" />
+                                <field name="credit" />
+                                <field name="create_date"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="pos_coupon_tree" model="ir.ui.view">
+        <field name="name">pos.coupon.tree</field>
+        <field name="model">pos.coupon</field>
+        <field name="arch" type="xml">
+            <tree string="Coupons">
+                <field name="short_description" />
+                <field name="partner_id" />
+                <field name="amount" />
+                <field name="available_amount" />
+                <field name="valid_date"/>
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="pos_coupon_tree_action" model="ir.actions.act_window">
+        <field name="name">Coupons</field>
+        <field name="res_model">pos.coupon</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help">Create pos coupons</field>
+    </record>
+
+    <menuitem name="Coupons" id="pos_coupon_root_menu" sequence="15" parent="point_of_sale.menu_point_root"/>
+    <menuitem name="Coupons" id="pos_coupon_item_menu" action="pos_coupon_tree_action" parent="pos_coupon_root_menu"/>
+</odoo>

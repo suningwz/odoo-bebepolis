@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="pos_coupon_assets" inherit_id="point_of_sale.assets">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/pos_coupon/static/src/js/pos_coupons.js"></script>
+                <link rel="stylesheet" href="/pos_coupon/static/src/css/pos_coupons.css"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>
