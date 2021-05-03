@@ -158,7 +158,7 @@ class PosOrder(models.Model):
                         'payment_type': payment_type,
                         'partner_id': pos_order.partner_id.id,
                         'partner_type': 'customer',
-                        'payment_method_id': account_journal_obj.inbound_payment_method_ids.id,
+                        'payment_method_id': account_journal_obj.inbound_payment_method_ids[0].id,
                         "amount": amount,
                         "journal_id": account_journal_obj.id,
                         'currency_id': self.env.user.company_id.currency_id.id,
