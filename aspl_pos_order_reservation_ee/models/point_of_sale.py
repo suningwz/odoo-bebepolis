@@ -86,9 +86,9 @@ class PosOrder(models.Model):
                 if self.do_internal_transfer():
                     self.write({'state': 'paid'})
                     return self.do_customer_picking()
-            elif self.order_status == "not_applied":
-                self.write({'state': 'paid'})
-                return self.do_customer_picking()
+            # elif self.order_status == "not_applied":
+            #     self.write({'state': 'paid'})
+            #     return self.do_customer_picking()
             else:
                 self.write({'state': 'paid'})
                 return self.create_picking()
