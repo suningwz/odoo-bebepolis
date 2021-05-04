@@ -382,6 +382,13 @@
         </div>
     </t>
 
+    <t t-name="EditProductDescription">
+        <div class="control-button edit_product_description">
+            <i class="fa fa-edit" aria-hidden="true" data-mode="description"></i>
+            Edit Description
+        </div>
+    </t>
+
     <t t-name="EditProductDescriptionPopup">
         <div class="modal-dialog">
             <div class="popup" style="height:300px;">
